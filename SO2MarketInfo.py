@@ -9,9 +9,10 @@
 """
 
 import configparser
+import json
+import urllib.request as urlreq
 
-from SO2MI import Client
-
+from SO2MI import Client #トークンの書かれたconfigの読み込み
 config = configparser.ConfigParser()
 config.read('config.ini')
 
