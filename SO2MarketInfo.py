@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 
     SOLD OUT 2 Market Information Bot for Discord
@@ -17,6 +15,6 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 if __name__ == "__main__":
-    # Run
+    # 実行
     dcCli = Client()
     dcCli.run(config['discord']['token'])
