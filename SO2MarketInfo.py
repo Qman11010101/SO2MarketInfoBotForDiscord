@@ -29,7 +29,7 @@ urlreq.urlretrieve(url, 'data/requ.json')
 s = open("data/sale.json", "r", encoding="utf-8_sig")
 r = open("data/requ.json", "r", encoding="utf-8_sig")
 sale = json.load(s)
-req = json.load(r)
+requ = json.load(r)
 
 
 if __name__ == "__main__":
