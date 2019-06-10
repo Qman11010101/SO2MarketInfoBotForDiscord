@@ -26,9 +26,9 @@ urlreq.urlretrieve(url, 'data/requ.json')
 
 #JSONの読み込み
 s = open("data/sale.json", "r", encoding="utf-8_sig")
-r = open("data/requ.json", "r", encoding="utf-8_sig")
+r = open("data/req.json", "r", encoding="utf-8_sig")
 sale = json.load(s)
-requ = json.load(r)
+req = json.load(r)
 
 
 if __name__ == "__main__":
