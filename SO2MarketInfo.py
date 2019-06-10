@@ -25,10 +25,11 @@ url = "https://so2-api.mutoys.com/json/request/all.json"
 urlreq.urlretrieve(url, 'data/req.json')
 
 #JSONの読み込み
-s = open("data/sale.json", "r", encoding="utf-8_sig")
-r = open("data/req.json", "r", encoding="utf-8_sig")
-sale = json.load(s)
-req = json.load(r)
+with open("data/sale.json", "r", encoding="utf-8_sig") as s:
+    sale = json.load(s)
+
+with open("data/req.json", "r", encoding="utf-8_sig") as r:
+    req = json.load(r)
 
 
 if __name__ == "__main__":
