@@ -139,3 +139,4 @@ dmypy.json
 testfield/
 config.ini
 *.json
+.vscode/settings.json
