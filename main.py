@@ -10,6 +10,7 @@
 import configparser
 import json
 import sys
+import itemalias
 
 #Discordのトークンの書かれたconfigの読み込み
 from SO2MI import Client
@@ -23,9 +24,14 @@ with open("data/req.json", "r", encoding="utf-8_sig") as r: #注文品
     req = json.load(r)
 with open("data/item.json", "r", encoding="utf-8_sig") as i: #アイテム定義
     item = json.load(i)
+with open("data/rec.json", "r", encoding="utf-8_sig") as c:
+    rec = json.load(c)
 
 #商品名取得部
 itemName = "" #itemNameにアイテム名を代入
+
+#略称などの変換
+itemName = itemalias.alias(itemName)
 
 #アイテムID取得部
 itemId = 0

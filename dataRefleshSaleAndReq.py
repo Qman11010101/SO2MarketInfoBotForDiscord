@@ -1,4 +1,5 @@
 #Curlを定期実行でもできなくはない気がするので要相談
+#もしくは1ファイルに纏める
 import urllib.request as urlreq
 
 #販売品取得
