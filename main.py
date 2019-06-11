@@ -10,10 +10,9 @@
 import configparser
 import json
 import sys
-import itemalias
 
 #Discordのトークンの書かれたconfigの読み込み
-from SO2MI import Client
+from SO2MI import Client, alias
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -31,7 +30,7 @@ with open("data/rec.json", "r", encoding="utf-8_sig") as c:
 itemName = "" #itemNameにアイテム名を代入
 
 #略称などの変換
-itemName = itemalias.alias(itemName)
+itemName = alias(itemName)
 
 #アイテムID取得部
 itemId = 0
