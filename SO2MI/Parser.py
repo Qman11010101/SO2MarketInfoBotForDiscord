@@ -25,9 +25,9 @@ def ItemParser(itemName):
         if item[str(col)]["name"] == itemName:
             itemId = col
             break
-
-    print(itemId)
+    
     if int(itemId) == 0:
         return False
     else:
+        # ここから先をこれからつくる
         return "# TODO 返ってきた情報を基にごにょごにょと（途中）"
