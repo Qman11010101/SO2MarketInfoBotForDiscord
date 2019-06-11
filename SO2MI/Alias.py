@@ -5,7 +5,8 @@ def alias(itemName):
         return "駆け出し勇者の彩薬"
     elif itemName == "極彩薬":
         return "駆け出し勇者の極彩薬"
-    elif itemName == "はぶち" or "ハブチ" or "ハーブティ":
-        return "ハーブティー"
     elif itemName == "スピポ":
         return "スピードポーション"
+    else:
+        # エイリアス名がない場合はそのまま返す
+        return itemName
