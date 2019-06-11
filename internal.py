@@ -1,20 +1,6 @@
-#!/usr/bin/env python3
-"""
-
-    SOLD OUT 2 Market Information Bot for Discord
-    @author: Kjuman Enobikto & YuzuRyo61
-    @license: MIT License
-
-"""
-
-import configparser
 import json
-import sys
 
-#Discordのトークンの書かれたconfigの読み込み
-from SO2MI import Client, alias
-config = configparser.ConfigParser()
-config.read('config.ini')
+from SO2MI import alias
 
 #jsonファイルの読み込み
 with open("data/sale.json", "r", encoding="utf-8_sig") as s: #販売品
@@ -115,8 +101,3 @@ else:
 
 #表示部1行を変数に入れたもの
 displayLine = "直近の" + itemName + "の状況は以下のとおりです。\n\n販売\n\n" + saleLine + "\n\n注文\n\n" + reqLine + "\n\n時間経過により市場がこの通りでない可能性があります。"
-
-if __name__ == "__main__":
-    # Run
-    dcCli = Client()
-    dcCli.run(config['discord']['token'])
