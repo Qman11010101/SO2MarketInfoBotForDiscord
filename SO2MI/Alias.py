@@ -9,6 +9,8 @@ def alias(itemName):
         return "スピードポーション"
     elif itemName == "はぶち" or itemName == "ハブチ" or itemName == "ハーブティ":
         return "ハーブティー"
+    elif itemName == "七色はぶち" or itemName == "七色ハーブティー":
+        return "七色ハーブティ"
     else:
         # エイリアス名がない場合はそのまま返す
         return itemName
