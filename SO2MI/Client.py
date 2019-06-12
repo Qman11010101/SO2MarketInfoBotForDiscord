@@ -39,19 +39,18 @@ class Client(discord.Client):
                 if re.match(r'(ヘルプ|ﾍﾙﾌﾟ|へるぷ|[Hh][Ee][Ll][Pp])', msgParse[0]):
                     await self.showHelpMarket()
                 else:
-                    # 5つより多い場合は弾く
-                    if len(msgParse) > 5:
-                        await message.channel.send('リクエストする量が多すぎます。一度に最大5つまでリクエストできます。')
+                    # 2つ以上指定している場合は弾く
+                    if len(msgParse) >= 2:
+                        await message.channel.send('リクエストできるのは１つのみです。')
                         return
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
-                    parseRes = None # for内のエラー回避用
-                    for arg in msgParse:
-                        parseRes = ItemParser(arg)
-                        if parseRes != False:
-                            await message.channel.send(parseRes)
-                        else:
-                            await message.channel.send('{0}は見つかりませんでした。'.format(arg))
+                    arg = msgParse[0]
+                    parseRes = ItemParser(arg)
+                    if parseRes != False:
+                        await message.channel.send(parseRes)
+                    else:
+                        await message.channel.send('{0}は見つかりませんでした。'.format(arg))
 
     async def showHelpMarket(self):
         helpMsg = """

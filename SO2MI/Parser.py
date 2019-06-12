@@ -1,25 +1,13 @@
 from .Alias import alias
-import json
-import datetime
-import os
-import requests
+from .getApi import getApi
 
 def ItemParser(itemName):
-    now = datetime.datetime.now()
-    if os.path.isfile('api-log/item/item-{}.json'.format(now.strftime('%y%m%d%H'))):
-        with open('api-log/item/item-{}.json'.format(now.strftime('%y%m%d%H')), 'r', encoding="utf-8_sig") as ijs:
-            print("READ: item-{}.json".format(now.strftime('%y%m%d%H')))
-            item = json.load(ijs)
-    else:
-        newItemRes = requests.get("https://so2-api.mutoys.com/master/item.json")
-        item = newItemRes.json()
-        with open('api-log/item/item-{}.json'.format(now.strftime('%y%m%d%H')), 'w', encoding="utf-8_sig") as ijs:
-            print("WRITE: item-{}.json".format(now.strftime('%y%m%d%H')))
-            json.dump(item, ijs, ensure_ascii=False)
+    item = getApi('item', "https://so2-api.mutoys.com/master/item.json")
+    recipe = getApi('recipe', "https://so2-api.mutoys.com/json/master/recipe_item.json")
 
-    #略称などの変換
+    # 略称などの変換
     itemName = alias(itemName)
-    #アイテムID取得部
+    # アイテムID取得部
     itemId = 0
     for col in item:
         if item[str(col)]["name"] == itemName:
@@ -27,7 +15,13 @@ def ItemParser(itemName):
             break
     
     if int(itemId) == 0:
-        return False
-    else:
-        # ここから先をこれからつくる
-        return "# TODO 返ってきた情報を基にごにょごにょと（途中）"
+        for col in recipe:
+            if recipe[col]["name"] == itemName:
+                itemId = col
+                break
+        if int(itemId) == 0:
+            # 見つからない扱い
+            return False
+    
+    # 此処から先をこれから
+    return "# TODO 返ってきた情報を基にごにょごにょと（途中）"
