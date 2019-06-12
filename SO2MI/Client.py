@@ -55,8 +55,23 @@ class Client(discord.Client):
 
     async def showHelpMarket(self):
         helpMsg = """
-        marketコマンドの使い方
-        ・ コマンドの後に空白を入れ、その後に商品名を入力すると市場情報を閲覧することができます。
-        ・ コマンドの後にヘルプ（へるぷ、helpなども含む）と入力するとこのヘルプを見ることができます。
+        SO2市場情報bot
+        市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
+        使用方法: /market 商品名
+        出力情報一覧: 
+        ・販売
+        　・最安値
+        　・最高値
+        　・最安TOP5平均
+        　・全体平均
+        　・市場全体の個数
+        ・注文
+        　・最高値
+        　・最安値
+        　・最高TOP5平均
+        　・全体平均
+        　・市場全体の注文数
+        
+        /market helpでこのヘルプを表示することができます。
         """
         await self.targetChannel.send(helpMsg)
