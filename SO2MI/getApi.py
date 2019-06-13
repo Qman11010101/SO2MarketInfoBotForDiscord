@@ -12,6 +12,9 @@ def getApi(apiName, targetApi):
             print("READ: {0}-{1}.json".format(apiName, now.strftime('%y%m%d%H')))
             return json.load(ijs)
     else:
+        # フォルダを作成する。ある場合は無視してくれる
+        os.makedirs('api-log/{0}/'.format(apiName), exist_ok=True)
+
         # ない場合は新たにAPI取得する
         newItemRes = requests.get(targetApi)
 
