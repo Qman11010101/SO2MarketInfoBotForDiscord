@@ -8,33 +8,35 @@ SOLD OUT 2の市場情報を取得してdiscordに流します。
 
 ## 使用法
 
-現時点ではこれは予定です。予告なく改変されるかもしれないしそもそも完成してないので悪しからず。
+1. Discordサーバーを作成します。もしくは管理者権限のあるサーバーを用意します。
 
-1. 適当なサーバーを用意します。
-1. Discordのbotアカウントを取得します。
-1. botを適当なチャンネルなどに追加します。
-1. dataフォルダを作ります。
-1. dataRefleshという名前がついているpyファイルを全て一回ずつ起動します。
-1. dataフォルダに以下の4つのjsonファイルがあることを確認します。
-    - item.json(アイテム定義)
-    - rec.json(レシピ品定義)
-    - sale.json(販売品)
-    - req.json(注文品)
-1. config.iniにbotアカウントのトークンを記述します。
-1. 以下の3つのpyファイルを定期実行するよう設定します。
-    - dataRefleshSaleAndReq(販売品と注文品の取得 10-15分ごと)
-    - dataRefleshRec(レシピ品定義の取得 1日1回程度)
-    - dataRefleshItem(アイテム定義の取得 適当。最悪手動でもいい)
-1. main.pyを起動します。この時点でサービスが開始されます。
+2. [Discordの開発者ページ](https://discordapp.com/developers/applications/)へ行き、アプリを作成します。
 
-## 未定事項
+3. Botアカウントを作成し、TOKENの下にあるCopyボタンをクリックし、トークンを控えてください。
 
-- dataRefleshRecとdataRefleshItemは統合する可能性がある
-- dataフォルダの作成は自動化する可能性がある
-- 初回起動時のjson取得は自動化される可能性がある
-- そもそも全部自動化される可能性がある(そうなったらいいね)
+4. OAuth2セクションで以下の項目にチェックを入れてURLをコピーします。
+    ![Image](README-IMAGE01.png)
+
+5. そのURLを開いて、botを設置するサーバーを選択して認証します。
+
+6. Discordの「ユーザー設定」→「テーマ」へ行き、「開発者モード」のスイッチをオンにします。
+
+7. bot専用のチャンネルを作成します。作成したチャンネル（左部に出ているリスト群から）を右クリックして「IDをコピー」をクリックし、チャンネルIDを控えます。
+
+8. "config.sample.ini"を基にして、"config.ini"を作成してください。
+
+9. Python仮想環境を用意します。
+    ```venv -p python3 venv```
+    ```venv/bin/activate``` or ```venv\Scripts\activate```
+    ```pip install -r requirements.txt```
+
+10. SO2MarketInfo.pyを実行します。あとはDiscordのクライアントで```!market [商品名]```と入力するとできます。
 
 ## 注意点
 
 - 基本的にいつAPIを叩くかは自由ですが、[API仕様](https://so2-docs.mutoys.com/common/api.html)ページに記載されている利用条件は守るようにしてください。
 - このアプリの機能は予告なく変更される可能性があります。
+
+## LICENSE
+
+MIT License. See [LICENSE](LICENSE) file.
