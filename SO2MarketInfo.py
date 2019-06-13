@@ -8,11 +8,18 @@
 """
 
 import configparser
+import os
+import sys
 
 #Discordのトークンの書かれたconfigの読み込み
 from SO2MI import Client
-config = configparser.ConfigParser()
-config.read('config.ini')
+
+if os.path.isfile('config.ini'):
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+else:
+    print("設定ファイルがありません。")
+    sys.exit(1)    
 
 if __name__ == "__main__":
     # Run
