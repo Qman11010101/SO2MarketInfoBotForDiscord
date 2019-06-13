@@ -138,5 +138,5 @@ dmypy.json
 
 testfield/
 config.ini
-*.json
+api-log/
 .vscode/settings.json

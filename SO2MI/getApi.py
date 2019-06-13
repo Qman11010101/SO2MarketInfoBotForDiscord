@@ -9,7 +9,6 @@ def getApi(apiName, targetApi):
     # ファイルを照査、ある場合はそのjsonデータを取得する
     if os.path.isfile('api-log/{0}/{0}-{1}.json'.format(apiName, now.strftime('%y%m%d%H'))):
         with open('api-log/{0}/{0}-{1}.json'.format(apiName, now.strftime('%y%m%d%H')), 'r', encoding="utf-8_sig") as ijs:
-            print("READ: {0}-{1}.json".format(apiName, now.strftime('%y%m%d%H')))
             return json.load(ijs)
     else:
         # フォルダを作成する。ある場合は無視してくれる
@@ -20,7 +19,6 @@ def getApi(apiName, targetApi):
 
         # データを保管する
         with open('api-log/{0}/{0}-{1}.json'.format(apiName, now.strftime('%y%m%d%H')), 'w', encoding="utf-8_sig") as ijs:
-            print("WRITE: {0}-{1}.json".format(apiName, now.strftime('%y%m%d%H')))
             json.dump(newItemRes.json(), ijs, ensure_ascii=False)
 
         # dict化させたデータを返す

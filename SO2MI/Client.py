@@ -53,10 +53,10 @@ class Client(discord.Client):
                         await message.channel.send('{0}は見つかりませんでした。'.format(arg))
 
     async def showHelpMarket(self):
-        helpMsg = """
+        helpMsg = f"""
         SO2市場情報bot
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: /market 商品名
+        使用方法: {marketCmd} [商品名]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -71,6 +71,6 @@ class Client(discord.Client):
         　・全体平均
         　・市場全体の注文数
         
-        /market helpでこのヘルプを表示することができます。
+        {marketCmd} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """
         await self.targetChannel.send(helpMsg)

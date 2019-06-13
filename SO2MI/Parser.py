@@ -32,23 +32,17 @@ def ItemParser(itemName):
             # 見つからない扱い
             return False
     
+    print(f"[ID] {itemName} => {str(itemId)}")
+
     priceSaleArray = []
     unitSaleArray = []
-    for store in range(len(sale)):
-        if sale[store]["item_id"] == itemId:
-            priceSaleArray.append(sale[store]["price"])
-            unitSaleArray.append(sale[store]["unit"])
+    for sale_unit in sale:
+        if int(sale_unit["item_id"]) == int(itemId):
+            priceSaleArray.append(sale_unit["price"])
+            unitSaleArray.append(sale_unit["unit"])
     priceSaleArray.sort() # 金額ソート
 
-    priceReqArray = []
-    unitReqArray = []
-    for store in range(len(req)):
-        if req[store]["item_id"] == itemId:
-            priceReqArray.append(req[store]["price"])
-            unitReqArray.append(req[store]["buy_unit"])
-    priceReqArray.sort(reverse=True)
-
-    if priceSaleArray != []:
+    if len(priceSaleArray) > 0:
         saleCheapest = priceSaleArray[0] # 最安値
         saleMostExpensive = priceSaleArray[-1] # 高額値
 
@@ -64,12 +58,19 @@ def ItemParser(itemName):
         最高額値: `{str(saleMostExpensive)}G`
         最安TOP5平均: `{str(saleMarketPrice)}G`
         全体平均: `{str(saleAverage)}G`
-        市場全体の個数: `{str(saleUnitSum)}{itemScaleName}`
-        """
+        市場全体の個数: `{str(saleUnitSum)}{itemScaleName}`"""
     else:
         saleStr = "*現在販売されていません。*"
-    
-    if priceReqArray != []:
+
+    priceReqArray = []
+    unitReqArray = []
+    for req_unit in req:
+        if int(req_unit["item_id"]) == int(itemId):
+            priceReqArray.append(req_unit["price"])
+            unitReqArray.append(req_unit["buy_unit"])
+    priceReqArray.sort(reverse=True)
+
+    if len(priceReqArray) > 0:
         reqMostExpensive = priceReqArray[0] # 最高値
         reqCheapest = priceReqArray[-1] # 最安値
 
