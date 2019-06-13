@@ -31,8 +31,6 @@ def ItemParser(itemName):
         if int(itemId) == 0:
             # 見つからない扱い
             return False
-    
-    print(f"[ID] {itemName} => {str(itemId)}")
 
     priceSaleArray = []
     unitSaleArray = []
