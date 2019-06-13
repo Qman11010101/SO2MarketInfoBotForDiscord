@@ -26,15 +26,23 @@ SOLD OUT 2の市場情報を取得してdiscordに流します。
 8. "config.sample.ini"を基にして、"config.ini"を作成してください。
 
 9. Python仮想環境を用意します。
-    ```venv -p python3 venv```
-    ```venv/bin/activate``` or ```venv\Scripts\activate```
-    ```pip install -r requirements.txt```
+
+    1. ```venv -p python3 venv```
+
+    2. ```venv/bin/activate``` or ```venv\Scripts\activate```
+
+    3. ```pip install -r requirements.txt```
 
 10. SO2MarketInfo.pyを実行します。あとはDiscordのクライアントで```!market [商品名]```と入力するとできます。
 
 ## 注意点
 
 - 基本的にいつAPIを叩くかは自由ですが、[API仕様](https://so2-docs.mutoys.com/common/api.html)ページに記載されている利用条件は守るようにしてください。
+
+- APIの仕様上、ファイルを保管してから処理する方式になっています。
+
+- APIには取得上限といった引数がないため、１ファイルの容量がかなり大きくなっています。直接テキストエディタで開かないことをおすすめします。
+
 - このアプリの機能は予告なく変更される可能性があります。
 
 ## LICENSE
