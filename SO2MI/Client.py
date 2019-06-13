@@ -36,7 +36,7 @@ class Client(discord.Client):
             if len(msgParse) == 0:
                 await self.showHelpMarket()
             else:
-                if re.match(r'(ヘルプ|ﾍﾙﾌﾟ|へるぷ|[Hh][Ee][Ll][Pp])', msgParse[0]):
+                if re.match(r'([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])', msgParse[0]):
                     await self.showHelpMarket()
                 else:
                     # 2つ以上指定している場合は弾く
