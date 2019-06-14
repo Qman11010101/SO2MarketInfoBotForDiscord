@@ -52,7 +52,8 @@ def ItemParser(itemName):
         saleAverage = sum(priceSaleArray) // len(priceSaleArray)
         saleUnitSum = sum(unitSaleArray)
 
-        saleStr = f"""最安値: {str(saleCheapest)}G
+        saleStr = f"""
+        最安値: {str(saleCheapest)}G
         最高値: {str(saleMostExpensive)}G
         最安TOP5平均: {str(saleMarketPrice)}G
         全体平均: {str(saleAverage)}G
@@ -80,7 +81,8 @@ def ItemParser(itemName):
         reqAverage = sum(priceReqArray) // len(priceReqArray)
         reqUnitSum = sum(unitReqArray)
 
-        reqStr = f"""最高値: {str(reqMostExpensive)}G
+        reqStr = f"""
+        最高値: {str(reqMostExpensive)}G
         最安値: {str(reqCheapest)}G
         最高TOP5平均: {str(reqMarketPrice)}G
         全体平均: {str(reqAverage)}G
