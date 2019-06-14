@@ -1,15 +1,15 @@
 import datetime
 
 from .Alias import alias
-from .getApi import getApi
+from .getApi import getApi, getApiShort
 
 def ItemParser(itemName):
     now = datetime.datetime.now()
     # API取得部
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-    sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-    req = getApi("req", "https://so2-api.mutoys.com/json/request/all.json")
+    sale = getApiShort("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+    req = getApiShort("req", "https://so2-api.mutoys.com/json/request/all.json")
 
     # 略称などの変換
     itemName = alias(itemName)
@@ -52,7 +52,8 @@ def ItemParser(itemName):
         saleAverage = sum(priceSaleArray) // len(priceSaleArray)
         saleUnitSum = sum(unitSaleArray)
 
-        saleStr = f"""最安値: {str(saleCheapest)}G
+        saleStr = f"""
+        最安値: {str(saleCheapest)}G
         最高値: {str(saleMostExpensive)}G
         最安TOP5平均: {str(saleMarketPrice)}G
         全体平均: {str(saleAverage)}G
@@ -80,7 +81,8 @@ def ItemParser(itemName):
         reqAverage = sum(priceReqArray) // len(priceReqArray)
         reqUnitSum = sum(unitReqArray)
 
-        reqStr = f"""最高値: {str(reqMostExpensive)}G
+        reqStr = f"""
+        最高値: {str(reqMostExpensive)}G
         最安値: {str(reqCheapest)}G
         最高TOP5平均: {str(reqMarketPrice)}G
         全体平均: {str(reqAverage)}G
@@ -99,6 +101,6 @@ def ItemParser(itemName):
     **注文：**
     {reqStr}
 
-    時間経過により市場がこの通りでない可能性があります。
+    *時間経過により市場がこの通りでない可能性があります。*
     """
     return summary
