@@ -34,10 +34,10 @@ def ItemParser(itemName):
 
     priceSaleArray = []
     unitSaleArray = []
-    for sale_unit in sale:
-        if int(sale_unit["item_id"]) == int(itemId):
-            priceSaleArray.append(sale_unit["price"])
-            unitSaleArray.append(sale_unit["unit"])
+    for saleUnit in sale:
+        if int(saleUnit["item_id"]) == int(itemId):
+            priceSaleArray.append(saleUnit["price"])
+            unitSaleArray.append(saleUnit["unit"])
     priceSaleArray.sort() # 金額ソート
 
     if len(priceSaleArray) > 0:
@@ -52,20 +52,20 @@ def ItemParser(itemName):
         saleAverage = sum(priceSaleArray) // len(priceSaleArray)
         saleUnitSum = sum(unitSaleArray)
 
-        saleStr = f"""最安値: `{str(saleCheapest)}G`
-        最高額値: `{str(saleMostExpensive)}G`
-        最安TOP5平均: `{str(saleMarketPrice)}G`
-        全体平均: `{str(saleAverage)}G`
-        市場全体の個数: `{str(saleUnitSum)}{itemScaleName}`"""
+        saleStr = f"""最安値: {str(saleCheapest)}G
+        最高値: {str(saleMostExpensive)}G
+        最安TOP5平均: {str(saleMarketPrice)}G
+        全体平均: {str(saleAverage)}G
+        市場全体の販売数: {str(saleUnitSum)}{itemScaleName}"""
     else:
         saleStr = "*現在販売されていません。*"
 
     priceReqArray = []
     unitReqArray = []
-    for req_unit in req:
-        if int(req_unit["item_id"]) == int(itemId):
-            priceReqArray.append(req_unit["price"])
-            unitReqArray.append(req_unit["buy_unit"])
+    for reqUnit in req:
+        if int(reqUnit["item_id"]) == int(itemId):
+            priceReqArray.append(reqUnit["price"])
+            unitReqArray.append(reqUnit["buy_unit"])
     priceReqArray.sort(reverse=True)
 
     if len(priceReqArray) > 0:
@@ -80,17 +80,17 @@ def ItemParser(itemName):
         reqAverage = sum(priceReqArray) // len(priceReqArray)
         reqUnitSum = sum(unitReqArray)
 
-        reqStr = f"""最高額値: `{str(reqMostExpensive)}G`
-        最安値: `{str(reqCheapest)}G`
-        最高TOP5平均: `{str(reqMarketPrice)}G`
-        全体平均: `{str(reqAverage)}G`
-        市場全体の注文数: `{str(reqUnitSum)}{itemScaleName}`
+        reqStr = f"""最高値: {str(reqMostExpensive)}G
+        最安値: {str(reqCheapest)}G
+        最高TOP5平均: {str(reqMarketPrice)}G
+        全体平均: {str(reqAverage)}G
+        市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
         """
     else:
         reqStr = "*現在注文はありません。*"
 
     # まとめ
-    parsedTime = now.strftime('%Y年%m月%d日%H時')
+    parsedTime = now.strftime("%Y年%m月%d日%H時")
     summary = f"""{parsedTime}現在の{itemName}の状況は以下のとおりです。
 
     **販売：**
@@ -99,6 +99,6 @@ def ItemParser(itemName):
     **注文：**
     {reqStr}
 
-    **時間経過により市場がこの通りでない可能性があります。**
+    時間経過により市場がこの通りでない可能性があります。
     """
     return summary
