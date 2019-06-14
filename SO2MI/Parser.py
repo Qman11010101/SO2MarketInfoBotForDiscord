@@ -99,6 +99,6 @@ def ItemParser(itemName):
     **注文：**
     {reqStr}
 
-    時間経過により市場がこの通りでない可能性があります。
+    *時間経過により市場がこの通りでない可能性があります。*
     """
     return summary
