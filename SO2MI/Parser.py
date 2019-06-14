@@ -1,15 +1,15 @@
 import datetime
 
 from .Alias import alias
-from .getApi import getApi
+from .getApi import getApi, getApiShort
 
 def ItemParser(itemName):
     now = datetime.datetime.now()
     # API取得部
-    item = getApi('item', "https://so2-api.mutoys.com/master/item.json")
-    recipe = getApi('recipe', "https://so2-api.mutoys.com/json/master/recipe_item.json")
-    sale = getApi('sale', "https://so2-api.mutoys.com/json/sale/all.json")
-    req = getApi('req', "https://so2-api.mutoys.com/json/request/all.json")
+    item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+    recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+    sale = getApiShort("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+    req = getApiShort("req", "https://so2-api.mutoys.com/json/request/all.json")
 
     # 略称などの変換
     itemName = alias(itemName)
