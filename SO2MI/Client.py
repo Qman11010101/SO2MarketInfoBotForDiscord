@@ -8,7 +8,7 @@ from .Parser import ItemParser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-marketCmd = config['command']['PREFIX'] + config['command']['market']
+commandActivate = config['command']['prefix'] + config['command']['market']
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -28,7 +28,7 @@ class Client(discord.Client):
             return
 
         # 内部処理はここから
-        if message.content.startswith(marketCmd):
+        if message.content.startswith(commandActivate):
             msgParse = message.content.split()
             # コマンドを削除
             del msgParse[0]
@@ -56,7 +56,7 @@ class Client(discord.Client):
         helpMsg = f"""
         SO2市場情報bot
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {marketCmd} [商品名]
+        使用方法: {commandActivate} [商品名]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -71,6 +71,6 @@ class Client(discord.Client):
         　・全体平均
         　・市場全体の注文数
         
-        {marketCmd} help(ヘルプ等でも可) でこのヘルプを表示することができます。
+        {commandActivate} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """
         await self.targetChannel.send(helpMsg)
