@@ -3,10 +3,13 @@ import datetime
 import os
 import requests
 import glob
+import pytz
+
+# 現在時間取得
+jst = pytz.timezone('Asia/Tokyo')
+now = datetime.datetime.now(jst)
 
 def getApi(apiName, targetApi):
-    # 現在時間取得
-    now = datetime.datetime.now()
     # ファイルを照査、ある場合はそのjsonデータを取得する
     if os.path.isfile('api-log/{0}-{1}.json'.format(apiName, now.strftime('%y%m%d%H'))):
         with open('api-log/{0}-{1}.json'.format(apiName, now.strftime('%y%m%d%H')), 'r', encoding="utf-8_sig") as ijs:
@@ -35,8 +38,6 @@ def getApi(apiName, targetApi):
         return newItemRes.json()
 
 def getApiShort(apiName, targetApi):
-    # 現在時間取得
-    now = datetime.datetime.now()
     # ファイルを照査、ある場合はそのjsonデータを取得する(10分以内のもの)
     target = glob.glob('api-log/{0}-*.json'.format(apiName))
     if len(target) != 0:

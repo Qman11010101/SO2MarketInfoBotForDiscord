@@ -1,10 +1,11 @@
 import datetime
+import os
+import pytz
 
 from .Alias import alias
 from .getApi import getApi, getApiShort
 
 def ItemParser(itemName):
-    now = datetime.datetime.now()
     # API取得部
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
@@ -92,7 +93,9 @@ def ItemParser(itemName):
         reqStr = "　*現在注文はありません。*"
 
     # まとめ
-    parsedTime = now.strftime("%Y年%m月%d日%H時")
+    dataGetTimeUNIX = os.path.getmtime("./api-log/sale.json")
+    dataGetTime = datetime.datetime.fromtimestamp(dataGetTimeUNIX + datetime.timedelta(hours=9))
+    parsedTime = dataGetTime.strftime("%Y年%m月%d日%H時%M分")
     summary = f"""{parsedTime}現在の{itemName}の状況は以下のとおりです。
 
     **販売：**
