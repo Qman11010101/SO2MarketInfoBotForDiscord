@@ -93,10 +93,10 @@ def ItemParser(itemName):
         reqStr = "　*現在注文はありません。*"
 
     # まとめ
-    dataGetTimeUNIX = os.path.getmtime("./api-log/sale.json")
-    dataGetTime = datetime.datetime.fromtimestamp(dataGetTimeUNIX + datetime.timedelta(hours=9))
-    parsedTime = dataGetTime.strftime("%Y年%m月%d日%H時%M分")
-    summary = f"""{parsedTime}現在の{itemName}の状況は以下のとおりです。
+    # dataGetTimeUNIX = os.path.getmtime("./api-log/sale.json")
+    # dataGetTime = datetime.datetime.fromtimestamp(dataGetTimeUNIX + datetime.timedelta(hours=9))
+    # parsedTime = dataGetTime.strftime("%Y年%m月%d日%H時%M分")
+    summary = f"""直近10分以内の{itemName}の状況は以下のとおりです。
 
     **販売：**
     {saleStr}
