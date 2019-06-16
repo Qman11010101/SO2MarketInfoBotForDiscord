@@ -27,6 +27,7 @@ def getApi(apiName, targetApi):
                 pass
 
         # ない場合は新たにAPI取得する
+        print("Getting datas from " + targetApi)
         newItemRes = requests.get(targetApi)
 
         # データを保管する
@@ -72,6 +73,7 @@ def getApiShort(apiName, targetApi):
                 pass
 
         # ない場合は新たにAPI取得する
+        print("Getting datas from " + targetApi)
         newItemRes = requests.get(targetApi)
 
         # データを保管する
