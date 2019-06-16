@@ -59,7 +59,7 @@ def ItemParser(itemName):
         全体平均: {str(saleAverage)}G
         市場全体の販売数: {str(saleUnitSum)}{itemScaleName}"""
     else:
-        saleStr = "*　現在販売されていません。*"
+        saleStr = "　*現在販売されていません。*"
 
     priceReqArray = []
     unitReqArray = []
@@ -89,7 +89,7 @@ def ItemParser(itemName):
         市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
         """
     else:
-        reqStr = "*　現在注文はありません。*"
+        reqStr = "　*現在注文はありません。*"
 
     # まとめ
     parsedTime = now.strftime("%Y年%m月%d日%H時")
