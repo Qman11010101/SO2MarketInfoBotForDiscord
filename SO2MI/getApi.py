@@ -47,7 +47,8 @@ def getApiShort(apiName, targetApi):
         latestDate = datetime.datetime.strptime(target, 'api-log/{0}-%y%m%d%H%M.json'.format(apiName))
 
         # 取得可能時間
-        shouldGetTime = latestDate + datetime.timedelta(minutes=10)
+        shouldGetTimeNaive = latestDate + datetime.timedelta(minutes=10)
+        shouldGetTime = jst.localize(shouldGetTimeNaive)
 
         # 現在時刻が取得可能時間を超えているか
         if shouldGetTime < now:
