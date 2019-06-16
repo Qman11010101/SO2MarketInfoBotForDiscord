@@ -3,11 +3,9 @@ import datetime
 import os
 import requests
 import glob
-import pytz
 
 # 現在時間取得
-jst = pytz.timezone('Asia/Tokyo')
-now = datetime.datetime.now(jst)
+now = datetime.datetime.now()
 
 def getApi(apiName, targetApi):
     # ファイルを照査、ある場合はそのjsonデータを取得する
@@ -47,8 +45,7 @@ def getApiShort(apiName, targetApi):
         latestDate = datetime.datetime.strptime(target, 'api-log/{0}-%y%m%d%H%M.json'.format(apiName))
 
         # 取得可能時間
-        shouldGetTimeNaive = latestDate + datetime.timedelta(minutes=10)
-        shouldGetTime = jst.localize(shouldGetTimeNaive)
+        shouldGetTime = latestDate + datetime.timedelta(minutes=10)
 
         # 現在時刻が取得可能時間を超えているか
         if shouldGetTime < now:
