@@ -3,81 +3,72 @@ import datetime
 import os
 import requests
 import glob
+import pytz
+import configparser
 
-# 現在時間取得
-now = datetime.datetime.now()
+def getApi(apiName, url):
+    # タイムゾーン指定のためconfig.iniの読み込み
+    config = configparser.ConfigParser()
+    config.read("config.ini")
 
-def getApi(apiName, targetApi):
-    # ファイルを照査、ある場合はそのjsonデータを取得する
-    if os.path.isfile("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H"))):
-        with open("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H")), "r", encoding="utf-8_sig") as ijs:
-            return json.load(ijs)
-    else:
-        # フォルダを作成する。ある場合は無視してくれる
-        os.makedirs("api-log/", exist_ok=True)
+    # 現在時刻取得
+    timezone = pytz.timezone(config["misc"]["timezone"])
+    now = datetime.datetime.now(timezone)
 
-        # 前の時間に取得したAPIデータを削除(ある場合は)
-        for deletePrevious in glob.glob("api-log/{0}-*.json".format(apiName)):
-            try:
-                os.remove(deletePrevious)
-                print("Purge: {0}".format(deletePrevious))
-            except FileNotFoundError: # もしファイルがなくてもエラーでスクリプトを止めないようにする（無視）
-                pass
-
-        # ない場合は新たにAPI取得する
-        print("Getting datas from " + targetApi)
-        newItemRes = requests.get(targetApi)
-
-        # データを保管する
-        with open("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H")), "w", encoding="utf-8_sig") as ijs:
-            print("Insert: {0}-{1}".format(apiName, now.strftime("%y%m%d%H")))
-            json.dump(newItemRes.json(), ijs, ensure_ascii=False)
-
-        # dict化させたデータを返す
-        return newItemRes.json()
-
-def getApiShort(apiName, targetApi):
-    # ファイルを照査、ある場合はそのjsonデータを取得する(10分以内のもの)
+    # API名に基づいてファイルを選択
     target = glob.glob("api-log/{0}-*.json".format(apiName))
+
+    # ファイルが存在した場合の分岐
     if len(target) != 0:
-        target = target[0]
-        # JSONの名前から取得時間帯を推測
-        latestDate = datetime.datetime.strptime(target, "api-log/{0}-%y%m%d%H%M.json".format(apiName))
+        target = target[0].replace("\\", "/") # Windowsではパス文字がバックスラッシュ×2なため変換しておく
 
-        # 取得可能時間
-        shouldGetTime = latestDate + datetime.timedelta(minutes=10)
+        # JSONの名前からデータの取得時間を推測する
+        jsonDataTime = datetime.datetime.strptime(target, "api-log/{0}-%y%m%d%H%M.json".format(apiName))
 
-        # 現在時刻が取得可能時間を超えているか
-        if shouldGetTime < now:
-            doRead = False
+        # 販売品と注文品は10分ごとに、それ以外は60分ごとに注文する
+        if apiName == "sale" or apiName == "request":
+            reqTime = 10
         else:
-            doRead = True
-    else:
-        doRead = False
-    
-    if doRead:
-        with open("api-log/{0}-{1}.json".format(apiName, latestDate.strftime("%y%m%d%H%M")), "r", encoding="utf-8_sig") as ijs:
+            reqTime = 60
+
+        # 取得可能な時間を生成する
+        timeGettable = jsonDataTime + datetime.timedelta(minutes=reqTime)
+
+        # 現在時刻が取得可能な時間を超えているかを判定する
+        readData = False if timeGettable > now else True
+    else: # ファイルが存在しなかった場合
+        readData = False
+
+    if readData: # APIを叩かず既存ファイルを読み込む
+        print("Latest Data Founded: {0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")))
+        with open("api-log/{0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")), "r", encoding="utf-8_sig") as ijs:
             return json.load(ijs)
-    else:
-        # フォルダを作成する。ある場合は無視してくれる
+    else: # 古いデータを削除しAPIを叩いて新たにデータを取得する
+        # api-logフォルダを作成する(存在する場合は無視)
         os.makedirs("api-log/", exist_ok=True)
 
-        # 前の時間に取得したAPIデータを削除(ある場合は)
-        for deletePrevious in glob.glob("api-log/{0}-*.json".format(apiName)):
+        # 古いデータを削除する
+        for delPrev in glob.glob("api-log/{0}-*.json".format(apiName)):
             try:
-                os.remove(deletePrevious)
-                print("Purge: {0}".format(deletePrevious))
-            except FileNotFoundError: # もしファイルがなくてもエラーでスクリプトを止めないようにする（無視）
+                os.remove(delPrev)
+                print("Deleted: {0}".format(delPrev))
+            except FileNotFoundError: # もしファイルがなくても無視する
                 pass
 
-        # ない場合は新たにAPI取得する
-        print("Getting datas from " + targetApi)
-        newItemRes = requests.get(targetApi)
+        # APIを叩く
+        print("Access: " + url)
+        newData = requests.get(url)
 
-        # データを保管する
+        # データを保存する
         with open("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")), "w", encoding="utf-8_sig") as ijs:
-            print("Insert: {0}-{1}".format(apiName, now.strftime("%y%m%d%H%M")))
-            json.dump(newItemRes.json(), ijs, ensure_ascii=False)
+            print("Save {0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")))
+            json.dump(newData.json(), ijs, ensure_ascii=False)
+
+        # dict化させたデータを返す
+        return newData.json()
+"""
+
 
         # dict化させたデータを返す
         return newItemRes.json()
+"""

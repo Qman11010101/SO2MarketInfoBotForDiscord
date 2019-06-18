@@ -41,7 +41,7 @@ class Client(discord.Client):
                 else:
                     # 2つ以上指定している場合は弾く
                     if len(msgParse) >= 2:
-                        await message.channel.send("リクエストできるのは１つのみです。")
+                        await message.channel.send("商品は1つのみを指定してください。")
                         return
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示

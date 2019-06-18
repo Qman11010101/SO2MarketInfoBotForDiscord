@@ -1,19 +1,19 @@
 import datetime
 import os
-# import pytz
 
 from .Alias import alias
-from .getApi import getApi, getApiShort
+from .getApi import getApi
 
 def ItemParser(itemName):
     # API取得部
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-    sale = getApiShort("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-    req = getApiShort("req", "https://so2-api.mutoys.com/json/request/all.json")
+    sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+    req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
 
     # 略称などの変換
     itemName = alias(itemName)
+
     # アイテムID取得部
     itemId = 0
     itemScaleName = ""
@@ -93,9 +93,6 @@ def ItemParser(itemName):
         reqStr = "　*現在注文はありません。*"
 
     # まとめ
-    # dataGetTimeUNIX = os.path.getmtime("./api-log/sale.json")
-    # dataGetTime = datetime.datetime.fromtimestamp(dataGetTimeUNIX + datetime.timedelta(hours=9))
-    # parsedTime = dataGetTime.strftime("%Y年%m月%d日%H時%M分")
     summary = f"""直近10分以内の{itemName}の状況は以下のとおりです。
 
     **販売：**
