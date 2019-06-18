@@ -140,3 +140,4 @@ testfield/
 config.ini
 api-log/
 .vscode/settings.json
+test.py
