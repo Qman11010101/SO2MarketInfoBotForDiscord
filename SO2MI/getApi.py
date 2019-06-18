@@ -36,9 +36,15 @@ def getApi(apiName, url):
         timeGettable = timezone.localize(timeGettableNaive)
 
         # 現在時刻が取得可能な時間を超えているかを判定する
-        readData = False if timeGettable > now else True
+        if timeGettable > now:
+            readData = True
+            print("Latest data exists!")
+        else:
+            readData = False
+            print("Data is old!")
     else: # ファイルが存在しなかった場合
         readData = False
+        print("Data doesn't exist!")
 
     if readData: # APIを叩かず既存ファイルを読み込む
         print("Latest Data Founded: {0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")))
@@ -67,9 +73,3 @@ def getApi(apiName, url):
 
         # dict化させたデータを返す
         return newData.json()
-"""
-
-
-        # dict化させたデータを返す
-        return newItemRes.json()
-"""
