@@ -32,7 +32,8 @@ def getApi(apiName, url):
             reqTime = 60
 
         # 取得可能な時間を生成する
-        timeGettable = jsonDataTime + datetime.timedelta(minutes=reqTime)
+        timeGettableNaive = jsonDataTime + datetime.timedelta(minutes=reqTime)
+        timeGettable = timezone.localize(timeGettableNaive)
 
         # 現在時刻が取得可能な時間を超えているかを判定する
         readData = False if timeGettable > now else True
