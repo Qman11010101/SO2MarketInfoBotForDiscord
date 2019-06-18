@@ -6,24 +6,24 @@ from pprint import pprint as pp
 from .Parser import ItemParser
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
-commandMarket = config['command']['prefix'] + config['command']['market']
+commandMarket = config["command"]["prefix"] + config["command"]["market"]
 
 class Client(discord.Client):
     async def on_ready(self):
         # 設定されているチャンネルIDに接続
-        self.targetChannel = self.get_channel(int(config['discord']['channel']))
+        self.targetChannel = self.get_channel(int(config["discord"]["channel"]))
         if self.targetChannel == None:
             # 指定チャンネルが見つからない場合はExceptionをraise
-            raise Exception('Specified discord channel is not found!')
+            raise Exception("Specified discord channel is not found!")
         else:
             # await self.targetChannel.send("{0} is Ready!".format(self.user))
             pass
-        print('Logged on as', self.user)
+        print("Logged on as", self.user)
 
     async def on_message(self, message):
-        if message.author.bot or message.author == self.user or int(config['discord']['channel']) != message.channel.id:
+        if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
             # BOT属性アカウント, 自身のアカウント or 指定したチャンネル以外はスルー
             return
 
@@ -36,12 +36,12 @@ class Client(discord.Client):
             if len(msgParse) == 0:
                 await self.showHelpMarket()
             else:
-                if re.match(r'([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])', msgParse[0]):
+                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                 else:
                     # 2つ以上指定している場合は弾く
                     if len(msgParse) >= 2:
-                        await message.channel.send('リクエストできるのは１つのみです。')
+                        await message.channel.send("リクエストできるのは１つのみです。")
                         return
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
@@ -50,7 +50,7 @@ class Client(discord.Client):
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
-                        await message.channel.send('{0}は見つかりませんでした。'.format(arg))
+                        await message.channel.send("{0}は見つかりませんでした。".format(arg))
 
     async def showHelpMarket(self):
         helpMsg = f"""
