@@ -98,7 +98,7 @@ def ItemParser(itemName):
     target = glob.glob("api-log/sale-*.json")
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
-    summary = f"""{jsonTime.strftime("%Y年%m月%d日 %H時%M分")}現在の{itemName}の状況は以下のとおりです。
+    summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下のとおりです。
 
     **販売：**
     {saleStr}
