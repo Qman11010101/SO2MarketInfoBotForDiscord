@@ -35,7 +35,7 @@ SOLD OUT 2の市場情報を取得してdiscordに流します。
 
     1. ```pip install -r requirements.txt```
 
-1. SO2MarketInfo.pyを実行します。あとはDiscordのクライアントで```[コマンド] [商品名]```と入力するとできます。
+1. main.pyを実行します。その後はDiscordのクライアントで```[コマンド] [商品名]```と入力することで情報を得ることができます。
 
 ## config.iniについて
 
@@ -85,7 +85,7 @@ Alias.jsonは略称の設定ファイルです。略称や別名を登録する�
 
 ## 注意点
 
-- このプログラムの改造はMITライセンスに則る限り自由ですが、API周りを改造する場合、[API仕様ページ](https://so2-docs.mutoys.com/common/api.html)に記載されている利用条件は必ず守るようにしてください。
+- このプログラムの改造はMITライセンスに則る限り自由ですが、API関連を改造する場合、[API仕様ページ](https://so2-docs.mutoys.com/common/api.html)に記載されている利用条件は必ず守るようにしてください。
 
 - APIの仕様上、ファイルを保管してから処理する方式になっています。
 
