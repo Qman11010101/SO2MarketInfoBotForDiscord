@@ -18,7 +18,7 @@ def alias(itemName):
     for alia in alias:
         for aliasName in alias[alia]: # 第二階層目がエイリアス名なのでその中から照査
             if aliasName == itemName:
-                # 名前とエイリアス名が一致した場合はそれを使用
+                # 名前とエイリアス名が一致した場合はエイリアス名の実名を返す
                 return alia
     # エイリアス名がない場合はそのまま返す
     return itemName
