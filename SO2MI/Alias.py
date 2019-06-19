@@ -3,15 +3,17 @@ import json
 from json.decoder import JSONDecodeError
 
 def alias(itemName):
-    if os.path.isfile('alias.json'):
+    print("alias.jsonを探しています")
+    if os.path.isfile("alias.json"):
+        print("alias.jsonが見つかりました")
         try:
-            with open('alias.json', 'r') as alf:
+            with open("alias.json", "r") as alf:
                 alias = json.load(alf)
         except JSONDecodeError as exc:
-            print('alias.jsonの構文にエラーがあります。\n行: {0} 位置: {1}\n{2}'.format(exc.lineno, exc.pos, exc.msg))
+            print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
             return itemName
     else:
-        print('alias.jsonが見つかりませんでした。')
+        print("alias.jsonが見つかりませんでした")
         return itemName
     
     # for文で解析
