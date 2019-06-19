@@ -8,17 +8,17 @@ def alias(itemName):
             with open('alias.json', 'r') as alf:
                 alias = json.load(alf)
         except JSONDecodeError as exc:
-            print('alias.jsonの構文にエラーがあります。\n行: {0} 位置: {1}\n{2}\n\nそのまま返します。'.format(exc.lineno, exc.pos, exc.msg))
+            print('alias.jsonの構文にエラーがあります。\n行: {0} 位置: {1}\n{2}'.format(exc.lineno, exc.pos, exc.msg))
             return itemName
     else:
-        print('alias.jsonが見つかりません。そのまま返します。')
+        print('alias.jsonが見つかりませんでした。')
         return itemName
     
     # for文で解析
-    for alia in alias:
-        for aliasName in alias[alia]: # 第二階層目がエイリアス名なのでその中から照査
+    for element in alias:
+        for aliasName in element[alia]: # 第二階層目がエイリアス名なのでその中から照査
             if aliasName == itemName:
-                # 名前とエイリアス名が一致した場合はエイリアス名の実名を返す
-                return alia
-    # エイリアス名がない場合はそのまま返す
+                # 名前とエイリアス名が一致した場合はエイリアス名と紐づく名前を返す
+                return element
+    # エイリアス名が見つからない場合はそのまま返す
     return itemName
