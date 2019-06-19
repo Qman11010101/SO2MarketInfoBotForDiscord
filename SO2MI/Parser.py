@@ -1,5 +1,6 @@
 import datetime
 import os
+import glob
 
 from .Alias import alias
 from .getApi import getApi
@@ -60,7 +61,7 @@ def ItemParser(itemName):
         全体平均: {str(saleAverage)}G
         市場全体の販売数: {str(saleUnitSum)}{itemScaleName}"""
     else:
-        saleStr = "　*現在販売されていません。*"
+        saleStr = "\n　現在販売されていません。"
 
     priceReqArray = []
     unitReqArray = []
@@ -68,7 +69,7 @@ def ItemParser(itemName):
         if int(reqUnit["item_id"]) == int(itemId):
             priceReqArray.append(reqUnit["price"])
             unitReqArray.append(reqUnit["buy_unit"])
-    priceReqArray.sort(reverse=True)
+    priceReqArray.sort(reverse=True) # 金額逆順ソート
 
     if len(priceReqArray) > 0:
         reqMostExpensive = priceReqArray[0] # 最高値
@@ -90,10 +91,14 @@ def ItemParser(itemName):
         市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
         """
     else:
-        reqStr = "　*現在注文はありません。*"
+        reqStr = "\n　現在注文はありません。"
 
     # まとめ
-    summary = f"""直近10分以内の{itemName}の状況は以下のとおりです。
+    # 時刻をsale-*.jsonから推測
+    target = glob.glob("api-log/sale-*.json")
+    jsonTime = datetime.datetime.strptime(target, "api-log/sale-%y%m%d%H%M.json")
+
+    summary = f"""{jsonTime.strftime("%Y年%m月%d日 %H時%M分")}現在の{itemName}の状況は以下のとおりです。
 
     **販売：**
     {saleStr}
@@ -101,6 +106,6 @@ def ItemParser(itemName):
     **注文：**
     {reqStr}
 
-    *時間経過により市場がこの通りでない可能性があります。*
+    時間経過により市場がこの通りでない可能性があります。
     """
     return summary
