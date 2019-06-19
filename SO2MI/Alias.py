@@ -7,7 +7,7 @@ def alias(itemName):
     if os.path.isfile("alias.json"):
         print("alias.jsonが見つかりました")
         try:
-            with open("alias.json", "r") as alf:
+            with open("alias.json", "r", encoding="utf-8_sig") as alf:
                 alias = json.load(alf)
         except JSONDecodeError as exc:
             print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
