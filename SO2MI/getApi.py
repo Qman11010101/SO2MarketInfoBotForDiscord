@@ -38,16 +38,16 @@ def getApi(apiName, url):
         # 現在時刻が取得可能な時間を超えているかを判定する
         if timeGettable > now:
             readData = True
-            print("Latest data exists!")
+            print("最新のデータが存在します")
         else:
             readData = False
-            print("Data is old!")
+            print("データが古くなっています")
     else: # ファイルが存在しなかった場合
         readData = False
-        print("Data doesn't exist!")
+        print("データがありません")
 
     if readData: # APIを叩かず既存ファイルを読み込む
-        print("Latest Data Founded: {0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")))
+        print("既存のデータを読み込みます: {0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")))
         with open("api-log/{0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")), "r", encoding="utf-8_sig") as ijs:
             return json.load(ijs)
     else: # 古いデータを削除しAPIを叩いて新たにデータを取得する
@@ -58,17 +58,17 @@ def getApi(apiName, url):
         for delPrev in glob.glob("api-log/{0}-*.json".format(apiName)):
             try:
                 os.remove(delPrev)
-                print("Deleted: {0}".format(delPrev))
+                print("次のファイルを削除しました: {0}".format(delPrev))
             except FileNotFoundError: # もしファイルがなくても無視する
                 pass
 
         # APIを叩く
-        print("Access: " + url)
+        print("次のエンドポイントにアクセスしています: " + url)
         newData = requests.get(url)
 
         # データを保存する
         with open("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")), "w", encoding="utf-8_sig") as ijs:
-            print("Save {0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")))
+            print("次の名称でデータを保存しました: {0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")))
             json.dump(newData.json(), ijs, ensure_ascii=False)
 
         # dict化させたデータを返す
