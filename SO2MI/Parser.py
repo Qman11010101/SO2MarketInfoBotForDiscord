@@ -61,7 +61,7 @@ def ItemParser(itemName):
         全体平均: {str(saleAverage)}G
         市場全体の販売数: {str(saleUnitSum)}{itemScaleName}"""
     else:
-        saleStr = "\n　現在販売されていません。"
+        saleStr = "\n　　現在販売されていません。"
 
     priceReqArray = []
     unitReqArray = []
@@ -91,7 +91,7 @@ def ItemParser(itemName):
         市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
         """
     else:
-        reqStr = "\n　現在注文はありません。"
+        reqStr = "\n　　現在注文はありません。"
 
     # まとめ
     # 時刻をsale-*.jsonから推測
