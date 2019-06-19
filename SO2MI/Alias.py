@@ -1,16 +1,24 @@
+import os
+import json
+from json.decoder import JSONDecodeError
+
 def alias(itemName):
-    if itemName == "紙":
-        return "紙束"
-    elif itemName == "彩薬":
-        return "駆け出し勇者の彩薬"
-    elif itemName == "極彩薬":
-        return "駆け出し勇者の極彩薬"
-    elif itemName == "スピポ":
-        return "スピードポーション"
-    elif itemName == "はぶち" or itemName == "ハブチ" or itemName == "ハーブティ":
-        return "ハーブティー"
-    elif itemName == "七色はぶち" or itemName == "七色ハーブティー":
-        return "七色ハーブティ"
+    if os.path.isfile('alias.json'):
+        try:
+            with open('alias.json', 'r') as alf:
+                alias = json.load(alf)
+        except JSONDecodeError as exc:
+            print('alias.jsonの構文にエラーがあります。\n行: {0} 位置: {1}\n{2}\n\nそのまま返します。'.format(exc.lineno, exc.pos, exc.msg))
+            return itemName
     else:
-        # エイリアス名がない場合はそのまま返す
+        print('alias.jsonが見つかりません。そのまま返します。')
         return itemName
+    
+    # for文で解析
+    for alia in alias:
+        for aliasName in alias[alia]: # 第二階層目がエイリアス名なのでその中から照査
+            if aliasName == itemName:
+                # 名前とエイリアス名が一致した場合はそれを使用
+                return alia
+    # エイリアス名がない場合はそのまま返す
+    return itemName
