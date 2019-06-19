@@ -16,7 +16,7 @@ def alias(itemName):
     
     # for文で解析
     for element in alias:
-        for aliasName in element[alia]: # 第二階層目がエイリアス名なのでその中から照査
+        for aliasName in alias[element]: # 第二階層目がエイリアス名なのでその中から照査
             if aliasName == itemName:
                 # 名前とエイリアス名が一致した場合はエイリアス名と紐づく名前を返す
                 return element
