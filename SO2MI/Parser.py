@@ -96,7 +96,7 @@ def ItemParser(itemName):
     # まとめ
     # 時刻をsale-*.jsonから推測
     target = glob.glob("api-log/sale-*.json")
-    jsonTime = datetime.datetime.strptime(target, "api-log/sale-%y%m%d%H%M.json")
+    jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
     summary = f"""{jsonTime.strftime("%Y年%m月%d日 %H時%M分")}現在の{itemName}の状況は以下のとおりです。
 
