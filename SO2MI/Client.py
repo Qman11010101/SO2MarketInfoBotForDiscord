@@ -16,11 +16,11 @@ class Client(discord.Client):
         self.targetChannel = self.get_channel(int(config["discord"]["channel"]))
         if self.targetChannel == None:
             # 指定チャンネルが見つからない場合はExceptionをraise
-            raise Exception("Specified discord channel is not found!")
+            raise Exception("指定されたチャンネルは見つかりませんでした")
         else:
             # await self.targetChannel.send("{0} is Ready!".format(self.user))
             pass
-        print("Logged on as", self.user)
+        print("次のユーザーとしてログインしました", self.user)
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
