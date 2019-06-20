@@ -1,8 +1,10 @@
 import configparser
 import datetime
+import json
 import os
 import re
 import traceback
+from json.decoder import JSONDecodeError
 from pprint import pprint as pp
 
 import discord
@@ -14,6 +16,7 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 
 commandMarket = config["command"]["prefix"] + config["command"]["market"]
+commandAlias = config["command"]["prefix"] + config["command"]["alias"]
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -70,6 +73,35 @@ class Client(discord.Client):
                         await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
                     finally:
                         return
+
+        # エイリアス
+        if message.content.startswith(commandAlias):
+            if os.path.isfile("alias.json"):
+                try:                    
+                    with open("alias.json", "r") as alf:
+                        alias = json.load(alf)
+                    
+                    parsed = ""
+
+                    for element in alias:
+                        for aliasName in alias[element]:
+                            parsed += aliasName + " "
+                        parsed += f" → {element}\n"
+                    
+                    outputStr = f"""
+                    SO2市場情報botで取り扱うエイリアス名は以下のとおりです。
+
+                    {parsed}
+                    """
+                    await message.channel.send(outputStr)
+                    return
+                except JSONDecodeError as exc:
+                    print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+                    await message.channel.send("エイリアスはありません。")
+                    return
+            else:
+                await message.channel.send("エイリアスはありません。")
+                return
 
     async def showHelpMarket(self):
         helpMsg = f"""
