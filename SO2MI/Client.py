@@ -78,21 +78,15 @@ class Client(discord.Client):
         if message.content.startswith(commandAlias):
             if os.path.isfile("alias.json"):
                 try:                    
-                    with open("alias.json", "r") as alf:
+                    with open("alias.json", "r", encoding="utf-8_sig") as alf:
                         alias = json.load(alf)
                     
                     parsed = ""
 
                     for element in alias:
-                        for aliasName in alias[element]:
-                            parsed += aliasName + " "
-                        parsed += f" → {element}\n"
+                        parsed += ", ".join(alias[element]) + " → " + element + "\n"
                     
-                    outputStr = f"""
-                    以下のエイリアスが登録されています:
-
-                    {parsed}
-                    """
+                    outputStr = f"以下のエイリアスが登録されています:\n\n{parsed}"
                     await message.channel.send(outputStr)
                     return
                 except JSONDecodeError as exc:
