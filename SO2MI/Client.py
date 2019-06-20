@@ -89,7 +89,7 @@ class Client(discord.Client):
                         parsed += f" → {element}\n"
                     
                     outputStr = f"""
-                    SO2市場情報botで取り扱うエイリアス名は以下のとおりです。
+                    以下のエイリアスが登録されています:
 
                     {parsed}
                     """
@@ -97,10 +97,10 @@ class Client(discord.Client):
                     return
                 except JSONDecodeError as exc:
                     print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
-                    await message.channel.send("エイリアスはありません。")
+                    await message.channel.send("エイリアスは登録されていません。")
                     return
             else:
-                await message.channel.send("エイリアスはありません。")
+                await message.channel.send("エイリアスは登録されていません。")
                 return
 
     async def showHelpMarket(self):
