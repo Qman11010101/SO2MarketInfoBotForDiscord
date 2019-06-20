@@ -1,7 +1,12 @@
-import discord
 import configparser
+import datetime
+import os
 import re
+import traceback
 from pprint import pprint as pp
+
+import discord
+from pytz import timezone
 
 from .Parser import ItemParser
 
@@ -45,12 +50,26 @@ class Client(discord.Client):
                         return
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
-                    arg = msgParse[0]
-                    parseRes = ItemParser(arg)
-                    if parseRes != False:
-                        await message.channel.send(parseRes)
-                    else:
-                        await message.channel.send("{0}は見つかりませんでした。".format(arg))
+                    try:
+                        arg = msgParse[0]
+                        parseRes = ItemParser(arg)
+                        if parseRes != False:
+                            await message.channel.send(parseRes)
+                        else:
+                            await message.channel.send("{0}は見つかりませんでした。".format(arg))
+                    except:
+                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                        nowFileFormat = now.strftime("%Y%m%d")
+                        os.makedirs("error-log", exist_ok=True)
+                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                            f.write(f"--- Datetime: {nowFormat} ---\n")
+                            traceback.print_exc(file=f)
+                            f.write("\n")
+                        traceback.print_exc()
+                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
+                    finally:
+                        return
 
     async def showHelpMarket(self):
         helpMsg = f"""
