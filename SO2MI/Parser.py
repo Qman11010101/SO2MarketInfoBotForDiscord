@@ -28,7 +28,7 @@ def ItemParser(itemName):
         for col in recipe:
             if recipe[str(col)]["name"] == itemName:
                 itemId = col
-                itemScaleName = item[str(col)]["scale"]
+                itemScaleName = recipe[str(col)]["scale"]
                 break
         if int(itemId) == 0:
             # 見つからない扱い
