@@ -28,7 +28,7 @@ class Client(discord.Client):
         else:
             # await self.targetChannel.send("{0} is Ready!".format(self.user))
             pass
-        print("次のユーザーとしてログインしました", self.user)
+        print("次のユーザーとしてログインしました:", self.user)
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
