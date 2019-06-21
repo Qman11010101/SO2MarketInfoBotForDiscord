@@ -36,11 +36,14 @@ def ItemParser(itemName):
 
     priceSaleArray = []
     unitSaleArray = []
+    shopSaleArray = []
     for saleUnit in sale:
         if int(saleUnit["item_id"]) == int(itemId):
             priceSaleArray.append(saleUnit["price"])
             unitSaleArray.append(saleUnit["unit"])
+            shopSaleArray.append(saleUnit["shop_id"])
     priceSaleArray.sort() # 金額ソート
+    shopSaleAmount = len(set(shopSaleArray)) # 販売店舗数(店舗IDの重複を削除)
 
     if len(priceSaleArray) > 0:
         saleCheapest = priceSaleArray[0] # 最安値
@@ -59,17 +62,22 @@ def ItemParser(itemName):
         最高値: {str(saleMostExpensive)}G
         最安TOP5平均: {str(saleMarketPrice)}G
         全体平均: {str(saleAverage)}G
-        市場全体の販売数: {str(saleUnitSum)}{itemScaleName}"""
+        市場全体の販売数: {str(saleUnitSum)}{itemScaleName}
+        販売店舗数: {shopSaleAmount}店舗
+        """
     else:
         saleStr = "\n　　現在販売されていません。"
 
     priceReqArray = []
     unitReqArray = []
+    shopReqArray = []
     for reqUnit in req:
         if int(reqUnit["item_id"]) == int(itemId):
             priceReqArray.append(reqUnit["price"])
             unitReqArray.append(reqUnit["buy_unit"])
+            shopReqArray.append(reqUnit["shop_id"])
     priceReqArray.sort(reverse=True) # 金額逆順ソート
+    shopReqAmount = len(set(shopReqArray)) # 注文店舗数(店舗IDの重複を削除)
 
     if len(priceReqArray) > 0:
         reqMostExpensive = priceReqArray[0] # 最高値
@@ -89,6 +97,7 @@ def ItemParser(itemName):
         最高TOP5平均: {str(reqMarketPrice)}G
         全体平均: {str(reqAverage)}G
         市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
+        注文店舗数: {shopReqAmount}店舗
         """
     else:
         reqStr = "\n　　現在注文はありません。"
