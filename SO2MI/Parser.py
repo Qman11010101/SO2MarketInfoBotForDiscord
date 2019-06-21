@@ -66,7 +66,7 @@ def ItemParser(itemName):
         販売店舗数: {shopSaleAmount}店舗
         """
     else:
-        saleStr = "\n　　現在販売されていません。"
+        saleStr = "\n　　現在販売されていません。\n"
 
     priceReqArray = []
     unitReqArray = []
@@ -100,7 +100,7 @@ def ItemParser(itemName):
         注文店舗数: {shopReqAmount}店舗
         """
     else:
-        reqStr = "\n　　現在注文はありません。"
+        reqStr = "\n　　現在注文はありません。\n"
 
     # まとめ
     # 時刻をsale-*.jsonから推測
