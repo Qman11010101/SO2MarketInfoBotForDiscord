@@ -6,6 +6,7 @@ import re
 import traceback
 from json.decoder import JSONDecodeError
 from pprint import pprint as pp
+import textwrap
 
 import discord
 from pytz import timezone
@@ -124,25 +125,25 @@ class Client(discord.Client):
             msgParse = message.content.split()
             del msgParse[0]
             if len(msgParse) == 0:
-                helpMsg = f"""
-                    {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
-・add
-　エイリアスを追加します。
-　使用方法: {commandAlias} add <エイリアス名> <正式名称>
-・help
-　このヘルプを表示します。
-・（コマンド指定なし or 上記以外のコマンド）
-　エイリアス一覧を表示します。
-"""
+                helpMsg = textwrap.dedent(f"""
+                {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
+                ・add
+                　エイリアスを追加します。
+                　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+                ・help
+                　このヘルプを表示します。
+                ・show
+                　エイリアス一覧を表示します。
+                """)
                 await message.channel.send(helpMsg)
                 return
             else:
                 if msgParse[0] == "add":
                     if len(msgParse) != 3:
-                        helpMsg = f"""
+                        helpMsg = textwrap.dedent(f"""
                         エイリアスを追加します。
-使用方法: {commandAlias} add <エイリアス名> <正式名称>
-                        """
+                        使用方法: {commandAlias} add <エイリアス名> <正式名称>
+                        """)
                         await message.channel.send(helpMsg)
                         return
                     
@@ -157,16 +158,16 @@ class Client(discord.Client):
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
-                    helpMsg = f"""
+                    helpMsg = textwrap.dedent(f"""
                     {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
-・add
-　エイリアスを追加します。
-　使用方法: {commandAlias} add <エイリアス名> <正式名称>
-・help
-　このヘルプを表示します。
-・show
-　エイリアス一覧を表示します。
-"""
+                    ・add
+                    　エイリアスを追加します。
+                    　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+                    ・help
+                    　このヘルプを表示します。
+                    ・show
+                    　エイリアス一覧を表示します。
+                    """)
                     await message.channel.send(helpMsg)
                     return
                 elif msgParse[0] == "show":
@@ -182,7 +183,7 @@ class Client(discord.Client):
                     return
 
     async def showHelpMarket(self):
-        helpMsg = f"""
+        helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
         使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名]
         出力情報一覧: 
@@ -207,5 +208,5 @@ class Client(discord.Client):
         -t 街名: 指定した街の情報のみを表示することができます。-s、-tとは併用可能です。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
-        """
+        """)
         await self.targetChannel.send(helpMsg)
