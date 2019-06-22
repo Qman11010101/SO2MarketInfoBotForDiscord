@@ -35,7 +35,8 @@ class Client(discord.Client):
             # BOT属性アカウント, 自身のアカウント or 指定したチャンネル以外はスルー
             return
 
-        # 内部処理はここから
+        # コマンド受取部
+        # 市場情報コマンド
         if message.content.startswith(commandMarket):
             msgParse = message.content.split()
             # コマンドを削除
@@ -74,7 +75,7 @@ class Client(discord.Client):
                     finally:
                         return
 
-        # エイリアス
+        # エイリアスコマンド
         if message.content.startswith(commandAlias):
             if os.path.isfile("alias.json"):
                 try:                    
