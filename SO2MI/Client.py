@@ -124,13 +124,18 @@ class Client(discord.Client):
             msgParse = message.content.split()
             del msgParse[0]
             if len(msgParse) == 0:
-                res = showAlias()
-                if res == False:
-                    await message.channel.send("エイリアスは登録されていません。")
-                    return
-                else:
-                    await message.channel.send(res)
-                    return
+                helpMsg = f"""
+                    {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
+・add
+　エイリアスを追加します。
+　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+・help
+　このヘルプを表示します。
+・（コマンド指定なし or 上記以外のコマンド）
+　エイリアス一覧を表示します。
+"""
+                await message.channel.send(helpMsg)
+                return
             else:
                 if msgParse[0] == "add":
                     if len(msgParse) != 3:
@@ -151,7 +156,7 @@ class Client(discord.Client):
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
-                elif msgParse[0] == "help":
+                elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     helpMsg = f"""
                     {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
 ・add
@@ -159,12 +164,12 @@ class Client(discord.Client):
 　使用方法: {commandAlias} add <エイリアス名> <正式名称>
 ・help
 　このヘルプを表示します。
-・（コマンド指定なし or 上記以外のコマンド）
+・show
 　エイリアス一覧を表示します。
 """
                     await message.channel.send(helpMsg)
                     return
-                else:
+                elif msgParse[0] == "show":
                     res = showAlias()
                     if res == False:
                         await message.channel.send("エイリアスは登録されていません。")
@@ -172,6 +177,9 @@ class Client(discord.Client):
                     else:
                         await message.channel.send(res)
                         return
+                else:
+                    await message.channel.send("コマンドが無効です。")
+                    return
 
     async def showHelpMarket(self):
         helpMsg = f"""
