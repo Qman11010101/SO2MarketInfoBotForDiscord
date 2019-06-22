@@ -142,3 +142,4 @@ api-log/
 .vscode/*
 test.py
 error-log/
+alias.json
