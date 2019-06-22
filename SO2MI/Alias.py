@@ -77,3 +77,24 @@ def addAlias(aliasName, formalName):
             return True
     else:
         return None
+
+def removeAlias(aliasName):
+    if os.access("alias.json", os.W_OK):
+        if os.path.isfile("alias.json"):
+            with open("alias.json", "r", encoding="utf-8_sig") as alf:
+                alias = json.load(alf)
+            
+            for element in alias:
+                for aliasPart in alias[element]:
+                    if aliasPart == aliasName:
+                        alias[element].remove(aliasPart)
+                        if len(alias[element]) == 0:
+                            del alias[element]
+                        with open("alias.json", "w", encoding="utf-8_sig") as alf:
+                            json.dump(alias, alf, indent=4, ensure_ascii=False)
+                        return True
+            return False
+        else:
+            return False
+    else:
+        return None
