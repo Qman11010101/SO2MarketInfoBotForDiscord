@@ -41,7 +41,6 @@ class Client(discord.Client):
             msgParse = message.content.split()
             # コマンドを削除
             del msgParse[0]
-            print("{0} => {1}".format(message.author, msgParse))
             if len(msgParse) == 0:
                 await self.showHelpMarket()
             else:
@@ -55,6 +54,7 @@ class Client(discord.Client):
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                     try:
+                        print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                         arg = msgParse[0]
                         parseRes = ItemParser(arg)
                         if parseRes != False:
