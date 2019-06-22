@@ -135,6 +135,9 @@ class Client(discord.Client):
                 　このヘルプを表示します。
                 ・show
                 　エイリアス一覧を表示します。
+                ・remove
+                　エイリアスを削除します。
+                　使用方法: {commandAlias} remove <エイリアス名>
                 """)
                 await message.channel.send(helpMsg)
                 return
@@ -162,7 +165,7 @@ class Client(discord.Client):
                 elif msgParse[0] == "remove":
                     if len(msgParse) != 2:
                         helpMsg = textwrap.dedent(f"""
-                        エイリアスを追加します。
+                        エイリアスを削除します。
                         使用方法: {commandAlias} remove <エイリアス名>
                         """)
                         await message.channel.send(helpMsg)
