@@ -12,7 +12,7 @@ import discord
 from pytz import timezone
 
 from .Parser import ItemParser
-from .Alias import showAlias, addAlias
+from .Alias import showAlias, addAlias, removeAlias
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -135,6 +135,9 @@ class Client(discord.Client):
                 　このヘルプを表示します。
                 ・show
                 　エイリアス一覧を表示します。
+                ・remove
+                　エイリアスを削除します。
+                　使用方法: {commandAlias} remove <エイリアス名>
                 """)
                 await message.channel.send(helpMsg)
                 return
@@ -158,6 +161,27 @@ class Client(discord.Client):
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
+
+                elif msgParse[0] == "remove":
+                    if len(msgParse) != 2:
+                        helpMsg = textwrap.dedent(f"""
+                        エイリアスを削除します。
+                        使用方法: {commandAlias} remove <エイリアス名>
+                        """)
+                        await message.channel.send(helpMsg)
+                        return
+
+                    res = removeAlias(msgParse[1])
+                    if res == None:
+                        await message.channel.send("申し訳ありません。書き込みができません。")
+                        return
+                    elif res == False:
+                        await message.channel.send(f"{msgParse[1]}というエイリアス名は存在しません。")
+                        return
+                    else:
+                        await message.channel.send("エイリアスを削除しました。")
+                        return
+
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     helpMsg = textwrap.dedent(f"""
                     {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
@@ -171,6 +195,7 @@ class Client(discord.Client):
                     """)
                     await message.channel.send(helpMsg)
                     return
+
                 elif msgParse[0] == "show":
                     res = showAlias()
                     if res == False:
@@ -179,6 +204,7 @@ class Client(discord.Client):
                     else:
                         await message.channel.send(res)
                         return
+
                 else:
                     await message.channel.send("コマンドが無効です。")
                     return
