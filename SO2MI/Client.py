@@ -48,6 +48,7 @@ class Client(discord.Client):
                     await self.showHelpMarket()
                 elif len(msgParse) == 1:
                     argMarket = "--normal"
+                    townName = "--none"
                 else:
                     # 商品名が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
@@ -55,29 +56,54 @@ class Client(discord.Client):
                         return
                     else: # 引数の形だった場合
                         argMarket = msgParse[1]
-                        if argMarket == "-s":
-                            print("引数が-sだったため販売品のみを表示します")
-                        elif argMarket == "-r":
-                            print("引数が-rだったため注文品のみを表示します")
+                        if argMarket == "-s" or argMarket == "-r":
+                            if len(msgParse) == 2: #[商品名] [引数]
+                                print("引数は{}でした".format(argMarket))
+                                townName = "--none"
+                            else:
+                                if msgParse[2] == "-t":
+                                    if len(msgParse) == 3: # [商品名] [引数] -t
+                                        print("街の名前が指定されていません")
+                                        await message.channel.send("引数-tに対して街が指定されていません。")
+                                        return
+                                    elif len(msgParse) >= 5: # [商品名] [引数] -t OO XX
+                                        print("街の名前が複数指定されています")
+                                        await message.channel.send("引数-tに対して街を複数指定することはできません。")
+                                        return
+                                    else:
+                                        townName = msgParse[3]
                         elif argMarket == "-t":
-                            print("引数-tは街ごとの表示のために予約されています")
-                            await message.channel.send("無効な引数です: -t")
+                            print("引数は-tでした")
+                            if len(msgParse) == 2: # [商品名] -t
+                                print("街の名前が指定されていません")
+                                await message.channel.send("引数-tに対して街が指定されていません。")
+                                return
+                            elif len(msgParse) >= 4: # [商品名] -t OO XX
+                                print("街の名前が複数指定されています")
+                                await message.channel.send("引数-tに対して街を複数指定することはできません。")
+                                return
+                            else:
+                                townName = msgParse[2]
                         elif argMarket == "--normal":
                             print("通常のリクエストです")
                         else:
                             print("引数{}は予約されていません".format(argMarket))
                             await message.channel.send("無効な引数です: " + argMarket)
+                            return
 
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
                     print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                     print("引数は{}でした".format(argMarket))
                     itemName = msgParse[0]
-                    parseRes = ItemParser(itemName, argMarket)
+                    parseRes = ItemParser(itemName, argMarket, townName)
                     if parseRes != False:
-                        await message.channel.send(parseRes)
+                        if parseRes == "nte":
+                            await message.channel.send("{}という街は見つかりませんでした。".format(townName))
+                        else:
+                            await message.channel.send(parseRes)
                     else:
-                        await message.channel.send("{0}は見つかりませんでした。".format(arg))
+                        await message.channel.send("{}は見つかりませんでした。".format(itemName))
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
@@ -118,7 +144,7 @@ class Client(discord.Client):
     async def showHelpMarket(self):
         helpMsg = f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {commandMarket} [商品名] [-s|-r]
+        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -136,8 +162,9 @@ class Client(discord.Client):
         　・注文店舗数
 
         引数:
-        -s 販売品の情報のみを表示することができます。
-        -r 注文品の情報のみを表示することができます。
+        -s: 販売品の情報のみを表示することができます。
+        -r: 注文品の情報のみを表示することができます。
+        -t 街名: 指定した街の情報のみを表示することができます。-s、-tとは併用可能です。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """
