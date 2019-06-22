@@ -47,7 +47,7 @@ class Client(discord.Client):
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                 elif len(msgParse) == 1:
-                    argMarket = "ありません"
+                    argMarket = "--normal"
                 else:
                     # 商品名が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
@@ -56,14 +56,14 @@ class Client(discord.Client):
                     else: # 引数の形だった場合
                         argMarket = msgParse[1]
                         if argMarket == "-s":
-                            print("引数-sは販売品のみの表示のために予約されています")
-                            await message.channel.send("無効な引数です: -s")
+                            print("引数が-sだったため販売品のみを表示します")
                         elif argMarket == "-r":
-                            print("引数-rは注文品のみの表示のために予約されています")
-                            await message.channel.send("無効な引数です: -r")
+                            print("引数が-rだったため注文品のみを表示します")
                         elif argMarket == "-t":
                             print("引数-tは街ごとの表示のために予約されています")
                             await message.channel.send("無効な引数です: -t")
+                        elif argMarket == "--normal":
+                            print("通常のリクエストです")
                         else:
                             print("引数{}は予約されていません".format(argMarket))
                             await message.channel.send("無効な引数です: " + argMarket)
@@ -73,7 +73,7 @@ class Client(discord.Client):
                     print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                     print("引数は{}でした".format(argMarket))
                     itemName = msgParse[0]
-                    parseRes = ItemParser(itemName)
+                    parseRes = ItemParser(itemName, argMarket)
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
@@ -119,7 +119,7 @@ class Client(discord.Client):
         helpMsg = f"""
         SO2市場情報bot
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {commandMarket} [商品名]
+        使用方法: {commandMarket} [商品名] [-s|-r]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -135,6 +135,10 @@ class Client(discord.Client):
         　・全体平均
         　・市場全体の注文数
         　・注文店舗数
+
+        引数:
+        -s 販売品の情報のみを表示することができます。
+        -r 注文品の情報のみを表示することができます。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """

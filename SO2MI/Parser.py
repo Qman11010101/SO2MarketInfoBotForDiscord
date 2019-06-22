@@ -5,7 +5,7 @@ import glob
 from .Alias import alias
 from .getApi import getApi
 
-def ItemParser(itemName):
+def ItemParser(itemName, argument):
     # API取得部
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
@@ -107,14 +107,31 @@ def ItemParser(itemName):
     target = glob.glob("api-log/sale-*.json")
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
-    summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下のとおりです。
+    # 引数による販売品・注文品の分岐
+    if argument == "--normal":
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下のとおりです。
 
-    **販売：**
-    {saleStr}
+        **販売：**
+        {saleStr}
 
-    **注文：**
-    {reqStr}
+        **注文：**
+        {reqStr}
 
-    時間経過により市場がこの通りでない可能性があります。
-    """
+        時間経過により市場がこの通りでない可能性があります。
+        """
+    elif argument == "-s":
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の販売状況は以下のとおりです。
+
+        {saleStr}
+
+        時間経過により市場がこの通りでない可能性があります。
+        """
+    elif argument == "-r":
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の注文状況は以下のとおりです。
+
+        {reqStr}
+
+        時間経過により市場がこの通りでない可能性があります。
+        """
+        
     return summary
