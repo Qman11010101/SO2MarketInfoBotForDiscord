@@ -55,7 +55,11 @@ class Client(discord.Client):
                         return
                     else: # 引数の形だった場合
                         argMarket = msgParse[1]
-                        if argMarket == "-t":
+                        if argMarket == "-s":
+                            print("引数が-sだったため販売品のみを表示します")
+                        elif argMarket == "-r":
+                            print("引数が-rだったため注文品のみを表示します")
+                        elif argMarket == "-t":
                             print("引数-tは街ごとの表示のために予約されています")
                             await message.channel.send("無効な引数です: -t")
                         elif argMarket == "--normal":
