@@ -47,6 +47,7 @@ class Client(discord.Client):
                 await self.showHelpMarket()
             else:
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    argMarket = "--normal"
                     await self.showHelpMarket()
                 elif len(msgParse) == 1:
                     argMarket = "--normal"
