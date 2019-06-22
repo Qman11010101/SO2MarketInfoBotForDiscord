@@ -134,12 +134,11 @@ class Client(discord.Client):
             else:
                 if msgParse[0] == "add":
                     if len(msgParse) != 3:
-                        await message.channel.send(f"""
-                        使用方法：
-                        ・add
-                    　　　・{commandAlias} add <エイリアス名> <正式名称>
-                    　　　エイリアスを追加します。
-                        """)
+                        helpMsg = f"""
+                        エイリアスを追加します。
+使用方法: {commandAlias} add <エイリアス名> <正式名称>
+                        """
+                        await message.channel.send(helpMsg)
                         return
                     
                     res = addAlias(msgParse[1], msgParse[2])
@@ -155,15 +154,14 @@ class Client(discord.Client):
                 elif msgParse[0] == "help":
                     helpMsg = f"""
                     {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
-                    使用方法：
-                    ・add
-                    　・{commandAlias} add <エイリアス名> <正式名称>
-                    　　エイリアスを追加します。
-                    ・help
-                    　このヘルプを表示します。
-                    ・（コマンド指定なし or 上記以外のコマンド）
-                    　エイリアス一覧を表示します。
-                    """
+・add
+　エイリアスを追加します。
+　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+・help
+　このヘルプを表示します。
+・（コマンド指定なし or 上記以外のコマンド）
+　エイリアス一覧を表示します。
+"""
                     await message.channel.send(helpMsg)
                     return
                 else:
