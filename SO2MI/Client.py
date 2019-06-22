@@ -11,6 +11,7 @@ import discord
 from pytz import timezone
 
 from .Parser import ItemParser
+from .Alias import showAlias, addAlias
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -120,26 +121,59 @@ class Client(discord.Client):
 
         # エイリアスコマンド
         if message.content.startswith(commandAlias):
-            if os.path.isfile("alias.json"):
-                try:                    
-                    with open("alias.json", "r", encoding="utf-8_sig") as alf:
-                        alias = json.load(alf)
-                    
-                    parsed = ""
-
-                    for element in alias:
-                        parsed += ", ".join(alias[element]) + " → " + element + "\n"
-                    
-                    outputStr = f"以下のエイリアスが登録されています:\n\n{parsed}"
-                    await message.channel.send(outputStr)
-                    return
-                except JSONDecodeError as exc:
-                    print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+            msgParse = message.content.split()
+            del msgParse[0]
+            if len(msgParse) == 0:
+                res = showAlias()
+                if res == False:
                     await message.channel.send("エイリアスは登録されていません。")
                     return
+                else:
+                    await message.channel.send(res)
+                    return
             else:
-                await message.channel.send("エイリアスは登録されていません。")
-                return
+                if msgParse[0] == "add":
+                    if len(msgParse) != 3:
+                        await message.channel.send(f"""
+                        使用方法：
+                        ・add
+                    　　　・{commandAlias} add <エイリアス名> <正式名称>
+                    　　　エイリアスを追加します。
+                        """)
+                        return
+                    
+                    res = addAlias(msgParse[1], msgParse[2])
+                    if res == None:
+                        await message.channel.send("申し訳ありません。書き込みができません。")
+                        return
+                    elif res == False:
+                        await message.channel.send("既に登録されています。")
+                        return
+                    else:
+                        await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
+                        return
+                elif msgParse[0] == "help":
+                    helpMsg = f"""
+                    {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
+                    使用方法：
+                    ・add
+                    　・{commandAlias} add <エイリアス名> <正式名称>
+                    　　エイリアスを追加します。
+                    ・help
+                    　このヘルプを表示します。
+                    ・（コマンド指定なし or 上記以外のコマンド）
+                    　エイリアス一覧を表示します。
+                    """
+                    await message.channel.send(helpMsg)
+                    return
+                else:
+                    res = showAlias()
+                    if res == False:
+                        await message.channel.send("エイリアスは登録されていません。")
+                        return
+                    else:
+                        await message.channel.send(res)
+                        return
 
     async def showHelpMarket(self):
         helpMsg = f"""

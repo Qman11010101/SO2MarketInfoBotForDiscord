@@ -24,3 +24,56 @@ def alias(itemName):
                 return element
     # エイリアス名が見つからない場合はそのまま返す
     return itemName
+
+def showAlias():
+    if os.path.isfile("alias.json"):
+        try:
+            with open("alias.json", "r", encoding="utf-8_sig") as alf:
+                alias = json.load(alf)
+            
+            parsed = ""
+
+            for element in alias:
+                parsed += ", ".join(alias[element]) + " → " + element + "\n"
+            
+            outputStr = f"以下のエイリアスが登録されています:\n\n{parsed}"
+            return outputStr
+        except JSONDecodeError as exc:
+            print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+            return False
+    else:
+        return False
+
+def addAlias(aliasName, formalName):
+    if os.access("alias.json", os.W_OK):
+        if os.path.isfile("alias.json"):
+            with open("alias.json", "r", encoding="utf-8_sig") as alf:
+                alias = json.load(alf)
+            
+            allAlias = []
+            for aliasPart in alias:
+                allAlias += alias[aliasPart]
+            
+            if aliasName in allAlias:
+                return False
+
+            if formalName in alias:
+                alias[formalName].append(aliasName)
+            else:
+                alias[formalName] = [aliasName]
+            
+            with open("alias.json", "w", encoding="utf-8_sig") as alf:
+                json.dump(alias, alf, indent=4, ensure_ascii=False)
+            
+            return True
+        else:
+            alias = {}
+
+            alias[formalName] = [aliasName]
+
+            with open("alias.json", "w", encoding="utf-8_sig") as alf:
+                json.dump(alias, alf, indent=4, ensure_ascii=False)
+
+            return True
+    else:
+        return None
