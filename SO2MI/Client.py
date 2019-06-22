@@ -41,13 +41,13 @@ class Client(discord.Client):
             msgParse = message.content.split()
             # コマンドを削除
             del msgParse[0]
-            print("{0} => {1}".format(message.author, msgParse))
             if len(msgParse) == 0:
                 await self.showHelpMarket()
             else:
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                 else:
+                    print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                     # 2つ以上指定している場合は弾く
                     if len(msgParse) >= 2:
                         await message.channel.send("商品は1つのみを指定してください。")
