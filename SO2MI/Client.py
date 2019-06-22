@@ -68,29 +68,29 @@ class Client(discord.Client):
                             print("引数{}は予約されていません".format(argMarket))
                             await message.channel.send("無効な引数です: " + argMarket)
 
-                    # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
-                    try:
-                        print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
-                        print("引数は{}でした".format(argMarket))
-                        itemName = msgParse[0]
-                        parseRes = ItemParser(itemName)
-                        if parseRes != False:
-                            await message.channel.send(parseRes)
-                        else:
-                            await message.channel.send("{0}は見つかりませんでした。".format(arg))
-                    except:
-                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                        nowFileFormat = now.strftime("%Y%m%d")
-                        os.makedirs("error-log", exist_ok=True)
-                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                            f.write(f"--- Datetime: {nowFormat} ---\n")
-                            traceback.print_exc(file=f)
-                            f.write("\n")
-                        traceback.print_exc()
-                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
-                    finally:
-                        return
+                # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
+                try:
+                    print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
+                    print("引数は{}でした".format(argMarket))
+                    itemName = msgParse[0]
+                    parseRes = ItemParser(itemName)
+                    if parseRes != False:
+                        await message.channel.send(parseRes)
+                    else:
+                        await message.channel.send("{0}は見つかりませんでした。".format(arg))
+                except:
+                    now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                    nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                    nowFileFormat = now.strftime("%Y%m%d")
+                    os.makedirs("error-log", exist_ok=True)
+                    with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                        f.write(f"--- Datetime: {nowFormat} ---\n")
+                        traceback.print_exc(file=f)
+                        f.write("\n")
+                    traceback.print_exc()
+                    await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
+                finally:
+                    return
 
         # エイリアスコマンド
         if message.content.startswith(commandAlias):
