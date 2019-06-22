@@ -109,7 +109,7 @@ def ItemParser(itemName, argument):
 
     # 引数による販売品・注文品の分岐
     if argument == "--normal":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下のとおりです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下の通りです。
 
         **販売：**
         {saleStr}
@@ -120,14 +120,14 @@ def ItemParser(itemName, argument):
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-s":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の販売状況は以下のとおりです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の販売状況は以下の通りです。
 
         {saleStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-r":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の注文状況は以下のとおりです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の注文状況は以下の通りです。
 
         {reqStr}
 
