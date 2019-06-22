@@ -117,7 +117,6 @@ class Client(discord.Client):
 
     async def showHelpMarket(self):
         helpMsg = f"""
-        SO2市場情報bot
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
         使用方法: {commandMarket} [商品名] [-s|-r]
         出力情報一覧: 
