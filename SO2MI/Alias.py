@@ -50,10 +50,14 @@ def addAlias(aliasName, formalName):
             with open("alias.json", "r", encoding="utf-8_sig") as alf:
                 alias = json.load(alf)
             
+            allAlias = []
+            for aliasPart in alias:
+                allAlias += alias[aliasPart]
+            
+            if aliasName in allAlias:
+                return False
+
             if formalName in alias:
-                for an in alias[formalName]:
-                    if aliasName == an:
-                        return False
                 alias[formalName].append(aliasName)
             else:
                 alias[formalName] = [aliasName]
