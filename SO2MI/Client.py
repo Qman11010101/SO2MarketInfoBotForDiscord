@@ -46,17 +46,34 @@ class Client(discord.Client):
             else:
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
+                elif len(msgParse) == 1:
+                    argMarket = "ありません"
                 else:
-                    # 2つ以上指定している場合は弾く
-                    if len(msgParse) >= 2:
-                        await message.channel.send("商品は1つのみを指定してください。")
+                    # 商品名が1つになっていない場合引数かどうかを確認する
+                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
+                        await message.channel.send("同時に複数の商品を指定することはできません。")
                         return
-                    
+                    else: # 引数の形だった場合
+                        argMarket = msgParse[1]
+                        if argMarket == "-s":
+                            print("引数-sは販売品のみの表示のために予約されています")
+                            await message.channel.send("無効な引数です: -s")
+                        elif argMarket == "-r":
+                            print("引数-rは注文品のみの表示のために予約されています")
+                            await message.channel.send("無効な引数です: -r")
+                        elif argMarket == "-t":
+                            print("引数-tは街ごとの表示のために予約されています")
+                            await message.channel.send("無効な引数です: -t")
+                        else:
+                            print("引数{}は予約されていません".format(argMarket))
+                            await message.channel.send("無効な引数です: " + argMarket)
+
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                     try:
                         print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
-                        arg = msgParse[0]
-                        parseRes = ItemParser(arg)
+                        print("引数は{}でした".format(argMarket))
+                        itemName = msgParse[0]
+                        parseRes = ItemParser(itemName)
                         if parseRes != False:
                             await message.channel.send(parseRes)
                         else:
