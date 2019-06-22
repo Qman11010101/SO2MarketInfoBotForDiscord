@@ -47,7 +47,6 @@ class Client(discord.Client):
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                 else:
-                    print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                     # 2つ以上指定している場合は弾く
                     if len(msgParse) >= 2:
                         await message.channel.send("商品は1つのみを指定してください。")
@@ -55,6 +54,7 @@ class Client(discord.Client):
                     
                     # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                     try:
+                        print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
                         arg = msgParse[0]
                         parseRes = ItemParser(arg)
                         if parseRes != False:
