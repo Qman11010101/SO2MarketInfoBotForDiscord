@@ -148,15 +148,17 @@ def ItemParser(itemName, argument, townName):
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-s":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}販売状況は以下の通りです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
+        **販売：**
         {saleStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-r":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}注文状況は以下の通りです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
+        **注文：**
         {reqStr}
 
         時間経過により市場がこの通りでない可能性があります。
