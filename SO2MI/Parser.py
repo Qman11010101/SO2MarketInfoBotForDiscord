@@ -5,15 +5,28 @@ import glob
 from .Alias import alias
 from .getApi import getApi
 
-def ItemParser(itemName, argument):
+def ItemParser(itemName, argument, townName):
     # API取得部
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
     sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
     req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
+    town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
 
     # 略称などの変換
     itemName = alias(itemName)
+
+    # 街名称取得部
+    townId = 0
+    townstr = ""
+    if townName != "--none":
+        for col in town:
+            if town[col]["name"] == townName:
+                townId = town[col]["area_id"]
+                townstr = "{}における".format(townName)
+                break
+        if int(townId) == 0:
+            return "nte"
 
     # アイテムID取得部
     itemId = 0
@@ -37,11 +50,18 @@ def ItemParser(itemName, argument):
     priceSaleArray = []
     unitSaleArray = []
     shopSaleArray = []
-    for saleUnit in sale:
-        if int(saleUnit["item_id"]) == int(itemId):
-            priceSaleArray.append(saleUnit["price"])
-            unitSaleArray.append(saleUnit["unit"])
-            shopSaleArray.append(saleUnit["shop_id"])
+    if int(townId) == 0:
+        for saleUnit in sale:
+            if int(saleUnit["item_id"]) == int(itemId):
+                priceSaleArray.append(saleUnit["price"])
+                unitSaleArray.append(saleUnit["unit"])
+                shopSaleArray.append(saleUnit["shop_id"])
+    else:
+        for saleUnit in sale:
+            if int(saleUnit["item_id"]) == int(itemId) and int(saleUnit["area_id"]) == int(townId):
+                priceSaleArray.append(saleUnit["price"])
+                unitSaleArray.append(saleUnit["unit"])
+                shopSaleArray.append(saleUnit["shop_id"])
     priceSaleArray.sort() # 金額ソート
     shopSaleAmount = len(set(shopSaleArray)) # 販売店舗数(店舗IDの重複を削除)
 
@@ -71,11 +91,19 @@ def ItemParser(itemName, argument):
     priceReqArray = []
     unitReqArray = []
     shopReqArray = []
-    for reqUnit in req:
-        if int(reqUnit["item_id"]) == int(itemId):
-            priceReqArray.append(reqUnit["price"])
-            unitReqArray.append(reqUnit["buy_unit"])
-            shopReqArray.append(reqUnit["shop_id"])
+    if int(townId) == 0:
+        for reqUnit in req:
+            if int(reqUnit["item_id"]) == int(itemId):
+                priceReqArray.append(reqUnit["price"])
+                unitReqArray.append(reqUnit["buy_unit"])
+                shopReqArray.append(reqUnit["shop_id"])
+    else:
+        for reqUnit in req:
+            if int(reqUnit["item_id"]) == int(itemId) and int(reqUnit["area_id"]) == int(townId):
+                priceReqArray.append(reqUnit["price"])
+                unitReqArray.append(reqUnit["buy_unit"])
+                shopReqArray.append(reqUnit["shop_id"])
+
     priceReqArray.sort(reverse=True) # 金額逆順ソート
     shopReqAmount = len(set(shopReqArray)) # 注文店舗数(店舗IDの重複を削除)
 
@@ -108,8 +136,8 @@ def ItemParser(itemName, argument):
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
     # 引数による販売品・注文品の分岐
-    if argument == "--normal":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の状況は以下の通りです。
+    if argument == "--normal" or argument == "-t":
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **販売：**
         {saleStr}
@@ -120,14 +148,14 @@ def ItemParser(itemName, argument):
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-s":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の販売状況は以下の通りです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}販売状況は以下の通りです。
 
         {saleStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """
     elif argument == "-r":
-        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の注文状況は以下の通りです。
+        summary = f"""{jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}注文状況は以下の通りです。
 
         {reqStr}
 
