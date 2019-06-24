@@ -78,6 +78,21 @@ def addAlias(aliasName, formalName):
             if int(itemId) == 0:
                 return "noItemError"
 
+            # エイリアス名と何かのアイテムの名前が被っていたらnameDuplicationErrorを返す
+            itemId = 0
+            for col in item:
+                if item[str(col)]["name"] == aliasName:
+                    itemId = col
+                    break
+    
+            if int(itemId) == 0:
+                for col in recipe:
+                    if recipe[str(col)]["name"] == aliasName:
+                        itemId = col
+                        break
+            if int(itemId) != 0:
+                return "nameDuplicationError"
+
             # 正式名称がすでにalias.jsonにあればそこのエイリアスに追加、なければ新規登録
             if formalName in alias:
                 alias[formalName].append(aliasName)
