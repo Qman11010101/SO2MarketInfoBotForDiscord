@@ -91,8 +91,10 @@ def removeAlias(aliasName):
             
             for element in alias:
                 for aliasPart in alias[element]:
+                    # エイリアス名が合致したら消す
                     if aliasPart == aliasName:
                         alias[element].remove(aliasPart)
+                        # エイリアス名がなくなったら項目ごと消す
                         if len(alias[element]) == 0:
                             del alias[element]
                         with open("alias.json", "w", encoding="utf-8_sig") as alf:
