@@ -27,7 +27,7 @@ def ItemParser(itemName, argument, townName):
                 townstr = "{}における".format(townName)
                 break
         if int(townId) == 0:
-            return "nte"
+            return "noTownError"
 
     # アイテムID取得部
     itemId = 0

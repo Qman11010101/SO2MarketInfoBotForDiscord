@@ -101,7 +101,7 @@ class Client(discord.Client):
                     itemName = msgParse[0]
                     parseRes = ItemParser(itemName, argMarket, townName)
                     if parseRes != False:
-                        if parseRes == "nte":
+                        if parseRes == "noTownError":
                             await message.channel.send("{}という街は見つかりませんでした。".format(townName))
                         else:
                             await message.channel.send(parseRes)
