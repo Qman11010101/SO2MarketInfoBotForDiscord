@@ -161,6 +161,8 @@ class Client(discord.Client):
                     elif res == "noItemError":
                         await message.channel.send(f"{msgParse[2]}は存在しません。")
                         return
+                    elif res == "nameDuplicationError":
+                        await message.channel.send(f"{msgParse[1]}というアイテムが既に存在しています。")
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
