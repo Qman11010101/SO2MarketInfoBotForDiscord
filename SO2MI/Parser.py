@@ -154,7 +154,7 @@ def ItemParser(itemName, argument, townName):
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **販売：**
-        {saleStr}
+            {saleStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """)
@@ -163,7 +163,7 @@ def ItemParser(itemName, argument, townName):
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **注文：**
-        {reqStr}
+            {reqStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """)
