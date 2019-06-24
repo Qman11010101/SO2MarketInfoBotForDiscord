@@ -1,6 +1,7 @@
 import os
 import json
 from json.decoder import JSONDecodeError
+from .getApi import getApi
 
 def alias(itemName):
     print("alias.jsonを探しています")
@@ -59,6 +60,23 @@ def addAlias(aliasName, formalName):
             # もしすでにあったらFalseを返す
             if aliasName in allAlias:
                 return False
+
+            # 正式名称がアイテムに存在しなければnoItemErrorを返す
+            item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+            recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+            itemId = 0
+            for col in item:
+                if item[str(col)]["name"] == formalName:
+                    itemId = col
+                    break
+    
+            if int(itemId) == 0:
+                for col in recipe:
+                    if recipe[str(col)]["name"] == formalName:
+                        itemId = col
+                        break
+            if int(itemId) == 0:
+                return "noItemError"
 
             # 正式名称がすでにalias.jsonにあればそこのエイリアスに追加、なければ新規登録
             if formalName in alias:

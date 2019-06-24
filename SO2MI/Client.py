@@ -158,6 +158,9 @@ class Client(discord.Client):
                     elif res == False:
                         await message.channel.send("既に登録されています。")
                         return
+                    elif res == "noItemError":
+                        await message.channel.send(f"{msgParse[2]}は存在しません。")
+                        return
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
