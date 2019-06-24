@@ -33,6 +33,7 @@ def showAlias():
             
             parsed = ""
 
+            # 表示するエイリアスと正式名称を1行ずつ代入
             for element in alias:
                 parsed += ", ".join(alias[element]) + " → " + element + "\n"
             
@@ -50,18 +51,22 @@ def addAlias(aliasName, formalName):
             with open("alias.json", "r", encoding="utf-8_sig") as alf:
                 alias = json.load(alf)
             
+            # エイリアス名を(正式名称を含まず)全部リストにする
             allAlias = []
             for aliasPart in alias:
                 allAlias += alias[aliasPart]
             
+            # もしすでにあったらFalseを返す
             if aliasName in allAlias:
                 return False
 
+            # 正式名称がすでにalias.jsonにあればそこのエイリアスに追加、なければ新規登録
             if formalName in alias:
                 alias[formalName].append(aliasName)
             else:
                 alias[formalName] = [aliasName]
             
+            # jsonを保存
             with open("alias.json", "w", encoding="utf-8_sig") as alf:
                 json.dump(alias, alf, indent=4, ensure_ascii=False)
             
