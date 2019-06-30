@@ -11,7 +11,7 @@ import configparser
 import os
 import sys
 
-#Discordのトークンの書かれたconfigの読み込み
+# Discordのトークンの書かれたconfigの読み込み
 from SO2MI import Client
 
 if os.path.isfile("config.ini"):

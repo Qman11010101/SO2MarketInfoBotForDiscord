@@ -138,32 +138,32 @@ def ItemParser(itemName, argument, townName):
 
     # 引数による販売品・注文品の分岐
     if argument == "--normal" or argument == "-t":
-        summary = textwrap.dedent(f"""\
+        summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
-
+        
         **販売：**
-            {saleStr}
-
+        {saleStr}
+        
         **注文：**
-            {reqStr}
-
+        {reqStr}
+        
         時間経過により市場がこの通りでない可能性があります。
         """)
     elif argument == "-s":
-        summary = textwrap.dedent(f"""\
+        summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **販売：**
-            {saleStr}
+        {saleStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """)
     elif argument == "-r":
-        summary = textwrap.dedent(f"""\
+        summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **注文：**
-            {reqStr}
+        {reqStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """)
