@@ -224,7 +224,7 @@ class Client(discord.Client):
                 if re.match(r"[0-9]+", str(adminID)):
                     if message.author.id == int(adminID):
                         await message.channel.send("botがシャットダウンされます。")
-                        sys.exit(0)
+                        sys.exit()
                         return
                     else:
                         await message.channel.send("コマンドを実行する権限がありません。")
