@@ -7,6 +7,7 @@ import traceback
 from json.decoder import JSONDecodeError
 from pprint import pprint as pp
 import textwrap
+import sys
 
 import discord
 from pytz import timezone
@@ -19,6 +20,9 @@ config.read("config.ini")
 
 commandMarket = config["command"]["prefix"] + config["command"]["market"]
 commandAlias = config["command"]["prefix"] + config["command"]["alias"]
+commandShutdown = config["command"]["prefix"] + config["command"]["shutdown"]
+
+adminID = config["misc"]["administrator"]
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -213,6 +217,21 @@ class Client(discord.Client):
                 else:
                     await message.channel.send("コマンドが無効です。")
                     return
+
+        # シャットダウンコマンド
+        if message.content.startswith(commandShutdown):
+            try:
+                if re.match(r"[0-9]+", str(adminID)):
+                    if message.author.id == int(adminID):
+                        await message.channel.send("botがシャットダウンされます。")
+                        sys.exit()
+                        return
+                    else:
+                        await message.channel.send("コマンドを実行する権限がありません。")
+                        return
+            except ValueError:
+                await message.channel.send("設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
+                return
 
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
