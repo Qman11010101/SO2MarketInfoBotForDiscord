@@ -2,7 +2,7 @@ import os
 import json
 from json.decoder import JSONDecodeError
 from .getApi import getApi
-from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError, AccessImpossibleError
+from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError
 
 def alias(itemName):
     print("alias.jsonを探しています")
@@ -60,7 +60,7 @@ def addAlias(aliasName, formalName):
             
             # もしすでにあったらSameAliasNameExistErrorを返す
             if aliasName in allAlias:
-                raise SameAliasNameExistError("SameAliasNameExistError: existent of the same alias name")
+                raise SameAliasNameExistError("existent of the same alias name")
 
             # 正式名称がアイテムに存在しなければNoItemErrorを返す
             item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
@@ -115,7 +115,7 @@ def addAlias(aliasName, formalName):
 
             return True
     else:
-        raise AccessImpossibleError("couldn't access to alias.json")
+        raise OSError("couldn't access to alias.json")
 
 def removeAlias(aliasName):
     if os.access("alias.json", os.W_OK):
@@ -138,4 +138,4 @@ def removeAlias(aliasName):
         else:
             return False
     else:
-        raise AccessImpossibleError("couldn't access to alias.json")
+        raise OSError("couldn't access to alias.json")

@@ -14,7 +14,7 @@ from pytz import timezone
 
 from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, AccessImpossibleError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -161,7 +161,7 @@ class Client(discord.Client):
                         if res:
                             await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                             return
-                    except AccessImpossibleError:
+                    except OSError:
                         await message.channel.send("申し訳ありません。書き込みができません。")
                         return
                     except SameAliasNameExistError:
@@ -183,15 +183,15 @@ class Client(discord.Client):
                         await message.channel.send(helpMsg)
                         return
 
-                    res = removeAlias(msgParse[1])
                     try:
+                        res = removeAlias(msgParse[1])
                         if res:
                             await message.channel.send("エイリアスを削除しました。")
                             return
                         else:
                             await message.channel.send(f"{msgParse[1]}というエイリアス名は存在しません。")
                             return
-                    except AccessImpossibleError:
+                    except OSError:
                         await message.channel.send("申し訳ありません。書き込みができません。")
                         return
 
