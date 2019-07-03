@@ -2,6 +2,7 @@ import os
 import json
 from json.decoder import JSONDecodeError
 from .getApi import getApi
+from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError, AccessImpossibleError
 
 def alias(itemName):
     print("alias.jsonを探しています")
@@ -57,11 +58,11 @@ def addAlias(aliasName, formalName):
             for aliasPart in alias:
                 allAlias += alias[aliasPart]
             
-            # もしすでにあったらFalseを返す
+            # もしすでにあったらSameAliasNameExistErrorを返す
             if aliasName in allAlias:
-                return False
+                raise SameAliasNameExistError("SameAliasNameExistError: existent of the same alias name")
 
-            # 正式名称がアイテムに存在しなければnoItemErrorを返す
+            # 正式名称がアイテムに存在しなければNoItemErrorを返す
             item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
             recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
             itemId = 0
@@ -76,7 +77,7 @@ def addAlias(aliasName, formalName):
                         itemId = col
                         break
             if int(itemId) == 0:
-                return "noItemError"
+                raise NoItemError("nonexistent of item")
 
             # エイリアス名と何かのアイテムの名前が被っていたらnameDuplicationErrorを返す
             itemId = 0
@@ -91,7 +92,7 @@ def addAlias(aliasName, formalName):
                         itemId = col
                         break
             if int(itemId) != 0:
-                return "nameDuplicationError"
+                raise NameDuplicationError("duplication of alias name")
 
             # 正式名称がすでにalias.jsonにあればそこのエイリアスに追加、なければ新規登録
             if formalName in alias:
@@ -114,7 +115,7 @@ def addAlias(aliasName, formalName):
 
             return True
     else:
-        return None
+        raise AccessImpossibleError("couldn't access to alias.json")
 
 def removeAlias(aliasName):
     if os.access("alias.json", os.W_OK):
@@ -137,4 +138,4 @@ def removeAlias(aliasName):
         else:
             return False
     else:
-        return None
+        raise AccessImpossibleError("couldn't access to alias.json")

@@ -14,6 +14,7 @@ from pytz import timezone
 
 from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, AccessImpossibleError
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -156,19 +157,21 @@ class Client(discord.Client):
                         return
                     
                     res = addAlias(msgParse[1], msgParse[2])
-                    if res == None:
+                    try:
+                        if res:
+                            await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
+                            return
+                    except AccessImpossibleError:
                         await message.channel.send("申し訳ありません。書き込みができません。")
                         return
-                    elif res == False:
+                    except SameAliasNameExistError:
                         await message.channel.send("既に登録されています。")
                         return
-                    elif res == "noItemError":
+                    except NoItemError:
                         await message.channel.send(f"{msgParse[2]}は存在しません。")
                         return
-                    elif res == "nameDuplicationError":
+                    except NameDuplicationError:
                         await message.channel.send(f"{msgParse[1]}というアイテムが既に存在しています。")
-                    else:
-                        await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                         return
 
                 elif msgParse[0] == "remove":
@@ -181,14 +184,15 @@ class Client(discord.Client):
                         return
 
                     res = removeAlias(msgParse[1])
-                    if res == None:
+                    try:
+                        if res:
+                            await message.channel.send("エイリアスを削除しました。")
+                            return
+                        else:
+                            await message.channel.send(f"{msgParse[1]}というエイリアス名は存在しません。")
+                            return
+                    except AccessImpossibleError:
                         await message.channel.send("申し訳ありません。書き込みができません。")
-                        return
-                    elif res == False:
-                        await message.channel.send(f"{msgParse[1]}というエイリアス名は存在しません。")
-                        return
-                    else:
-                        await message.channel.send("エイリアスを削除しました。")
                         return
 
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
