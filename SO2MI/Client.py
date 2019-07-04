@@ -33,7 +33,6 @@ class Client(discord.Client):
             # 指定チャンネルが見つからない場合はExceptionをraise
             raise Exception("指定されたチャンネルは見つかりませんでした")
         else:
-            # await self.targetChannel.send("{0} is Ready!".format(self.user))
             pass
         print("次のユーザーとしてログインしました:", self.user)
 
