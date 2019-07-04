@@ -49,6 +49,7 @@ class Client(discord.Client):
             del msgParse[0]
             if len(msgParse) == 0:
                 await self.showHelpMarket()
+                return
             else:
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
