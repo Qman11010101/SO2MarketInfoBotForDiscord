@@ -156,22 +156,19 @@ class Client(discord.Client):
                         await message.channel.send(helpMsg)
                         return
                     
-                    res = addAlias(msgParse[1], msgParse[2])
                     try:
-                        if res:
-                            await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
-                            return
+                        addAlias(msgParse[1], msgParse[2])
                     except OSError:
                         await message.channel.send("申し訳ありません。書き込みができません。")
-                        return
                     except SameAliasNameExistError:
                         await message.channel.send("既に登録されています。")
-                        return
                     except NoItemError:
                         await message.channel.send(f"{msgParse[2]}は存在しません。")
-                        return
                     except NameDuplicationError:
                         await message.channel.send(f"{msgParse[1]}というアイテムが既に存在しています。")
+                    else:
+                        await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
+                    finally:
                         return
 
                 elif msgParse[0] == "remove":
@@ -184,8 +181,7 @@ class Client(discord.Client):
                         return
 
                     try:
-                        res = removeAlias(msgParse[1])
-                        if res:
+                        if removeAlias(msgParse[1]):
                             await message.channel.send("エイリアスを削除しました。")
                             return
                         else:
