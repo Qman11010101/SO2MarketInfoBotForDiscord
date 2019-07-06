@@ -131,20 +131,7 @@ class Client(discord.Client):
             msgParse = message.content.split()
             del msgParse[0]
             if len(msgParse) == 0:
-                helpMsg = textwrap.dedent(f"""
-                {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
-                ・add
-                　エイリアスを追加します。
-                　使用方法: {commandAlias} add <エイリアス名> <正式名称>
-                ・help
-                　このヘルプを表示します。
-                ・show
-                　エイリアス一覧を表示します。
-                ・remove
-                　エイリアスを削除します。
-                　使用方法: {commandAlias} remove <エイリアス名>
-                """)
-                await message.channel.send(helpMsg)
+                await self.showHelpAlias()
                 return
             else:
                 if msgParse[0] == "add":
@@ -192,17 +179,7 @@ class Client(discord.Client):
                         return
 
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
-                    helpMsg = textwrap.dedent(f"""
-                    {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
-                    ・add
-                    　エイリアスを追加します。
-                    　使用方法: {commandAlias} add <エイリアス名> <正式名称>
-                    ・help
-                    　このヘルプを表示します。
-                    ・show
-                    　エイリアス一覧を表示します。
-                    """)
-                    await message.channel.send(helpMsg)
+                    await self.showHelpAlias()
                     return
 
                 elif msgParse[0] == "show":
@@ -259,5 +236,18 @@ class Client(discord.Client):
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
+        """)
+        await self.targetChannel.send(helpMsg)
+
+    async def showHelpAlias(self):
+        helpMsg = textwrap.dedent(f"""
+        {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
+        ・add
+        　エイリアスを追加します。
+        　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+        ・help
+        　このヘルプを表示します。
+        ・show
+        　エイリアス一覧を表示します。
         """)
         await self.targetChannel.send(helpMsg)
