@@ -14,7 +14,7 @@ from pytz import timezone
 
 from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -106,12 +106,11 @@ class Client(discord.Client):
                     itemName = msgParse[0]
                     parseRes = ItemParser(itemName, argMarket, townName)
                     if parseRes != False:
-                        if parseRes == "noTownError":
-                            await message.channel.send("{}という街は見つかりませんでした。".format(townName))
-                        else:
-                            await message.channel.send(parseRes)
+                        await message.channel.send(parseRes)
                     else:
                         await message.channel.send("{}は見つかりませんでした。".format(itemName))
+                except NoTownError:
+                    await message.channel.send("{}という街は見つかりませんでした。".format(townName))
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")

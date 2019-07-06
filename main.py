@@ -19,7 +19,7 @@ if os.path.isfile("config.ini"):
     config.read("config.ini")
 else:
     print("設定ファイルがありません。")
-    sys.exit(1)    
+    sys.exit(1)
 
 if __name__ == "__main__":
     # Run

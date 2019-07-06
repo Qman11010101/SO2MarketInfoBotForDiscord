@@ -9,3 +9,8 @@ class NameDuplicationError(Exception):
 # SameAliasNameExistError
 class SameAliasNameExistError(Exception):
     pass
+
+# NoTownError
+class NoTownError(Exception):
+    pass
+    

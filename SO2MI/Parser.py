@@ -5,6 +5,7 @@ import textwrap
 
 from .Alias import alias
 from .getApi import getApi
+from .Exceptions import NoTownError
 
 def ItemParser(itemName, argument, townName):
     # API取得部
@@ -27,7 +28,7 @@ def ItemParser(itemName, argument, townName):
                 townstr = "{}における".format(townName)
                 break
         if int(townId) == 0:
-            return "noTownError"
+            raise NoTownError
 
     # アイテムID取得部
     itemId = 0
