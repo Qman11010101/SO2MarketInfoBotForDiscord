@@ -88,7 +88,7 @@ def ItemParser(itemName, argument, townName):
         販売店舗数: {shopSaleAmount}店舗
         """
     else:
-        saleStr = "\n       現在販売されていません。\n"
+        saleStr = "\n        現在販売されていません。\n"
 
     priceReqArray = []
     unitReqArray = []
