@@ -19,9 +19,12 @@ from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistErr
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-commandMarket = config["command"]["prefix"] + config["command"]["market"]
-commandAlias = config["command"]["prefix"] + config["command"]["alias"]
-commandShutdown = config["command"]["prefix"] + config["command"]["shutdown"]
+prefix = config["command"]["prefix"]
+
+commandMarket = prefix + config["command"]["market"]
+commandAlias = prefix + config["command"]["alias"]
+commandShutdown = prefix + config["command"]["shutdown"]
+commandVersion = prefix + config["command"]["version"]
 
 adminID = config["misc"]["administrator"]
 
@@ -208,6 +211,19 @@ class Client(discord.Client):
             except ValueError:
                 await message.channel.send("設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
                 return
+
+        # バージョンコマンド
+        if message.content.startswith(commandVersion):
+            verMsg = textwrap.dedent("""
+            **SOLD OUT 2 市場情報bot for Discord**
+
+            Version 2.3
+            製作者: キューマン・エノビクト、ゆずりょー
+            ライセンス: MIT License
+            リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
+            """)
+            await message.channel.send(verMsg)
+            return
 
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
