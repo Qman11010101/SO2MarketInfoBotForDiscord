@@ -130,7 +130,6 @@ class Client(discord.Client):
                         await message.channel.send("以下のエラーが発生しました。")
                         await message.channel.send(tblist[2])
                     else:
-                        print(config["misc"]["EnableDisplayError"])
                         await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
                 finally:
                     return
