@@ -28,7 +28,7 @@ def ItemParser(itemName, argument, townName):
                 townstr = "{}における".format(townName)
                 break
         if int(townId) == 0:
-            raise NoTownError
+            raise NoTownError("such town does not exists")
 
     # アイテムID取得部
     itemId = 0
