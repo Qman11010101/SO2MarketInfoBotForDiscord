@@ -21,7 +21,7 @@ def ItemParser(itemName, argument, townName):
     # 街名称取得部
     townId = 0
     townstr = ""
-    if townName != "--none":
+    if townName != "none":
         for col in town:
             if town[col]["name"] == townName:
                 townId = town[col]["area_id"]
@@ -138,7 +138,7 @@ def ItemParser(itemName, argument, townName):
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
     # 引数による販売品・注文品の分岐
-    if argument == "--normal" or argument == "-t":
+    if argument == "-n":
         summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
         
