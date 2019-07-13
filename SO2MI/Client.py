@@ -50,70 +50,62 @@ class Client(discord.Client):
             msgParse = message.content.split()
             # コマンドを削除
             del msgParse[0]
+            # コマンド単体だった場合
             if len(msgParse) == 0:
                 await self.showHelpMarket()
                 return
             else:
+                # ヘルプ表示の場合
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                     return
+                # 商品名が1つの場合
                 elif len(msgParse) == 1:
-                    argMarket = "--normal"
-                    townName = "--none"
+                    msgParse.extend(["-n", "-t", "none", "--end"]) # 「[商品名] -n -t none --end」というコマンド文字列を生成する
                 else:
+                    if msgParse[-1] != "--end":
+                        msgParse.append("--end") # 終端引数を追加する
                     # 商品名が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
                         await message.channel.send("同時に複数の商品を指定することはできません。")
                         return
                     else: # 引数の形だった場合
-                        argMarket = msgParse[1]
-                        if argMarket == "-s" or argMarket == "-r":
-                            if len(msgParse) == 2: #[商品名] [引数]
-                                print("引数は{}でした".format(argMarket))
-                                townName = "--none"
-                            else:
-                                if msgParse[2] == "-t":
-                                    if len(msgParse) == 3: # [商品名] [引数] -t
-                                        print("街の名前が指定されていません")
-                                        await message.channel.send("引数-tに対して街が指定されていません。")
-                                        return
-                                    elif len(msgParse) >= 5: # [商品名] [引数] -t OO XX
-                                        print("街の名前が複数指定されています")
-                                        await message.channel.send("引数-tに対して街を複数指定することはできません。")
-                                        return
-                                    else:
-                                        townName = msgParse[3]
-                        elif argMarket == "-t":
-                            print("引数は-tでした")
-                            if len(msgParse) == 2: # [商品名] -t
-                                print("街の名前が指定されていません")
-                                await message.channel.send("引数-tに対して街が指定されていません。")
-                                return
-                            elif len(msgParse) >= 4: # [商品名] -t OO XX
-                                print("街の名前が複数指定されています")
-                                await message.channel.send("引数-tに対して街を複数指定することはできません。")
+                        # 引数が正しいか判定する(変な引数は全部ここで弾かれる)
+                        for arg in msgParse:
+                            # 引数の形をしているが予約されていないものがあったらエラー
+                            if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
+                                if arg != "-s" and arg != "-r" and arg != "-t" and arg != "--end": # ここに最初の引数になる可能性のあるものを追加していく
+                                    print("引数{}は予約されていません".format(arg))
+                                    await message.channel.send("無効な引数です: " + arg)
+                                    return
+                        # 第1引数[-s|-r|-n]
+                        if msgParse[1] != "-s" and msgParse[1] != "-r":
+                            msgParse.insert(1, "-n")
+                        # 第2引数/第3引数[-t ***]
+                        if msgParse[2] != "-t":
+                            msgParse.insert(2, "-t")
+                            msgParse.insert(3, "none")
+                        else: # [-t]のときの処理
+                            # 街の名前を参照したとき引数の形が出てきたら街が指定されていない
+                            if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[3]):
+                                await message.channel.send("引数-tに対して街の名前が指定されていません。")
                                 return
                             else:
-                                townName = msgParse[2]
-                        elif argMarket == "--normal":
-                            print("通常のリクエストです")
-                        else:
-                            print("引数{}は予約されていません".format(argMarket))
-                            await message.channel.send("無効な引数です: " + argMarket)
-                            return
+                                # 第4引数を参照して引数の形でなければ街を参照したと見做す
+                                if not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[4]):
+                                    await message.channel.send("引数-tに対して街を複数指定することはできません。")
+                                    return
 
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
                     print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
-                    print("引数は{}でした".format(argMarket))
-                    itemName = msgParse[0]
-                    parseRes = ItemParser(itemName, argMarket, townName)
+                    parseRes = ItemParser(msgParse[0], msgParse[1], msgParse[3])
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
-                        await message.channel.send("{}は見つかりませんでした。".format(itemName))
+                        await message.channel.send("{}は見つかりませんでした。".format(msgParse[0]))
                 except NoTownError:
-                    await message.channel.send("{}という街は見つかりませんでした。".format(townName))
+                    await message.channel.send("{}という街は見つかりませんでした。".format(msgParse[3]))
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
@@ -130,7 +122,7 @@ class Client(discord.Client):
                         await message.channel.send("以下のエラーが発生しました。")
                         await message.channel.send(tblist[2])
                     else:
-                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
+                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nコマンドが間違っている可能性があります。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
                 finally:
                     return
 
