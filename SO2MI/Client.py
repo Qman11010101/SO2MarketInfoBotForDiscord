@@ -14,7 +14,7 @@ from pytz import timezone
 
 from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, InvalidURLError
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -122,7 +122,7 @@ class Client(discord.Client):
                         await message.channel.send("以下のエラーが発生しました。")
                         await message.channel.send(tblist[2])
                     else:
-                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nコマンドが間違っている可能性があります。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
+                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nコマンドが間違っている可能性がありますので、今一度ご確認ください。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
                 finally:
                     return
 

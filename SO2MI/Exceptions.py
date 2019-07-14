@@ -13,4 +13,7 @@ class SameAliasNameExistError(Exception):
 # NoTownError
 class NoTownError(Exception):
     pass
-    
+
+# InvalidURLError
+class InvalidURLError(Exception):
+    pass

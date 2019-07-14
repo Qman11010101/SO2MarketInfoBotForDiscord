@@ -5,15 +5,18 @@ import textwrap
 
 from .Alias import alias
 from .getApi import getApi
-from .Exceptions import NoTownError
+from .Exceptions import NoTownError, InvalidURLError
 
 def ItemParser(itemName, argument, townName):
     # API取得部
-    item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
-    recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-    sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-    req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
-    town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
+    try:
+        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+        recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+        sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+        req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
+        town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
+    except:
+        raise InvalidURLError("wrong URL")
 
     # 略称などの変換
     itemName = alias(itemName)
