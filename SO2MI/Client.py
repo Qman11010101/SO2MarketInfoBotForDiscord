@@ -218,7 +218,7 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version 2.3.2
+            Version 2.4
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
@@ -229,7 +229,7 @@ class Client(discord.Client):
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名]
+        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -250,6 +250,7 @@ class Client(discord.Client):
         -s: 販売品の情報のみを表示することができます。
         -r: 注文品の情報のみを表示することができます。
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
+        -b: ベータ版の市場情報を表示します。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
