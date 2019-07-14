@@ -74,7 +74,7 @@ class Client(discord.Client):
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg != "-s" and arg != "-r" and arg != "-t" and arg != "--end": # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-s", "-r", "-t", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
                                     print("引数{}は予約されていません".format(arg))
                                     await message.channel.send("無効な引数です: " + arg)
                                     return
