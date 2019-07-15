@@ -26,7 +26,7 @@ def getApi(apiName, url):
         jsonDataTime = datetime.datetime.strptime(target, "api-log/{0}-%y%m%d%H%M.json".format(apiName))
 
         # 販売品と注文品は10分ごとに、それ以外は60分ごとに注文する
-        if apiName == "sale" or apiName == "request":
+        if apiName in ("sale", "request", "sale_beta", "request_beta"):
             reqTime = 10
         else:
             reqTime = 60

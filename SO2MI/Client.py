@@ -61,7 +61,7 @@ class Client(discord.Client):
                     return
                 # 商品名が1つの場合
                 elif len(msgParse) == 1:
-                    msgParse.extend(["-n", "-t", "none", "--end"]) # 「[商品名] -n -t none --end」というコマンド文字列を生成する
+                    msgParse.extend(["-n", "-t", "none", "--release", "--end"]) # 「[商品名] -n -t none --release --end」というコマンド文字列を生成する
                 else:
                     if msgParse[-1] != "--end":
                         msgParse.append("--end") # 終端引数を追加する
@@ -74,7 +74,7 @@ class Client(discord.Client):
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-s", "-r", "-t", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-s", "-r", "-t", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
                                     print("引数{}は予約されていません".format(arg))
                                     await message.channel.send("無効な引数です: " + arg)
                                     return
@@ -95,11 +95,14 @@ class Client(discord.Client):
                                 if not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[4]):
                                     await message.channel.send("引数-tに対して街を複数指定することはできません。")
                                     return
+                        # 第4引数[-b]
+                        if msgParse[4] != "-b":
+                            msgParse.insert(4, "--release")
 
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
                     print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
-                    parseRes = ItemParser(msgParse[0], msgParse[1], msgParse[3])
+                    parseRes = ItemParser(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
@@ -215,7 +218,7 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version 2.3.2
+            Version 2.4
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
@@ -226,7 +229,7 @@ class Client(discord.Client):
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名]
+        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
         出力情報一覧: 
         ・販売
         　・最安値
@@ -247,6 +250,7 @@ class Client(discord.Client):
         -s: 販売品の情報のみを表示することができます。
         -r: 注文品の情報のみを表示することができます。
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
+        -b: ベータ版の市場情報を表示します。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
