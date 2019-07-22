@@ -14,6 +14,7 @@ from pytz import timezone
 
 from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
+from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, InvalidURLError
 
 config = configparser.ConfigParser()
@@ -25,6 +26,7 @@ commandMarket = prefix + config["command"]["market"]
 commandAlias = prefix + config["command"]["alias"]
 commandShutdown = prefix + config["command"]["shutdown"]
 commandVersion = prefix + config["command"]["version"]
+commandSearch = prefix + config["command"]["search"]
 
 adminID = config["misc"]["administrator"]
 
@@ -218,13 +220,61 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version 2.4
+            Version 2.5β
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
             """)
             await message.channel.send(verMsg)
             return
+
+        # アイテム検索コマンド
+        if message.content.startswith(commandSearch):
+            msgParse = message.content.split()
+            # コマンドを削除
+            del msgParse[0]
+            # コマンド単体だった場合
+            if len(msgParse) == 0:
+                await self.showHelpSearch()
+                return
+            else:
+                # ヘルプ表示の場合
+                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    await self.showHelpSearch()
+                    return
+                elif len(msgParse) == 1: # 検索文字列単体
+                    msgParse.extend(["-n", "--release", "--end"])
+                else:
+                    if msgParse[-1] != "--end":
+                        msgParse.append("--end") # 終端引数を追加する
+                    # 文字列が1つになっていない場合引数かどうかを確認する
+                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
+                        await message.channel.send("文字列は1つにまとめるようにしてください。複数の文字列の検索は正規表現を利用してください。")
+                        return
+                    else: # 引数の形だった場合
+                        # 引数が正しいか判定する(変な引数は全部ここで弾かれる)
+                        for arg in msgParse:
+                            # 引数の形をしているが予約されていないものがあったらエラー
+                            if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
+                                if arg not in ("-s", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                    print("引数{}は予約されていません".format(arg))
+                                    await message.channel.send("無効な引数です: " + arg)
+                                    return
+                        # 第1引数[-s|-r|-n]
+                        if msgParse[1] != "-s" and msgParse[1] != "-r":
+                            msgParse.insert(1, "-n")
+                        # 第2引数[-b]
+                        if msgParse[2] != "-b":
+                            msgParse.insert(2, "--release")
+                
+                res = itemSearch(msgParse[0], msgParse[1], msgParse[2])
+
+                try:
+                    await message.channel.send(res)
+                except discord.errors.HTTPException:
+                    await message.channel.send("検索結果が2000文字を超えているため表示できません。")
+                return
+
 
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
@@ -266,5 +316,13 @@ class Client(discord.Client):
         　このヘルプを表示します。
         ・show
         　エイリアス一覧を表示します。
+        """)
+        await self.targetChannel.send(helpMsg)
+
+    async def showHelpSearch(self):
+        helpMsg = textwrap.dedent(f"""
+        指定した単語や文字を含むアイテムを検索します。
+        正規表現を使用することができます。
+        使用方法: {commandSearch} [文字列もしくは正規表現]
         """)
         await self.targetChannel.send(helpMsg)
