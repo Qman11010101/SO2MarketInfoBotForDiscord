@@ -27,3 +27,4 @@ def itemSearch(string, argument, beta):
         msgReturn = f"文字列「{string}」に合致する以下のアイテムが見つかりました:\n\n{liststr}"
     
     return msgReturn
+    
