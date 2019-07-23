@@ -143,7 +143,7 @@ class Client(discord.Client):
                     if len(msgParse) != 3:
                         helpMsg = textwrap.dedent(f"""
                         エイリアスを追加します。
-                        使用方法: {commandAlias} add <エイリアス名> <正式名称>
+                        使用方法: {commandAlias} add [エイリアス名] [正式名称]
                         """)
                         await message.channel.send(helpMsg)
                         return
@@ -167,7 +167,7 @@ class Client(discord.Client):
                     if len(msgParse) != 2:
                         helpMsg = textwrap.dedent(f"""
                         エイリアスを削除します。
-                        使用方法: {commandAlias} remove <エイリアス名>
+                        使用方法: {commandAlias} remove [エイリアス名]
                         """)
                         await message.channel.send(helpMsg)
                         return
@@ -311,7 +311,7 @@ class Client(discord.Client):
         {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
         ・add
         　エイリアスを追加します。
-        　使用方法: {commandAlias} add <エイリアス名> <正式名称>
+        　使用方法: {commandAlias} add [エイリアス名] [正式名称]
         ・help
         　このヘルプを表示します。
         ・show
