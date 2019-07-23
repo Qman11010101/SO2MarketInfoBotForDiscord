@@ -18,12 +18,14 @@ def itemSearch(string, argument, beta):
 
     listItem = []
     listRecipe = []
-    for col in item:
-        if reg.search(item[str(col)]["name"]):
-            listItem.append(item[str(col)]["name"])
-    for col in recipe:
-        if reg.search(recipe[str(col)]["name"]):
-            listRecipe.append(recipe[str(col)]["name"])
+    if argument in ("-i", "-n"):
+        for col in item:
+            if reg.search(item[str(col)]["name"]):
+                listItem.append(item[str(col)]["name"])
+    if argument in ("-r", "-n"):
+        for col in recipe:
+            if reg.search(recipe[str(col)]["name"]):
+                listRecipe.append(recipe[str(col)]["name"])
 
     if len(listItem) + len(listRecipe) == 0:
         msgReturn = f"文字列「{string}」を含むアイテムは見つかりませんでした。"

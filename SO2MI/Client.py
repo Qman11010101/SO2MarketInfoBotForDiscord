@@ -256,12 +256,12 @@ class Client(discord.Client):
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-s", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-i", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
                                     print("引数{}は予約されていません".format(arg))
                                     await message.channel.send("無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
-                        if msgParse[1] != "-s" and msgParse[1] != "-r":
+                        if msgParse[1] != "-i" and msgParse[1] != "-r":
                             msgParse.insert(1, "-n")
                         # 第2引数[-b]
                         if msgParse[2] != "-b":
