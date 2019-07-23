@@ -6,8 +6,12 @@ from .getApi import getApi
 
 def itemSearch(string, argument, beta):
     # API取得部
-    item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
-    recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+    if beta == "--release":
+        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+        recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+    else:
+        item = getApi("item_beta", "https://so2-beta.mutoys.com/master/item.json")
+        recipe = getApi("recipe_beta", "https://so2-beta.mutoys.com/json/master/recipe_item.json")
 
     # 正規表現のコンパイル
     reg = re.compile(string)
