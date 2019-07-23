@@ -12,18 +12,26 @@ def itemSearch(string, argument, beta):
     # 正規表現のコンパイル
     reg = re.compile(string)
 
-    itemlist = []
+    listItem = []
+    listRecipe = []
     for col in item:
         if reg.search(item[str(col)]["name"]):
-            itemlist.append(item[str(col)]["name"])
+            listItem.append(item[str(col)]["name"])
     for col in recipe:
         if reg.search(recipe[str(col)]["name"]):
-            itemlist.append(recipe[str(col)]["name"])
+            listRecipe.append(recipe[str(col)]["name"])
 
-    if len(itemlist) == 0:
+    if len(listItem) + len(listRecipe) == 0:
         msgReturn = f"文字列「{string}」を含むアイテムは見つかりませんでした。"
     else:
-        liststr = "\n".join(itemlist)
-        msgReturn = f"文字列「{string}」に合致する以下のアイテムが見つかりました:\n\n{liststr}"
+        if len(listItem) == 0:
+            liststrItem = ""
+        else:
+            liststrItem = "\n\n**アイテム:**\n" + "\n".join(listItem)
+        if len(listRecipe) == 0:
+            liststrRecipe = ""
+        else:
+            liststrRecipe = "\n\n**レシピ品:**\n" + "\n".join(listRecipe)
+        msgReturn = f"文字列「{string}」に合致する以下のアイテムが見つかりました:{liststrItem}{liststrRecipe}"
     
     return msgReturn
