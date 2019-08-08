@@ -274,6 +274,8 @@ class Client(discord.Client):
                 except discord.errors.HTTPException:
                     await message.channel.send("検索結果が2000文字を超えているため表示できません。")
                 return
+        
+        
 
 
     async def showHelpMarket(self):
