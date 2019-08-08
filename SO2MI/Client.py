@@ -27,6 +27,7 @@ commandAlias = prefix + config["command"]["alias"]
 commandShutdown = prefix + config["command"]["shutdown"]
 commandVersion = prefix + config["command"]["version"]
 commandSearch = prefix + config["command"]["search"]
+commandHelp = prefix + config["command"]["help"]
 
 adminID = config["misc"]["administrator"]
 
@@ -220,7 +221,7 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version 2.5.1
+            Version 2.6
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
@@ -275,7 +276,23 @@ class Client(discord.Client):
                     await message.channel.send("検索結果が2000文字を超えているため表示できません。")
                 return
         
-        
+        # ヘルプコマンド
+        if message.content.startswith(commandHelp):
+            helpMsg = textwrap.dedent(f"""
+            **SOLD OUT 2 市場情報bot for Discord Version 2.6**
+
+            このbotでは以下のコマンドが使用可能です。
+            各コマンドのより詳細な情報は各コマンドに「ヘルプ」「help」などを引数として渡すと閲覧可能です。
+            ただし、一部のコマンドについてはヘルプが存在しません。
+
+            {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
+            {commandAlias} add [エイリアス名] [正式名称]
+            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
+            {commandVersion}
+            {commandShutdown}
+            """)
+            await message.channel.send(helpMsg)
+            return
 
 
     async def showHelpMarket(self):
