@@ -11,17 +11,17 @@ import configparser
 import os
 import sys
 
-# Discordのトークンの書かれたconfigの読み込み
 from SO2MI import Client
 
+# Discordのトークンの書かれたconfigの読み込み
 if os.path.isfile("config.ini"):
     config = configparser.ConfigParser()
     config.read("config.ini")
 else:
     print("設定ファイルがありません。")
-    sys.exit(1)
+    sys.exit(1) # 異常終了
 
 if __name__ == "__main__":
-    # Run
+    # 実行
     dcCli = Client()
     dcCli.run(config["discord"]["token"])
