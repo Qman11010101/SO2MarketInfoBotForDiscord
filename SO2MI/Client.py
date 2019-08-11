@@ -70,7 +70,7 @@ class Client(discord.Client):
                         msgParse.append("--end") # 終端引数を追加する
                     # 商品名が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
-                        await message.channel.send("同時に複数の商品を指定することはできません。")
+                        await message.channel.send("エラー: 同時に複数の商品を指定することはできません。")
                         return
                     else: # 引数の形だった場合
                         # 引数が正しいか判定する(変な引数は全部ここで弾かれる)
@@ -78,8 +78,8 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-s", "-r", "-t", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print("引数{}は予約されていません".format(arg))
-                                    await message.channel.send("無効な引数です: " + arg)
+                                    print("エラー: 引数{}は予約されていません".format(arg))
+                                    await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
                         if msgParse[1] != "-s" and msgParse[1] != "-r":
@@ -91,12 +91,12 @@ class Client(discord.Client):
                         else: # [-t]のときの処理
                             # 街の名前を参照したとき引数の形が出てきたら街が指定されていない
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[3]):
-                                await message.channel.send("引数-tに対して街の名前が指定されていません。")
+                                await message.channel.send("エラー: 引数-tに対して街の名前が指定されていません。")
                                 return
                             else:
                                 # 第4引数を参照して引数の形でなければ街を参照したと見做す
                                 if not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[4]):
-                                    await message.channel.send("引数-tに対して街を複数指定することはできません。")
+                                    await message.channel.send("エラー: 引数-tに対して街を複数指定することはできません。")
                                     return
                         # 第4引数[-b]
                         if msgParse[4] != "-b":
@@ -109,9 +109,9 @@ class Client(discord.Client):
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
-                        await message.channel.send("{}は見つかりませんでした。".format(msgParse[0]))
+                        await message.channel.send("エラー: {}は見つかりませんでした。".format(msgParse[0]))
                 except NoTownError:
-                    await message.channel.send("{}という街は見つかりませんでした。".format(msgParse[3]))
+                    await message.channel.send("エラー: {}という街は見つかりませんでした。".format(msgParse[3]))
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
@@ -152,13 +152,13 @@ class Client(discord.Client):
                     try:
                         addAlias(msgParse[1], msgParse[2])
                     except OSError:
-                        await message.channel.send("申し訳ありません。書き込みができません。")
+                        await message.channel.send("エラー: alias.jsonにアクセスできません。")
                     except SameAliasNameExistError:
-                        await message.channel.send("既に登録されています。")
+                        await message.channel.send("エラー: 既に登録されています。")
                     except NoItemError:
-                        await message.channel.send(f"{msgParse[2]}は存在しません。")
+                        await message.channel.send(f"エラー: {msgParse[2]}は存在しません。")
                     except NameDuplicationError:
-                        await message.channel.send(f"{msgParse[1]}というアイテムが既に存在しています。")
+                        await message.channel.send(f"エラー: {msgParse[1]}というアイテムが既に存在しています。")
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                     finally:
@@ -178,10 +178,10 @@ class Client(discord.Client):
                             await message.channel.send("エイリアスを削除しました。")
                             return
                         else:
-                            await message.channel.send(f"{msgParse[1]}というエイリアス名は存在しません。")
+                            await message.channel.send(f"エラー: {msgParse[1]}というエイリアス名は存在しません。")
                             return
                     except OSError:
-                        await message.channel.send("申し訳ありません。書き込みができません。")
+                        await message.channel.send("エラー: alias.jsonにアクセスできません。")
                         return
 
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
@@ -191,14 +191,14 @@ class Client(discord.Client):
                 elif msgParse[0] == "show":
                     res = showAlias()
                     if res == False:
-                        await message.channel.send("エイリアスは登録されていません。")
+                        await message.channel.send("エラー: エイリアスは登録されていません。")
                         return
                     else:
                         await message.channel.send(res)
                         return
 
                 else:
-                    await message.channel.send("コマンドが無効です。")
+                    await message.channel.send("エラー: コマンドが無効です。")
                     return
 
         # シャットダウンコマンド
@@ -210,10 +210,10 @@ class Client(discord.Client):
                         sys.exit()
                         return
                     else:
-                        await message.channel.send("コマンドを実行する権限がありません。")
+                        await message.channel.send("エラー: コマンドを実行する権限がありません。")
                         return
             except ValueError:
-                await message.channel.send("設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
+                await message.channel.send("エラー: 設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
                 return
 
         # バージョンコマンド
@@ -258,8 +258,8 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-i", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print("引数{}は予約されていません".format(arg))
-                                    await message.channel.send("無効な引数です: " + arg)
+                                    print("エラー: 引数{}は予約されていません".format(arg))
+                                    await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
                         if msgParse[1] != "-i" and msgParse[1] != "-r":
@@ -273,7 +273,7 @@ class Client(discord.Client):
                 try:
                     await message.channel.send(res)
                 except discord.errors.HTTPException:
-                    await message.channel.send("検索結果が2000文字を超えているため表示できません。")
+                    await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
                 return
         
         # ヘルプコマンド
