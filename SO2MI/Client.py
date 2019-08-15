@@ -33,6 +33,8 @@ commandWiki = prefix + config["command"]["wiki"]
 
 adminID = config["misc"]["administrator"]
 
+DEFINE_VERSION = "DEV-EXTRA-3"
+
 class Client(discord.Client):
     async def on_ready(self):
         # 設定されているチャンネルIDに接続
@@ -262,10 +264,10 @@ class Client(discord.Client):
 
         # バージョンコマンド
         if message.content.startswith(commandVersion):
-            verMsg = textwrap.dedent("""
+            verMsg = textwrap.dedent(f"""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version DEV-EXTRA-2
+            Version {DEFINE_VERSION}
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
@@ -341,7 +343,7 @@ class Client(discord.Client):
         # ヘルプコマンド
         if message.content.startswith(commandHelp):
             helpMsg = textwrap.dedent(f"""
-            **SOLD OUT 2 市場情報bot for Discord Version DEV-EXTRA-2**
+            **SOLD OUT 2 市場情報bot for Discord Version {DEFINE_VERSION}**
 
             このbotでは以下のコマンドが使用可能です。
             各コマンドのより詳細な情報は各コマンドに「ヘルプ」「help」などを引数として渡すと閲覧可能です。
