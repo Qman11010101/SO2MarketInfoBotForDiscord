@@ -16,14 +16,14 @@ def getApi(apiName, url):
     now = datetime.datetime.now(timezone)
 
     # API名に基づいてファイルを選択
-    target = glob.glob("api-log/{0}-*.json".format(apiName))
+    target = glob.glob(f"api-log/{apiName}-*.json")
 
     # ファイルが存在した場合の分岐
     if len(target) != 0:
         target = target[0].replace("\\", "/") # Windowsではパス文字がバックスラッシュ×2なため変換しておく
 
         # JSONの名前からデータの取得時間を推測する
-        jsonDataTime = datetime.datetime.strptime(target, "api-log/{0}-%y%m%d%H%M.json".format(apiName))
+        jsonDataTime = datetime.datetime.strptime(target, f"api-log/{apiName}-%y%m%d%H%M.json")
 
         # 販売品と注文品は10分ごとに、それ以外は60分ごとに注文する
         if apiName in ("sale", "request", "sale_beta", "request_beta"):
@@ -55,10 +55,10 @@ def getApi(apiName, url):
         os.makedirs("api-log/", exist_ok=True)
 
         # 古いデータを削除する
-        for delPrev in glob.glob("api-log/{0}-*.json".format(apiName)):
+        for delPrev in glob.glob(f"api-log/{apiName}-*.json"):
             try:
                 os.remove(delPrev)
-                print("次のファイルを削除しました: {0}".format(delPrev))
+                print(f"次のファイルを削除しました: {delPrev}")
             except FileNotFoundError: # もしファイルがなくても無視する
                 pass
 

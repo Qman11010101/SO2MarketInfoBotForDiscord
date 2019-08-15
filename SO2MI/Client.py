@@ -12,7 +12,7 @@ import sys
 import discord
 from pytz import timezone
 
-from .Parser import ItemParser
+from .Parser import itemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, InvalidURLError
@@ -80,7 +80,7 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-s", "-r", "-t", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print("エラー: 引数{}は予約されていません".format(arg))
+                                    print(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
@@ -106,14 +106,14 @@ class Client(discord.Client):
 
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
-                    print("{0} が {1} をリクエストしました".format(message.author, msgParse[0]))
-                    parseRes = ItemParser(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
+                    print(f"{message.author} が {msgParse[0]} をリクエストしました")
+                    parseRes = itemParser(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
-                        await message.channel.send("エラー: {}は見つかりませんでした。".format(msgParse[0]))
+                        await message.channel.send(f"エラー: {msgParse[0]}は見つかりませんでした。")
                 except NoTownError:
-                    await message.channel.send("エラー: {}という街は見つかりませんでした。".format(msgParse[3]))
+                    await message.channel.send(f"エラー: {msgParse[3]}という街は見つかりませんでした。")
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
@@ -260,7 +260,7 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-i", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print("エラー: 引数{}は予約されていません".format(arg))
+                                    print(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
