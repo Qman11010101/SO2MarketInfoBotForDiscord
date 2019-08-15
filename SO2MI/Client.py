@@ -265,7 +265,7 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version 2.6
+            Version DEV-EXTRA
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
