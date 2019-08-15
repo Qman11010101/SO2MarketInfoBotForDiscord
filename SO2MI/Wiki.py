@@ -2,13 +2,10 @@ import textwrap
 
 from .Alias import alias
 from .getApi import getApi
-from .Exceptions import InvalidURLError, NoItemError
+from .Exceptions import NoItemError
 
 def wikiLinkGen(itemName):
-    try:
-        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
-    except:
-        raise InvalidURLError("wrong URL")
+    item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
 
     itemName = alias(itemName)
 

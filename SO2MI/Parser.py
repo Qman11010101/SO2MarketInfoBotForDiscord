@@ -10,23 +10,17 @@ from .Exceptions import NoTownError, InvalidURLError
 def itemParser(itemName, argument, townName, beta):
     # API取得部
     if beta != "-b":
-        try:
-            item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
-            recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-            sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-            req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
-            town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
-        except:
-            raise InvalidURLError("wrong URL")
+        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+        recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+        sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+        req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
+        town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
     else:
-        try:
-            item = getApi("item_beta", "https://so2-beta.mutoys.com/master/item.json")
-            recipe = getApi("recipe_beta", "https://so2-beta.mutoys.com/json/master/recipe_item.json")
-            sale = getApi("sale_beta", "https://so2-beta.mutoys.com/json/sale/all.json")
-            req = getApi("request_beta", "https://so2-beta.mutoys.com/json/request/all.json")
-            town = getApi("town_beta", "https://so2-beta.mutoys.com/master/area.json")
-        except:
-            raise InvalidURLError("wrong URL") # betaの時のエラーはbetaやってませんエラーでもいいかもしれない
+        item = getApi("item_beta", "https://so2-beta.mutoys.com/master/item.json")
+        recipe = getApi("recipe_beta", "https://so2-beta.mutoys.com/json/master/recipe_item.json")
+        sale = getApi("sale_beta", "https://so2-beta.mutoys.com/json/sale/all.json")
+        req = getApi("request_beta", "https://so2-beta.mutoys.com/json/request/all.json")
+        town = getApi("town_beta", "https://so2-beta.mutoys.com/master/area.json")
 
     # 略称などの変換
     itemName = alias(itemName)
