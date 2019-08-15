@@ -15,7 +15,7 @@ from pytz import timezone
 from .Parser import itemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, InvalidURLError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError
 from .Wiki import wikiLinkGen
 
 config = configparser.ConfigParser()
@@ -161,6 +161,23 @@ class Client(discord.Client):
                         await message.channel.send(f"エラー: {msgParse[2]}は存在しません。")
                     except NameDuplicationError:
                         await message.channel.send(f"エラー: {msgParse[1]}というアイテムが既に存在しています。")
+                    except:
+                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                        nowFileFormat = now.strftime("%Y%m%d")
+                        os.makedirs("error-log", exist_ok=True)
+                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                            f.write(f"--- Datetime: {nowFormat} ---\n")
+                            traceback.print_exc(file=f)
+                            f.write("\n")
+                        traceback.print_exc()
+                        if config["misc"].getboolean("EnableDisplayError"):
+                            t, v, tb = sys.exc_info()
+                            tblist = traceback.format_exception(t,v,tb)
+                            await message.channel.send("以下のエラーが発生しました。")
+                            await message.channel.send(tblist[2])
+                        else:
+                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                     finally:
@@ -210,12 +227,21 @@ class Client(discord.Client):
                     if message.author.id == int(adminID):
                         await message.channel.send("botがシャットダウンされます。")
                         sys.exit()
-                        return
                     else:
                         await message.channel.send("エラー: コマンドを実行する権限がありません。")
-                        return
             except ValueError:
                 await message.channel.send("エラー: 設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
+            except:
+                now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                nowFileFormat = now.strftime("%Y%m%d")
+                os.makedirs("error-log", exist_ok=True)
+                with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                    f.write(f"--- Datetime: {nowFormat} ---\n")
+                    traceback.print_exc(file=f)
+                    f.write("\n")
+                traceback.print_exc()
+            finally:
                 return
 
         # バージョンコマンド
@@ -276,7 +302,25 @@ class Client(discord.Client):
                     await message.channel.send(res)
                 except discord.errors.HTTPException:
                     await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
-                return
+                except:
+                    now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                    nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                    nowFileFormat = now.strftime("%Y%m%d")
+                    os.makedirs("error-log", exist_ok=True)
+                    with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                        f.write(f"--- Datetime: {nowFormat} ---\n")
+                        traceback.print_exc(file=f)
+                        f.write("\n")
+                    traceback.print_exc()
+                    if config["misc"].getboolean("EnableDisplayError"):
+                        t, v, tb = sys.exc_info()
+                        tblist = traceback.format_exception(t,v,tb)
+                        await message.channel.send("以下のエラーが発生しました。")
+                        await message.channel.send(tblist[2])
+                    else:
+                        await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                finally:
+                    return
         
         # ヘルプコマンド
         if message.content.startswith(commandHelp):
@@ -314,17 +358,6 @@ class Client(discord.Client):
                     try:
                         resmes = wikiLinkGen(msgParse[0])
                         await message.channel.send(resmes)
-                    except InvalidURLError:
-                        await message.channel.send("エラー: ソースコード上に記載されたURLが間違っています。bot管理者に問い合わせてください。")
-                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                        nowFileFormat = now.strftime("%Y%m%d")
-                        os.makedirs("error-log", exist_ok=True)
-                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                            f.write(f"--- Datetime: {nowFormat} ---\n")
-                            traceback.print_exc(file=f)
-                            f.write("\n")
-                        traceback.print_exc()
                     except:
                         now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                         nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
