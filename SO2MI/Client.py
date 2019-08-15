@@ -195,12 +195,28 @@ class Client(discord.Client):
                     try:
                         if removeAlias(msgParse[1]):
                             await message.channel.send("エイリアスを削除しました。")
-                            return
                         else:
                             await message.channel.send(f"エラー: {msgParse[1]}というエイリアス名は存在しません。")
-                            return
                     except OSError:
                         await message.channel.send("エラー: alias.jsonにアクセスできません。")
+                    except:
+                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                        nowFileFormat = now.strftime("%Y%m%d")
+                        os.makedirs("error-log", exist_ok=True)
+                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                            f.write(f"--- Datetime: {nowFormat} ---\n")
+                            traceback.print_exc(file=f)
+                            f.write("\n")
+                        traceback.print_exc()
+                        if config["misc"].getboolean("EnableDisplayError"):
+                            t, v, tb = sys.exc_info()
+                            tblist = traceback.format_exception(t,v,tb)
+                            await message.channel.send("以下のエラーが発生しました。")
+                            await message.channel.send(tblist[2])
+                        else:
+                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                    finally:
                         return
 
                 elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
