@@ -16,6 +16,7 @@ from .Parser import ItemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, InvalidURLError
+from .Wiki import wikiLinkGen
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -28,6 +29,7 @@ commandShutdown = prefix + config["command"]["shutdown"]
 commandVersion = prefix + config["command"]["version"]
 commandSearch = prefix + config["command"]["search"]
 commandHelp = prefix + config["command"]["help"]
+commandWiki = prefix + config["command"]["wiki"]
 
 adminID = config["misc"]["administrator"]
 
@@ -294,6 +296,55 @@ class Client(discord.Client):
             await message.channel.send(helpMsg)
             return
 
+        # Wikiコマンド
+        if message.content.startswith(commandWiki):
+            msgParse = message.content.split()
+            # コマンドを削除
+            del msgParse[0]
+            # コマンド単体だった場合
+            if len(msgParse) == 0:
+                await self.showHelpSearch()
+                return
+            else:
+                # ヘルプ表示の場合
+                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    await self.showHelpSearch()
+                    return
+                else:
+                    try:
+                        resmes = wikiLinkGen(msgParse[0])
+                        await message.channel.send(resmes)
+                    except InvalidURLError:
+                        await message.channel.send("エラー: ソースコード上に記載されたURLが間違っています。bot管理者に問い合わせてください。")
+                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                        nowFileFormat = now.strftime("%Y%m%d")
+                        os.makedirs("error-log", exist_ok=True)
+                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                            f.write(f"--- Datetime: {nowFormat} ---\n")
+                            traceback.print_exc(file=f)
+                            f.write("\n")
+                        traceback.print_exc()
+                    except:
+                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+                        nowFileFormat = now.strftime("%Y%m%d")
+                        os.makedirs("error-log", exist_ok=True)
+                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+                            f.write(f"--- Datetime: {nowFormat} ---\n")
+                            traceback.print_exc(file=f)
+                            f.write("\n")
+                        traceback.print_exc()
+                        if config["misc"].getboolean("EnableDisplayError"):
+                            t, v, tb = sys.exc_info()
+                            tblist = traceback.format_exception(t,v,tb)
+                            await message.channel.send("以下のエラーが発生しました。")
+                            await message.channel.send(tblist[2])
+                        else:
+                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                    finally:
+                        return
+
 
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
@@ -348,5 +399,14 @@ class Client(discord.Client):
         -i: レシピ品を除くアイテムのみから検索することができます。
         -r: レシピ品のみから検索することができます。
         -b: Beta版の情報を取得します。Beta版が開放されている時のみ正しいデータを返します。
+        """)
+        await self.targetChannel.send(helpMsg)
+
+    async def showHelpWiki(self):
+        helpMsg = textwrap.dedent(f"""
+        指定したアイテムのWikiページへのリンクを生成します。
+        登録されたエイリアスが使用可能です。
+        レシピ品のWikiページへのリンクは存在しないため生成できません。
+        使用方法: {commandWiki} [アイテム名]
         """)
         await self.targetChannel.send(helpMsg)
