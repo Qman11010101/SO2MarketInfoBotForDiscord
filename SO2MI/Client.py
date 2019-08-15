@@ -265,7 +265,7 @@ class Client(discord.Client):
             verMsg = textwrap.dedent("""
             **SOLD OUT 2 市場情報bot for Discord**
 
-            Version DEV-EXTRA
+            Version DEV-EXTRA-2
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
             リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
@@ -341,7 +341,7 @@ class Client(discord.Client):
         # ヘルプコマンド
         if message.content.startswith(commandHelp):
             helpMsg = textwrap.dedent(f"""
-            **SOLD OUT 2 市場情報bot for Discord Version 2.6**
+            **SOLD OUT 2 市場情報bot for Discord Version DEV-EXTRA-2**
 
             このbotでは以下のコマンドが使用可能です。
             各コマンドのより詳細な情報は各コマンドに「ヘルプ」「help」などを引数として渡すと閲覧可能です。
@@ -352,6 +352,7 @@ class Client(discord.Client):
             {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
             {commandVersion}
             {commandShutdown}
+            {commandWiki} [アイテム名]
             """)
             await message.channel.send(helpMsg)
             return
@@ -363,12 +364,12 @@ class Client(discord.Client):
             del msgParse[0]
             # コマンド単体だった場合
             if len(msgParse) == 0:
-                await self.showHelpSearch()
+                await self.showHelpWiki()
                 return
             else:
                 # ヘルプ表示の場合
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
-                    await self.showHelpSearch()
+                    await self.showHelpWiki()
                     return
                 else:
                     try:
