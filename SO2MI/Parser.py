@@ -7,7 +7,7 @@ from .Alias import alias
 from .getApi import getApi
 from .Exceptions import NoTownError, InvalidURLError
 
-def ItemParser(itemName, argument, townName, beta):
+def itemParser(itemName, argument, townName, beta):
     # API取得部
     if beta != "-b":
         try:
@@ -38,7 +38,7 @@ def ItemParser(itemName, argument, townName, beta):
         for col in town:
             if town[col]["name"] == townName:
                 townId = town[col]["area_id"]
-                townstr = "{}における".format(townName)
+                townstr = f"{townName}における"
                 break
         if int(townId) == 0:
             raise NoTownError("such town does not exists")
