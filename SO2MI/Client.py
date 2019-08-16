@@ -408,6 +408,7 @@ class Client(discord.Client):
         　・最高値
         　・最安TOP5平均
         　・全体平均
+        　・中央値
         　・市場全体の個数
         　・販売店舗数
         ・注文
@@ -415,6 +416,7 @@ class Client(discord.Client):
         　・最安値
         　・最高TOP5平均
         　・全体平均
+        　・中央値
         　・市場全体の注文数
         　・注文店舗数
 

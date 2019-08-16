@@ -74,23 +74,33 @@ def itemParser(itemName, argument, townName, beta):
     priceSaleArray.sort() # 金額ソート
     shopSaleAmount = len(set(shopSaleArray)) # 販売店舗数(店舗IDの重複を削除)
 
-    if len(priceSaleArray) > 0:
+    saleLen = len(priceSaleArray)
+    saleSum = sum(priceSaleArray)
+
+    if saleLen > 0:
         saleCheapest = priceSaleArray[0] # 最安値
         saleMostExpensive = priceSaleArray[-1] # 高額値
 
-        if len(priceSaleArray) < 5:
-            saleMarketPrice = sum(priceSaleArray) // len(priceSaleArray)
+        if saleLen < 5: # TOP5平均
+            saleMarketPrice = saleSum // saleLen
         else:
             saleMarketPrice = (priceSaleArray[0] + priceSaleArray[1] + priceSaleArray[2] + priceSaleArray[3] + priceSaleArray[4]) // 5
         
-        saleAverage = sum(priceSaleArray) // len(priceSaleArray)
-        saleUnitSum = sum(unitSaleArray)
+        saleAverage = saleSum // saleLen # 平均値
+
+        if saleLen % 2 == 1: # 中央値
+            saleMedian = priceSaleArray[saleLen // 2 + 1]
+        else:
+            saleMedian = int((priceSaleArray[int(saleLen / 2)] + priceSaleArray[int(saleLen / 2 + 1)]) / 2)
+
+        saleUnitSum = sum(unitSaleArray) # 販売数
 
         saleStr = f"""
         最安値: {str(saleCheapest)}G
         最高値: {str(saleMostExpensive)}G
         最安TOP5平均: {str(saleMarketPrice)}G
         全体平均: {str(saleAverage)}G
+        中央値: {str(saleMedian)}G
         市場全体の販売数: {str(saleUnitSum)}{itemScaleName}
         販売店舗数: {shopSaleAmount}店舗
         """
@@ -116,23 +126,34 @@ def itemParser(itemName, argument, townName, beta):
     priceReqArray.sort(reverse=True) # 金額逆順ソート
     shopReqAmount = len(set(shopReqArray)) # 注文店舗数(店舗IDの重複を削除)
 
-    if len(priceReqArray) > 0:
+    reqLen = len(priceReqArray)
+    reqSum = sum(priceReqArray)
+
+
+    if reqLen > 0:
         reqMostExpensive = priceReqArray[0] # 最高値
         reqCheapest = priceReqArray[-1] # 最安値
 
-        if len(priceReqArray) < 5:
-            reqMarketPrice = sum(priceReqArray) // len(priceReqArray)
+        if reqLen < 5: # TOP5平均
+            reqMarketPrice = reqSum // reqLen
         else:
             reqMarketPrice = (priceReqArray[0] + priceReqArray[1] + priceReqArray[2] + priceReqArray[3] + priceReqArray[4]) // 5
         
-        reqAverage = sum(priceReqArray) // len(priceReqArray)
-        reqUnitSum = sum(unitReqArray)
+        reqAverage = reqSum // reqLen # 平均
+
+        if reqLen % 2 == 1:
+            reqMedian = priceReqArray[reqLen // 2 + 1]
+        else:
+            reqMedian = int((priceReqArray[int(reqLen / 2)] + priceSaleArray[int(reqLen / 2 + 1)]) / 2)
+
+        reqUnitSum = sum(unitReqArray) # 注文数
 
         reqStr = f"""
         最高値: {str(reqMostExpensive)}G
         最安値: {str(reqCheapest)}G
         最高TOP5平均: {str(reqMarketPrice)}G
         全体平均: {str(reqAverage)}G
+        中央値: {str(reqMedian)}G
         市場全体の注文数: {str(reqUnitSum)}{itemScaleName}
         注文店舗数: {shopReqAmount}店舗
         """
