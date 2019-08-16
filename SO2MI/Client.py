@@ -127,12 +127,12 @@ class Client(discord.Client):
                         f.write("\n")
                     traceback.print_exc()
                     if config["misc"].getboolean("EnableDisplayError"):
-                        t, v, tb = sys.exc_info()
-                        tblist = traceback.format_exception(t,v,tb)
+                        typeExc, valueExc, tracebackExc = sys.exc_info()
+                        tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
                         await message.channel.send("以下のエラーが発生しました。")
-                        await message.channel.send(tblist[2])
+                        await message.channel.send(f"```{''.join(tracebackList)}```")
                     else:
-                        await message.channel.send("申し訳ありません。エラーが発生したため、市場情報をチェックできません。\nコマンドが間違っている可能性がありますので、今一度ご確認ください。\nこのエラーが続く場合はbot管理者へお問い合わせください。")
+                        await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                 finally:
                     return
 
@@ -174,10 +174,10 @@ class Client(discord.Client):
                             f.write("\n")
                         traceback.print_exc()
                         if config["misc"].getboolean("EnableDisplayError"):
-                            t, v, tb = sys.exc_info()
-                            tblist = traceback.format_exception(t,v,tb)
+                            typeExc, valueExc, tracebackExc = sys.exc_info()
+                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
                             await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(tblist[2])
+                            await message.channel.send(f"```{''.join(tracebackList)}```")
                         else:
                             await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                     else:
@@ -212,10 +212,10 @@ class Client(discord.Client):
                             f.write("\n")
                         traceback.print_exc()
                         if config["misc"].getboolean("EnableDisplayError"):
-                            t, v, tb = sys.exc_info()
-                            tblist = traceback.format_exception(t,v,tb)
+                            typeExc, valueExc, tracebackExc = sys.exc_info()
+                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
                             await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(tblist[2])
+                            await message.channel.send(f"```{''.join(tracebackList)}```")
                         else:
                             await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                     finally:
@@ -331,10 +331,10 @@ class Client(discord.Client):
                         f.write("\n")
                     traceback.print_exc()
                     if config["misc"].getboolean("EnableDisplayError"):
-                        t, v, tb = sys.exc_info()
-                        tblist = traceback.format_exception(t,v,tb)
+                        typeExc, valueExc, tracebackExc = sys.exc_info()
+                        tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
                         await message.channel.send("以下のエラーが発生しました。")
-                        await message.channel.send(tblist[2])
+                        await message.channel.send(f"```{''.join(tracebackList)}```")
                     else:
                         await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                 finally:
@@ -388,10 +388,10 @@ class Client(discord.Client):
                             f.write("\n")
                         traceback.print_exc()
                         if config["misc"].getboolean("EnableDisplayError"):
-                            t, v, tb = sys.exc_info()
-                            tblist = traceback.format_exception(t,v,tb)
+                            typeExc, valueExc, tracebackExc = sys.exc_info()
+                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
                             await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(tblist[2])
+                            await message.channel.send(f"```{''.join(tracebackList)}```")
                         else:
                             await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
                     finally:
