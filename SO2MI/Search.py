@@ -38,6 +38,6 @@ def itemSearch(string, argument, beta):
             liststrRecipe = ""
         else:
             liststrRecipe = "\n\n**レシピ品:**\n" + "\n".join(listRecipe)
-        msgReturn = f"文字列「{string}」に合致する以下のアイテムが見つかりました:{liststrItem}{liststrRecipe}"
+        msgReturn = f"正規表現「{string}」に合致する以下のアイテムが見つかりました:{liststrItem}{liststrRecipe}"
     
     return msgReturn
