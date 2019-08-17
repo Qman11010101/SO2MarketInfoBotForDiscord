@@ -33,7 +33,7 @@ commandWiki = prefix + config["command"]["wiki"]
 
 adminID = config["misc"]["administrator"]
 
-DEFINE_VERSION = "DEV-EXTRA-6"
+DEFINE_VERSION = "DEV-EXTRA-7"
 
 class Client(discord.Client):
     async def on_ready(self):

@@ -144,8 +144,8 @@ def itemParser(itemName, argument, townName, beta):
         
         reqAverage = "{:,}".format(reqSum // reqLen) # 平均
 
-        if saleLen == 1:
-            saleMedian = saleLen
+        if reqLen == 1:
+            reqMedian = reqLen
         else:
             if reqLen % 2 == 1: # 中央値
                 reqMedian = "{:,}".format(priceReqArray[reqLen // 2 + 1])
