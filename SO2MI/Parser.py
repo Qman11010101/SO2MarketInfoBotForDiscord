@@ -150,7 +150,7 @@ def itemParser(itemName, argument, townName, beta):
             if reqLen % 2 == 1: # 中央値
                 reqMedian = "{:,}".format(priceReqArray[reqLen // 2 + 1])
             else:
-                reqMedian = "{:,}".format(int((priceReqArray[int(reqLen / 2)] + priceSaleArray[int(reqLen / 2 + 1)]) / 2))
+                reqMedian = "{:,}".format(int((priceReqArray[int(reqLen / 2)] + priceReqArray[int(reqLen / 2 + 1)]) / 2))
 
         reqUnitSum = "{:,}".format(sum(unitReqArray)) # 注文数
 
