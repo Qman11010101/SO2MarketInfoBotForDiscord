@@ -356,7 +356,7 @@ class Client(discord.Client):
 
             {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
             {commandAlias} add [エイリアス名] [正式名称]
-            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
+            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
             {commandVersion}
             {commandShutdown}
             {commandWiki} [アイテム名]
@@ -429,7 +429,7 @@ class Client(discord.Client):
         -s: 販売品の情報のみを表示することができます。
         -r: 注文品の情報のみを表示することができます。
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
-        -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ正しいデータを返します。
+        -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ使用可能です。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
@@ -452,12 +452,13 @@ class Client(discord.Client):
         helpMsg = textwrap.dedent(f"""
         指定した単語や文字を含むアイテムを検索します。
         正規表現を使用することができます。
-        使用方法: {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
+        使用方法: {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
 
         引数:
         -i: レシピ品を除くアイテムのみから検索することができます。
         -r: レシピ品のみから検索することができます。
-        -b: Beta版の情報を取得します。Beta版が開放されている時のみ正しいデータを返します。
+        -c カテゴリ名: カテゴリ名を指定して検索することができます。
+        -b: Beta版の情報を取得します。Beta版が開放されている時のみ使用可能です。
         """)
         await self.targetChannel.send(helpMsg)
 
