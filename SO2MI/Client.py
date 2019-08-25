@@ -15,7 +15,7 @@ from pytz import timezone
 from .Parser import itemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
 from .Wiki import wikiLinkGen
 
 config = configparser.ConfigParser()
@@ -290,7 +290,7 @@ class Client(discord.Client):
                     await self.showHelpSearch()
                     return
                 elif len(msgParse) == 1: # 検索文字列単体
-                    msgParse.extend(["-n", "--release", "--end"])
+                    msgParse.extend(["-n", "-c", "none", "--release", "--end"])
                 else:
                     if msgParse[-1] != "--end":
                         msgParse.append("--end") # 終端引数を追加する
@@ -303,23 +303,28 @@ class Client(discord.Client):
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-i", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-i", "-r", "-b", "-c", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
                                     print(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
                         if msgParse[1] != "-i" and msgParse[1] != "-r":
                             msgParse.insert(1, "-n")
-                        # 第2引数[-b]
-                        if msgParse[2] != "-b":
-                            msgParse.insert(2, "--release")
-                
-                res = itemSearch(msgParse[0], msgParse[1], msgParse[2])
+                        # 第2引数/第3引数[-c ***]
+                        if msgParse[2] != "-c":
+                            msgParse.insert(2, "-c")
+                            msgParse.insert(3, "none")
+                        # 第4引数[-b]
+                        if msgParse[4] != "-b":
+                            msgParse.insert(4, "--release")
 
                 try:
+                    res = itemSearch(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     await message.channel.send(res)
                 except discord.errors.HTTPException:
                     await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
+                except NoCategoryError:
+                    await message.channel.send(f"エラー: {msgParse[3]}というカテゴリは存在しません。")
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")

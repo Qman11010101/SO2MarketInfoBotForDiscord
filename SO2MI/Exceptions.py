@@ -17,3 +17,7 @@ class NoTownError(Exception):
 # InvalidURLError
 class InvalidURLError(Exception):
     pass
+
+# NoCategoryError
+class NoCategoryError(Exception):
+    pass
