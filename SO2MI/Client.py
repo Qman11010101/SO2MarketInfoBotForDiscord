@@ -15,7 +15,7 @@ from pytz import timezone
 from .Parser import itemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
 from .Wiki import wikiLinkGen
 
 config = configparser.ConfigParser()
@@ -290,7 +290,7 @@ class Client(discord.Client):
                     await self.showHelpSearch()
                     return
                 elif len(msgParse) == 1: # 検索文字列単体
-                    msgParse.extend(["-n", "--release", "--end"])
+                    msgParse.extend(["-n", "-c", "none", "--release", "--end"])
                 else:
                     if msgParse[-1] != "--end":
                         msgParse.append("--end") # 終端引数を追加する
@@ -303,23 +303,28 @@ class Client(discord.Client):
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-i", "-r", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-i", "-r", "-b", "-c", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
                                     print(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
                         if msgParse[1] != "-i" and msgParse[1] != "-r":
                             msgParse.insert(1, "-n")
-                        # 第2引数[-b]
-                        if msgParse[2] != "-b":
-                            msgParse.insert(2, "--release")
-                
-                res = itemSearch(msgParse[0], msgParse[1], msgParse[2])
+                        # 第2引数/第3引数[-c ***]
+                        if msgParse[2] != "-c":
+                            msgParse.insert(2, "-c")
+                            msgParse.insert(3, "none")
+                        # 第4引数[-b]
+                        if msgParse[4] != "-b":
+                            msgParse.insert(4, "--release")
 
                 try:
+                    res = itemSearch(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     await message.channel.send(res)
                 except discord.errors.HTTPException:
                     await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
+                except NoCategoryError:
+                    await message.channel.send(f"エラー: {msgParse[3]}というカテゴリは存在しません。")
                 except:
                     now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
                     nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
@@ -351,7 +356,7 @@ class Client(discord.Client):
 
             {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
             {commandAlias} add [エイリアス名] [正式名称]
-            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
+            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
             {commandVersion}
             {commandShutdown}
             {commandWiki} [アイテム名]
@@ -424,7 +429,7 @@ class Client(discord.Client):
         -s: 販売品の情報のみを表示することができます。
         -r: 注文品の情報のみを表示することができます。
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
-        -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ正しいデータを返します。
+        -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ使用可能です。
         
         {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
@@ -447,12 +452,13 @@ class Client(discord.Client):
         helpMsg = textwrap.dedent(f"""
         指定した単語や文字を含むアイテムを検索します。
         正規表現を使用することができます。
-        使用方法: {commandSearch} [文字列もしくは正規表現] [-i|-r] [-b]
+        使用方法: {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
 
         引数:
         -i: レシピ品を除くアイテムのみから検索することができます。
         -r: レシピ品のみから検索することができます。
-        -b: Beta版の情報を取得します。Beta版が開放されている時のみ正しいデータを返します。
+        -c カテゴリ名: カテゴリ名を指定して検索することができます。
+        -b: Beta版の情報を取得します。Beta版が開放されている時のみ使用可能です。
         """)
         await self.targetChannel.send(helpMsg)
 
