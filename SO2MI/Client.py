@@ -117,22 +117,7 @@ class Client(discord.Client):
                 except NoTownError:
                     await message.channel.send(f"エラー: {msgParse[3]}という街は見つかりませんでした。")
                 except:
-                    now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                    nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                    nowFileFormat = now.strftime("%Y%m%d")
-                    os.makedirs("error-log", exist_ok=True)
-                    with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                        f.write(f"--- Datetime: {nowFormat} ---\n")
-                        traceback.print_exc(file=f)
-                        f.write("\n")
-                    traceback.print_exc()
-                    if config["misc"].getboolean("EnableDisplayError"):
-                        typeExc, valueExc, tracebackExc = sys.exc_info()
-                        tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
-                        await message.channel.send("以下のエラーが発生しました。")
-                        await message.channel.send(f"```{''.join(tracebackList)}```")
-                    else:
-                        await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                    await self.errorWrite()
                 finally:
                     return
 
@@ -164,22 +149,7 @@ class Client(discord.Client):
                     except NameDuplicationError:
                         await message.channel.send(f"エラー: {msgParse[1]}というアイテムが既に存在しています。")
                     except:
-                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                        nowFileFormat = now.strftime("%Y%m%d")
-                        os.makedirs("error-log", exist_ok=True)
-                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                            f.write(f"--- Datetime: {nowFormat} ---\n")
-                            traceback.print_exc(file=f)
-                            f.write("\n")
-                        traceback.print_exc()
-                        if config["misc"].getboolean("EnableDisplayError"):
-                            typeExc, valueExc, tracebackExc = sys.exc_info()
-                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
-                            await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(f"```{''.join(tracebackList)}```")
-                        else:
-                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                        await self.errorWrite()
                     else:
                         await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
                     finally:
@@ -202,22 +172,7 @@ class Client(discord.Client):
                     except OSError:
                         await message.channel.send("エラー: alias.jsonにアクセスできません。")
                     except:
-                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                        nowFileFormat = now.strftime("%Y%m%d")
-                        os.makedirs("error-log", exist_ok=True)
-                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                            f.write(f"--- Datetime: {nowFormat} ---\n")
-                            traceback.print_exc(file=f)
-                            f.write("\n")
-                        traceback.print_exc()
-                        if config["misc"].getboolean("EnableDisplayError"):
-                            typeExc, valueExc, tracebackExc = sys.exc_info()
-                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
-                            await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(f"```{''.join(tracebackList)}```")
-                        else:
-                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                        await self.errorWrite()
                     finally:
                         return
 
@@ -326,22 +281,7 @@ class Client(discord.Client):
                 except NoCategoryError:
                     await message.channel.send(f"エラー: {msgParse[3]}というカテゴリは存在しません。")
                 except:
-                    now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                    nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                    nowFileFormat = now.strftime("%Y%m%d")
-                    os.makedirs("error-log", exist_ok=True)
-                    with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                        f.write(f"--- Datetime: {nowFormat} ---\n")
-                        traceback.print_exc(file=f)
-                        f.write("\n")
-                    traceback.print_exc()
-                    if config["misc"].getboolean("EnableDisplayError"):
-                        typeExc, valueExc, tracebackExc = sys.exc_info()
-                        tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
-                        await message.channel.send("以下のエラーが発生しました。")
-                        await message.channel.send(f"```{''.join(tracebackList)}```")
-                    else:
-                        await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                    await self.errorWrite()
                 finally:
                     return
         
@@ -383,25 +323,20 @@ class Client(discord.Client):
                         resmes = wikiLinkGen(msgParse[0])
                         await message.channel.send(resmes)
                     except:
-                        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                        nowFileFormat = now.strftime("%Y%m%d")
-                        os.makedirs("error-log", exist_ok=True)
-                        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                            f.write(f"--- Datetime: {nowFormat} ---\n")
-                            traceback.print_exc(file=f)
-                            f.write("\n")
-                        traceback.print_exc()
-                        if config["misc"].getboolean("EnableDisplayError"):
-                            typeExc, valueExc, tracebackExc = sys.exc_info()
-                            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
-                            await message.channel.send("以下のエラーが発生しました。")
-                            await message.channel.send(f"```{''.join(tracebackList)}```")
-                        else:
-                            await message.channel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+                        await self.errorWrite()
                     finally:
                         return
 
+        # エラー発生コマンド(仮)
+        if message.content.startswith("!error"):
+            try:
+                res = 1 / 0 # ZeroDivisionError
+                await message.channel.send(res)
+            except:
+                await self.errorWrite()
+            finally:
+                return
+                
 
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
@@ -470,3 +405,21 @@ class Client(discord.Client):
         使用方法: {commandWiki} [アイテム名]
         """)
         await self.targetChannel.send(helpMsg)
+
+    async def errorWrite(self):
+        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+        nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
+        nowFileFormat = now.strftime("%Y%m%d")
+        os.makedirs("error-log", exist_ok=True)
+        with open(f"error-log/{nowFileFormat}.txt", "a") as f:
+            f.write(f"--- Datetime: {nowFormat} ---\n")
+            traceback.print_exc(file=f)
+            f.write("\n")
+        traceback.print_exc()
+        if config["misc"].getboolean("EnableDisplayError"):
+            typeExc, valueExc, tracebackExc = sys.exc_info()
+            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
+            await self.targetChannel.send("以下のエラーが発生しました。")
+            await self.targetChannel.send(f"```{''.join(tracebackList)}```")
+        else:
+            await self.targetChannel.send("エラーが発生しました。bot管理者に問い合わせてください。")
