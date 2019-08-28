@@ -295,7 +295,8 @@ class Client(discord.Client):
             ただし、一部のコマンドについてはヘルプが存在しません。
 
             {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
-            {commandAlias} add [エイリアス名] [正式名称]
+            {commandAlias} [add|delete] [エイリアス名] [正式名称]
+            {commandAlias} [show]
             {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
             {commandVersion}
             {commandShutdown}
