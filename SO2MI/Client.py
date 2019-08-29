@@ -9,7 +9,6 @@ from pprint import pprint as pp
 import textwrap
 import sys
 import asyncio
-import schedule
 
 import discord
 from pytz import timezone
@@ -19,6 +18,7 @@ from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
 from .Wiki import wikiLinkGen
+from .Regular import regMarket
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -47,6 +47,9 @@ class Client(discord.Client):
         else:
             pass
         print("次のユーザーとしてログインしました:", self.user)
+
+        # 定期実行
+        # while True:
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
