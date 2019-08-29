@@ -18,7 +18,7 @@ from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
 from .Wiki import wikiLinkGen
-from .Regular import regMarket
+from .Regular import chkCost, chkDate
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -49,7 +49,9 @@ class Client(discord.Client):
         print("次のユーザーとしてログインしました:", self.user)
 
         # 定期実行
-        # while True:
+        while True:
+            await self.cliChkCost()
+            await asyncio.sleep(600) # 10分ごとにチェック
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
@@ -344,7 +346,7 @@ class Client(discord.Client):
             finally:
                 return
                 
-
+    # ヘルプ等関数定義
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
@@ -434,3 +436,18 @@ class Client(discord.Client):
                 await self.targetChannel.send("エラーが2000文字を超えているため表示できません。bot管理者に問い合わせてください。")
         else:
             await self.targetChannel.send("エラーが発生しました。bot管理者に問い合わせてください。")
+
+    # 定期実行系関数定義
+    async def cliChkCost(self):
+        res = chkCost()
+        if res != "":
+            await self.targetChannel.send(res)
+        else:
+            pass
+
+    async def cliChkDate(self):
+        res = chkDate()
+        if res != "":
+            await self.targetChannel.send(res)
+        else:
+            pass
