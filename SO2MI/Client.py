@@ -276,8 +276,9 @@ class Client(discord.Client):
                             msgParse.insert(4, "--release")
 
                 try:
-                    res = itemSearch(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
-                    await message.channel.send(res)
+                    mes = itemSearch(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
+                    for i in range(len(mes)):
+                        await message.channel.send(mes[i])
                 except discord.errors.HTTPException:
                     await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
                 except NoCategoryError:

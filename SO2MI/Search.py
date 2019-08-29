@@ -49,16 +49,23 @@ def itemSearch(string, argument, category, beta):
 
     # 表示文字列生成部
     if len(listItem) + len(listRecipe) == 0:
-        msgReturn = f"{catStr}正規表現「{string}」に合致するアイテムは見つかりませんでした。"
+        msgReturn = [f"{catStr}正規表現「{string}」に合致するアイテムは見つかりませんでした。"]
     else:
-        if len(listItem) == 0:
-            liststrItem = ""
-        else:
-            liststrItem = "\n\n**アイテム:**\n" + "\n".join(listItem)
-        if len(listRecipe) == 0:
-            liststrRecipe = ""
-        else:
-            liststrRecipe = "\n\n**レシピ品:**\n" + "\n".join(listRecipe)
-        msgReturn = f"{catStr}正規表現「{string}」に合致する以下のアイテムが見つかりました:{liststrItem}{liststrRecipe}"
+        mR = 0
+        msgReturn = [f"{catStr}正規表現「{string}」に合致する以下のアイテムが見つかりました:"]
+        if len(listItem) != 0:
+            msgReturn[mR] += "\n\n**アイテム:**\n"
+            for iName in listItem:
+                if len(msgReturn[mR]) > 1750:
+                    msgReturn.append("")
+                    mR += 1
+                msgReturn[mR] += f"{iName}\n"
+        if len(listRecipe) != 0:
+            msgReturn[mR] += "\n**レシピ品:**\n"
+            for rName in listRecipe:
+                if len(msgReturn[mR]) > 1750:
+                    msgReturn.append("")
+                    mR += 1
+                msgReturn[mR] += f"{rName}\n"
     
     return msgReturn
