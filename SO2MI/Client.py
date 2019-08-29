@@ -424,6 +424,10 @@ class Client(discord.Client):
             typeExc, valueExc, tracebackExc = sys.exc_info()
             tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
             await self.targetChannel.send("以下のエラーが発生しました。")
-            await self.targetChannel.send(f"```{''.join(tracebackList)}```")
+            tracebackStr = "".join(tracebackList)
+            if len(tracebackStr) <= 1900:
+                await self.targetChannel.send(f"```{tracebackStr}```")
+            else:
+                await self.targetChannel.send("エラーが2000文字を超えているため表示できません。bot管理者に問い合わせてください。")
         else:
             await self.targetChannel.send("エラーが発生しました。bot管理者に問い合わせてください。")
