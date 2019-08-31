@@ -21,3 +21,7 @@ class InvalidURLError(Exception):
 # NoCategoryError
 class NoCategoryError(Exception):
     pass
+
+# SameItemExistError
+class SameItemExistError(Exception):
+    pass
