@@ -12,12 +12,26 @@ import pytz
 from .getApi import getApi
 
 def chkCost():
-    # 0:00から数えて朝7:00を過ぎているかチェック、過ぎていなければ「""」を返す
-    # アイテムが登録されたjsonを読み込む
-    # forで回す(できれば何度もループするのは避けたい、アイテム名 in 辞書型とか使ったら一発で行けたりしないだろうか？)
-    # あわせてアイテムの存在判定もなんとかしたい
-    # 文章を整えてreturn
-    return "in dev"
+    # タイムゾーン指定のためconfig.iniの読み込み
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    # 現在時刻取得
+    timezone = pytz.timezone(config["misc"]["timezone"])
+    now = datetime.datetime.now(timezone)
+
+    # 時刻判定
+    startHour = int(config["misc"]["RegExcHour"])
+    startMin = int(config["misc"]["RegExcMinute"])
+    endMin = startMin + int(config["misc"]["RegExcCheckTime"])
+    if now.hour == startHour and startMin <= now.minute <= endMin:
+        # アイテムが登録されたjsonを読み込む
+        # forで回す(できれば何度もループするのは避けたい、アイテム名 in 辞書型とか使ったら一発で行けたりしないだろうか？)
+        # あわせてアイテムの存在判定もなんとかしたい
+        # 文章を整えてreturn
+        return "in dev"
+    else:
+        return False
 
 def chkEndOfMonth():
     # タイムゾーン指定のためconfig.iniの読み込み
@@ -34,7 +48,10 @@ def chkEndOfMonth():
         return False
 
     # 時刻判定
-    if now.hour == 7 and now.minute <= 10:
+    startHour = int(config["misc"]["RegExcHour"])
+    startMin = int(config["misc"]["RegExcMinute"])
+    endMin = startMin + int(config["misc"]["RegExcCheckTime"])
+    if now.hour == startHour and startMin <= now.minute <= endMin:
         message = textwrap.dedent("""
         【Information】
         本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。

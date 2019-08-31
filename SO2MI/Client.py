@@ -49,9 +49,11 @@ class Client(discord.Client):
         print("次のユーザーとしてログインしました:", self.user)
 
         # 定期実行
-        while True:
-            await self.cliChkCost()
-            await asyncio.sleep(600) # 10分ごとにチェック
+        if config["misc"].getboolean("EnableRegularExecution"):
+            while True:
+                await self.cliChkCost()
+                await self.cliChkEndOfMonth()
+                await asyncio.sleep(int(config["misc"]["RegExcCheckTime"])*60) # config.iniで設定した時間ごとにチェック
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
@@ -445,7 +447,7 @@ class Client(discord.Client):
         else:
             pass
 
-    async def clichkEndOfMonth(self):
+    async def cliChkEndOfMonth(self):
         res = chkEndOfMonth()
         if res != False:
             await self.targetChannel.send(res)
