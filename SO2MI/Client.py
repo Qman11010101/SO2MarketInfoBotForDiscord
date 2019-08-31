@@ -18,7 +18,7 @@ from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
 from .Wiki import wikiLinkGen
-from .Regular import chkCost, chkDate
+from .Regular import chkCost, chkEndOfMonth
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -445,8 +445,8 @@ class Client(discord.Client):
         else:
             pass
 
-    async def cliChkDate(self):
-        res = chkDate()
+    async def clichkEndOfMonth(self):
+        res = chkEndOfMonth()
         if res != "":
             await self.targetChannel.send(res)
         else:

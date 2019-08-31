@@ -16,7 +16,7 @@ def chkCost():
     # 文章を整えてreturn
     return "in dev"
 
-def chkDate():
+def chkEndOfMonth():
     # 月末かどうかチェック、違えば「""」を返す
     # 優待券等の案内をする
     return "in dev"
