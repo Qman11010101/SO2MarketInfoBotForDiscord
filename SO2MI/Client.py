@@ -48,6 +48,12 @@ class Client(discord.Client):
             raise Exception("指定されたチャンネルは見つかりませんでした")
         else:
             pass
+        self.regChannel = self.get_channel(int(config["discord"]["regChannel"]))
+        if self.regChannel == None:
+            # 指定チャンネルが見つからない場合はExceptionをraise
+            raise Exception("指定されたチャンネルは見つかりませんでした")
+        else:
+            pass
         print("次のユーザーとしてログインしました:", self.user)
 
         # 定期実行
@@ -537,13 +543,13 @@ class Client(discord.Client):
     async def cliChkCost(self):
         res = chkCost()
         if res != False:
-            await self.targetChannel.send(res)
+            await self.regChannel.send(res)
         else:
             pass
 
     async def cliChkEndOfMonth(self):
         res = chkEndOfMonth()
         if res != False:
-            await self.targetChannel.send(res)
+            await self.regChannel.send(res)
         else:
             pass
