@@ -95,21 +95,17 @@ def chkCost():
                     lpr = [t5avg, med, aAvg]
                 priceInfo.append(lpr)
 
-            print("文字列整頓中")
-            print(infoList)
-            print(priceInfo)
             text = ""
             for i in range(len(itemList)):
-                print(f"ループ{i+1}")
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
 
-            print("文字列送信中")
-            message = textwrap.dedent(f"""
-            【Regular Information】
-            {startHour}時{startMin}分の市場情報は以下の通りです。
-            価格の並びは左から順にTOP5値/中央値/平均値です。
-            {text}
-            """)
+            message = f"""
+【Daily Information】
+取得された市場情報は以下の通りです。
+価格の並びは左から順にTOP5値/中央値/平均値です。
+            　
+{text}"""
+
             return message
         except:
             return False
@@ -124,19 +120,19 @@ def chkEndOfMonth():
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
-
+    """
     # 月末判定
     dayLast = int(calendar.monthrange(now.year, now.month)[1]) # 月の最終日取得
     if now.day != dayLast: # 最終日じゃなければ何もしないようにする
         return False
-
+    """
     # 時刻判定
     startHour = int(config["misc"]["RegExcHour"])
     startMin = int(config["misc"]["RegExcMinute"])
     endMin = startMin + int(config["misc"]["RegExcCheckTime"])
     if now.hour == startHour and startMin <= now.minute <= endMin:
         message = textwrap.dedent("""
-        　
+        【End-of-Month Information】
         本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。
         優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。
         """)
