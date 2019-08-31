@@ -53,6 +53,7 @@ def chkEndOfMonth():
     endMin = startMin + int(config["misc"]["RegExcCheckTime"])
     if now.hour == startHour and startMin <= now.minute <= endMin:
         message = textwrap.dedent("""
+         
         【Information】
         本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。
         優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。
