@@ -16,9 +16,10 @@ from pytz import timezone
 from .Parser import itemParser
 from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError
+from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError, SameItemExistError
 from .Wiki import wikiLinkGen
 from .Regular import chkCost, chkEndOfMonth
+from .Register import addRegister, removeRegister, showRegister
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -32,6 +33,7 @@ commandVersion = prefix + config["command"]["version"]
 commandSearch = prefix + config["command"]["search"]
 commandHelp = prefix + config["command"]["help"]
 commandWiki = prefix + config["command"]["wiki"]
+commandRegister = prefix + config["command"]["register"]
 
 adminID = config["misc"]["administrator"]
 
@@ -151,7 +153,7 @@ class Client(discord.Client):
                         addAlias(msgParse[1], msgParse[2])
                     except OSError:
                         await message.channel.send("エラー: alias.jsonにアクセスできません。")
-                    except SameAliasNameExistError:
+                    except SameItemExistError:
                         await message.channel.send("エラー: 既に登録されています。")
                     except NoItemError:
                         await message.channel.send(f"エラー: {msgParse[2]}は存在しません。")
@@ -311,6 +313,8 @@ class Client(discord.Client):
             {commandVersion}
             {commandShutdown}
             {commandWiki} [アイテム名]
+            {commandRegister} [add|delete] [アイテム名]
+            {commandRegister} [show]
             """)
             await message.channel.send(helpMsg)
             return
@@ -347,6 +351,76 @@ class Client(discord.Client):
                 await self.errorWrite()
             finally:
                 return
+        
+        # 登録コマンド
+        if message.content.startswith(commandRegister):
+            msgParse = message.content.split()
+            del msgParse[0]
+            if len(msgParse) == 0:
+                await self.showHelpAlias()
+                return
+            else:
+                if msgParse[0] == "add":
+                    if len(msgParse) != 2:
+                        helpMsg = textwrap.dedent(f"""
+                        アイテムを登録します。
+                        使用方法: {commandRegister} add [アイテム名]
+                        """)
+                        await message.channel.send(helpMsg)
+                        return
+
+                    try:
+                        addRegister(msgParse[1])
+                    except OSError:
+                        await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
+                    except SameItemExistError:
+                        await message.channel.send("エラー: 既に登録されています。")
+                    except NoItemError:
+                        await message.channel.send(f"エラー: {msgParse[1]}は存在しません。")
+                    except:
+                        await self.errorWrite()
+                    else:
+                        await message.channel.send(f"{msgParse[1]}を登録しました。")
+                    finally:
+                        return
+
+                elif msgParse[0] == "remove":
+                    if len(msgParse) != 2:
+                        helpMsg = textwrap.dedent(f"""
+                        アイテムを削除します。
+                        使用方法: {commandRegister} remove [アイテム名]
+                        """)
+                        await message.channel.send(helpMsg)
+                        return
+
+                    try:
+                        if removeRegister(msgParse[1]):
+                            await message.channel.send(f"{msgParse[1]}を削除しました。")
+                        else:
+                            await message.channel.send(f"エラー: {msgParse[1]}というアイテムは登録されていません。")
+                    except OSError:
+                        await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
+                    except:
+                        await self.errorWrite()
+                    finally:
+                        return
+                
+                elif msgParse[0] == "show":
+                    res = showRegister()
+                    if res == False:
+                        await message.channel.send("エラー: アイテムは登録されていません。")
+                        return
+                    else:
+                        await message.channel.send(res)
+                        return
+                
+                elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    await self.showHelpRegister()
+                    return
+
+                else:
+                    await message.channel.send("エラー: コマンドが無効です。")
+                    return
                 
     # ヘルプ等関数定義
     async def showHelpMarket(self):
@@ -387,10 +461,13 @@ class Client(discord.Client):
         ・add
         　エイリアスを追加します。
         　使用方法: {commandAlias} add [エイリアス名] [正式名称]
-        ・help
-        　このヘルプを表示します。
+        ・remove
+        　エイリアスを削除します。
+        　使用方法: {commandAlias} remove [エイリアス名]
         ・show
         　エイリアス一覧を表示します。
+        ・help
+        　このヘルプを表示します。
         """)
         await self.targetChannel.send(helpMsg)
 
@@ -417,6 +494,23 @@ class Client(discord.Client):
         """)
         await self.targetChannel.send(helpMsg)
 
+    async def showHelpRegister(self):
+        helpMsg = textwrap.dedent(f"""
+        定期実行が有効な際、価格を投稿するアイテムを登録したり削除したりできます。
+        ・add
+        　アイテムを登録します。
+        　使用方法: {commandRegister} add [アイテム名]
+        ・remove
+        　アイテムを削除します。
+        　使用方法: {commandRegister} remove [アイテム名]
+        ・show
+        　登録されたアイテムの一覧を表示します。
+        ・help
+        　このヘルプを表示します。
+        """)
+        await self.targetChannel.send(helpMsg)
+
+    # エラーログ用関数
     async def errorWrite(self):
         now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
         nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")

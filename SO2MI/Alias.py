@@ -76,6 +76,7 @@ def addAlias(aliasName, formalName):
                     if recipe[str(col)]["name"] == formalName:
                         itemId = col
                         break
+                        
             if int(itemId) == 0:
                 raise NoItemError("nonexistent of item")
 
