@@ -440,14 +440,14 @@ class Client(discord.Client):
     # 定期実行系関数定義
     async def cliChkCost(self):
         res = chkCost()
-        if res != "":
+        if res != False:
             await self.targetChannel.send(res)
         else:
             pass
 
     async def clichkEndOfMonth(self):
         res = chkEndOfMonth()
-        if res != "":
+        if res != False:
             await self.targetChannel.send(res)
         else:
             pass
