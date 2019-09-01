@@ -102,6 +102,9 @@ def chkCost():
                 priceInfo.append(lpr)
 
             print("文章構築中")
+            print(itemList)
+            print(priceInfo)
+            print(infoList)
             text = ""
             for i in range(len(itemList)):
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
