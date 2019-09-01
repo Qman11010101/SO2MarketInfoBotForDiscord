@@ -115,7 +115,7 @@ def chkCost():
 
             return message
         except:
-            now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
+            now = datetime.datetime.now(pytz.timezone(config["misc"]["timezone"]))
             nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
             nowFileFormat = now.strftime("%Y%m%d")
             os.makedirs("error-log", exist_ok=True)
