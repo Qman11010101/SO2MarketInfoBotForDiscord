@@ -545,7 +545,7 @@ class Client(discord.Client):
         if res != False:
             await self.regChannel.send(res)
         else:
-            pass
+            await self.regChannel.send("予期しない事象が発生しました。")
 
     async def cliChkEndOfMonth(self):
         res = chkEndOfMonth()
