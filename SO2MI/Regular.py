@@ -72,17 +72,20 @@ def chkCost():
                 if len(listPr) == 0:
                     lpr = ["0", "0", "0"]
                 else:
+                    print("ソート中")
                     listPr.sort()
                     saleLen = len(listPr)
                     saleSum = sum(listPr)
 
                     # TOP5平均
+                    print("TOP5平均値算出中")
                     if saleLen < 5: 
                         t5avg = "{:,}".format(saleSum // saleLen)
                     else:
                         t5avg = "{:,}".format((listPr[0] + listPr[1] + listPr[2] + listPr[3] + listPr[4]) // 5)
 
                     # 中央値
+                    print("中央値算出中")
                     if saleLen == 1:
                         med = saleLen
                     else:
@@ -92,11 +95,13 @@ def chkCost():
                             med = "{:,}".format(int((listPr[int(saleLen / 2)] + listPr[int(saleLen / 2 + 1)]) / 2))
 
                     # 平均値
+                    print("平均値算出中")
                     aAvg = "{:,}".format(saleSum // saleLen)
 
                     lpr = [t5avg, med, aAvg]
                 priceInfo.append(lpr)
 
+            print("文章構築中")
             text = ""
             for i in range(len(itemList)):
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
@@ -119,7 +124,7 @@ def chkCost():
                 traceback.print_exc(file=f)
                 f.write("\n")
             traceback.print_exc()
-            return False
+            return "Error"
     else:
         return False
 
