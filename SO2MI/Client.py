@@ -363,7 +363,7 @@ class Client(discord.Client):
             msgParse = message.content.split()
             del msgParse[0]
             if len(msgParse) == 0:
-                await self.showHelpAlias()
+                await self.showHelpRegister()
                 return
             else:
                 if msgParse[0] == "add":
