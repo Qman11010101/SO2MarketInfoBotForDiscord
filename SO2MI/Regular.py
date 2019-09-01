@@ -72,20 +72,17 @@ def chkCost():
                 if len(listPr) == 0:
                     lpr = ["0", "0", "0"]
                 else:
-                    print("ソート中")
                     listPr.sort()
                     saleLen = len(listPr)
                     saleSum = sum(listPr)
 
                     # TOP5平均
-                    print("TOP5平均値算出中")
                     if saleLen < 5: 
                         t5avg = "{:,}".format(saleSum // saleLen)
                     else:
                         t5avg = "{:,}".format((listPr[0] + listPr[1] + listPr[2] + listPr[3] + listPr[4]) // 5)
 
                     # 中央値
-                    print("中央値算出中")
                     if saleLen == 1:
                         med = saleLen
                     else:
@@ -95,7 +92,6 @@ def chkCost():
                             med = "{:,}".format(int((listPr[int(saleLen / 2)] + listPr[int(saleLen / 2 + 1)]) / 2))
 
                     # 平均値
-                    print("平均値算出中")
                     aAvg = "{:,}".format(saleSum // saleLen)
 
                     lpr = [t5avg, med, aAvg]
@@ -118,16 +114,7 @@ def chkCost():
 
             return message
         except:
-            now = datetime.datetime.now(pytz.timezone(config["misc"]["timezone"]))
-            nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-            nowFileFormat = now.strftime("%Y%m%d")
-            os.makedirs("error-log", exist_ok=True)
-            with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                f.write(f"--- Datetime: {nowFormat} ---\n")
-                traceback.print_exc(file=f)
-                f.write("\n")
-            traceback.print_exc()
-            return "Error"
+            return False
     else:
         return False
 

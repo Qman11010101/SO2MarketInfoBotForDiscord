@@ -58,10 +58,11 @@ class Client(discord.Client):
 
         # 定期実行
         if config["misc"].getboolean("EnableRegularExecution"):
+            chkTime = int(config["misc"]["RegExcCheckTime"])
             while True:
                 await self.cliChkCost()
                 await self.cliChkEndOfMonth()
-                await asyncio.sleep(int(config["misc"]["RegExcCheckTime"])*60) # config.iniで設定した時間ごとにチェック
+                await asyncio.sleep(chkTime * 60 + chkTime) # config.iniで設定した時間ごとにチェック(誤動作防止機能付き)
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
