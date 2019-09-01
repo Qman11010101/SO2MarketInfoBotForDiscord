@@ -120,12 +120,12 @@ def chkEndOfMonth():
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
-    """
+
     # 月末判定
     dayLast = int(calendar.monthrange(now.year, now.month)[1]) # 月の最終日取得
     if now.day != dayLast: # 最終日じゃなければ何もしないようにする
         return False
-    """
+
     # 時刻判定
     startHour = int(config["misc"]["RegExcHour"])
     startMin = int(config["misc"]["RegExcMinute"])
