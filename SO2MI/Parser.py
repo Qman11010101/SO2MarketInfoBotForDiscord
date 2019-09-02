@@ -94,7 +94,7 @@ def itemParser(itemName, argument, townName, beta):
             if saleLen % 2 == 1: # 中央値
                 saleMedian = "{:,}".format(priceSaleArray[saleLen // 2 + 1])
             else:
-                saleMedian = "{:,}".format(int((priceSaleArray[int(saleLen / 2)] + priceSaleArray[int(saleLen / 2 + 1)]) / 2))
+                saleMedian = "{:,}".format(int((priceSaleArray[int(saleLen / 2)] + priceSaleArray[int(saleLen / 2) + 1]) / 2))
 
         saleUnitSum = "{:,}".format(sum(unitSaleArray)) # 販売数
 
@@ -150,7 +150,7 @@ def itemParser(itemName, argument, townName, beta):
             if reqLen % 2 == 1: # 中央値
                 reqMedian = "{:,}".format(priceReqArray[reqLen // 2 + 1])
             else:
-                reqMedian = "{:,}".format(int((priceReqArray[int(reqLen / 2)] + priceReqArray[int(reqLen / 2 + 1)]) / 2))
+                reqMedian = "{:,}".format(int((priceReqArray[int(reqLen / 2)] + priceReqArray[int(reqLen / 2) + 1]) / 2))
 
         reqUnitSum = "{:,}".format(sum(unitReqArray)) # 注文数
 
