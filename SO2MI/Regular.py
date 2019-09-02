@@ -89,7 +89,7 @@ def chkCost():
                         if saleLen % 2 == 1:
                             med = "{:,}".format(listPr[saleLen // 2 + 1])
                         else:
-                            med = "{:,}".format(int((listPr[int(saleLen / 2)] + listPr[int(saleLen / 2 + 1)]) / 2))
+                            med = "{:,}".format(int((listPr[int(saleLen / 2)] + listPr[int(saleLen / 2 ) + 1]) / 2))
 
                     # 平均値
                     aAvg = "{:,}".format(saleSum // saleLen)
