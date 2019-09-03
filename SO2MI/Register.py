@@ -45,7 +45,7 @@ def addRegister(itemName):
             with open("itemreg.json", "w", encoding="utf-8_sig") as itf:
                 json.dump(itemreg, itf, indent=4, ensure_ascii=False)
             
-            return True
+            return itemName
         else:
             itemreg = {}
 
@@ -54,7 +54,7 @@ def addRegister(itemName):
             with open("itemreg.json", "w", encoding="utf-8_sig") as itf:
                 json.dump(itemreg, itf, indent=4, ensure_ascii=False)
 
-            return True
+            return itemName
     else:
         itemreg = {}
 
@@ -63,7 +63,7 @@ def addRegister(itemName):
         with open("itemreg.json", "w", encoding="utf-8_sig") as itf:
             json.dump(itemreg, itf, indent=4, ensure_ascii=False)
 
-        return True
+        return itemName
 
 def removeRegister(itemName):
     if os.access("itemreg.json", os.W_OK):
@@ -80,7 +80,7 @@ def removeRegister(itemName):
                     itemList.remove(items)
                     with open("itemreg.json", "w", encoding="utf-8_sig") as itf:
                         json.dump(itemreg, itf, indent=4, ensure_ascii=False)
-                    return True
+                    return itemName
             return False
         else:
             return False

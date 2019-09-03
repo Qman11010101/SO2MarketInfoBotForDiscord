@@ -377,7 +377,7 @@ class Client(discord.Client):
                         return
 
                     try:
-                        addRegister(msgParse[1])
+                        res = addRegister(msgParse[1])
                     except OSError:
                         await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
                     except SameItemExistError:
@@ -387,7 +387,7 @@ class Client(discord.Client):
                     except:
                         await self.errorWrite()
                     else:
-                        await message.channel.send(f"{msgParse[1]}を登録しました。")
+                        await message.channel.send(f"{res}を登録しました。")
                     finally:
                         return
 
@@ -401,8 +401,9 @@ class Client(discord.Client):
                         return
 
                     try:
-                        if removeRegister(msgParse[1]):
-                            await message.channel.send(f"{msgParse[1]}を削除しました。")
+                        res = removeRegister(msgParse[1])
+                        if res:
+                            await message.channel.send(f"{res}を削除しました。")
                         else:
                             await message.channel.send(f"エラー: {msgParse[1]}というアイテムは登録されていません。")
                     except OSError:
@@ -504,6 +505,7 @@ class Client(discord.Client):
     async def showHelpRegister(self):
         helpMsg = textwrap.dedent(f"""
         定期実行が有効な際、価格を投稿するアイテムを登録したり削除したりできます。
+        登録されたエイリアスが使用可能です。
         ・add
         　アイテムを登録します。
         　使用方法: {commandRegister} add [アイテム名]
