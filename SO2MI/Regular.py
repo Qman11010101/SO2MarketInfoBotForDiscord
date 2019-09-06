@@ -145,3 +145,6 @@ def chkEndOfMonth():
         return message
     else:
         return False
+
+def chkEvent():
+    pass
