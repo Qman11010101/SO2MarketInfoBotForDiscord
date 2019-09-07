@@ -5,7 +5,6 @@ import os
 import re
 import traceback
 from json.decoder import JSONDecodeError
-from pprint import pprint as pp
 import textwrap
 import sys
 import asyncio
@@ -45,13 +44,13 @@ class Client(discord.Client):
         self.targetChannel = self.get_channel(int(config["discord"]["channel"]))
         if self.targetChannel == None:
             # 指定チャンネルが見つからない場合はExceptionをraise
-            raise Exception("指定されたチャンネルは見つかりませんでした")
+            raise Exception("specified channel not found")
         else:
             pass
         self.regChannel = self.get_channel(int(config["discord"]["regChannel"]))
         if self.regChannel == None:
             # 指定チャンネルが見つからない場合はExceptionをraise
-            raise Exception("指定されたチャンネルは見つかりませんでした")
+            raise Exception("specified channel not found")
         else:
             pass
         print("次のユーザーとしてログインしました:", self.user)
@@ -132,9 +131,9 @@ class Client(discord.Client):
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
-                        await message.channel.send(f"エラー: {msgParse[0]}は見つかりませんでした。")
+                        await message.channel.send(f"「{msgParse[0]}」は見つかりませんでした。")
                 except NoTownError:
-                    await message.channel.send(f"エラー: {msgParse[3]}という街は見つかりませんでした。")
+                    await message.channel.send(f"エラー: 「{msgParse[3]}」という街は見つかりませんでした。")
                 except:
                     await self.errorWrite()
                 finally:
@@ -164,9 +163,9 @@ class Client(discord.Client):
                     except SameItemExistError:
                         await message.channel.send("エラー: 既に登録されています。")
                     except NoItemError:
-                        await message.channel.send(f"エラー: {msgParse[2]}は存在しません。")
+                        await message.channel.send(f"エラー: 「{msgParse[2]}」は存在しません。")
                     except NameDuplicationError:
-                        await message.channel.send(f"エラー: {msgParse[1]}というアイテムが既に存在しています。")
+                        await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムが既に存在しています。")
                     except:
                         await self.errorWrite()
                     else:
@@ -187,7 +186,7 @@ class Client(discord.Client):
                         if removeAlias(msgParse[1]):
                             await message.channel.send("エイリアスを削除しました。")
                         else:
-                            await message.channel.send(f"エラー: {msgParse[1]}というエイリアス名は存在しません。")
+                            await message.channel.send(f"エラー: 「{msgParse[1]}」というエイリアス名は存在しません。")
                     except OSError:
                         await message.channel.send("エラー: alias.jsonにアクセスできません。")
                     except:
@@ -202,7 +201,7 @@ class Client(discord.Client):
                 elif msgParse[0] == "show":
                     res = showAlias()
                     if res == False:
-                        await message.channel.send("エラー: エイリアスは登録されていません。")
+                        await message.channel.send("エイリアスは登録されていません。")
                         return
                     else:
                         await message.channel.send(res)
@@ -299,7 +298,7 @@ class Client(discord.Client):
                 except discord.errors.HTTPException:
                     await message.channel.send("エラー: 検索結果が2000文字を超えているため表示できません。")
                 except NoCategoryError:
-                    await message.channel.send(f"エラー: {msgParse[3]}というカテゴリは存在しません。")
+                    await message.channel.send(f"エラー: 「{msgParse[3]}」というカテゴリは存在しません。")
                 except:
                     await self.errorWrite()
                 finally:
@@ -349,16 +348,6 @@ class Client(discord.Client):
                         await self.errorWrite()
                     finally:
                         return
-
-        # エラー発生コマンド(仮)
-        if message.content.startswith("!error"):
-            try:
-                res = 1 / 0 # ZeroDivisionError
-                await message.channel.send(res)
-            except:
-                await self.errorWrite()
-            finally:
-                return
         
         # 登録コマンド
         if message.content.startswith(commandRegister):
@@ -384,11 +373,11 @@ class Client(discord.Client):
                     except SameItemExistError:
                         await message.channel.send("エラー: 既に登録されています。")
                     except NoItemError:
-                        await message.channel.send(f"エラー: {msgParse[1]}は存在しません。")
+                        await message.channel.send(f"エラー: 「{msgParse[1]}」は存在しません。")
                     except:
                         await self.errorWrite()
                     else:
-                        await message.channel.send(f"{res}を登録しました。")
+                        await message.channel.send(f"「{res}」を登録しました。")
                     finally:
                         return
 
@@ -404,9 +393,9 @@ class Client(discord.Client):
                     try:
                         res = removeRegister(msgParse[1])
                         if res:
-                            await message.channel.send(f"{res}を削除しました。")
+                            await message.channel.send(f"「{res}」を削除しました。")
                         else:
-                            await message.channel.send(f"エラー: {msgParse[1]}というアイテムは登録されていません。")
+                            await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムは登録されていません。")
                     except OSError:
                         await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
                     except:
@@ -417,7 +406,7 @@ class Client(discord.Client):
                 elif msgParse[0] == "show":
                     res = showRegister()
                     if res == False:
-                        await message.channel.send("エラー: アイテムは登録されていません。")
+                        await message.channel.send("アイテムは登録されていません。")
                         return
                     else:
                         await message.channel.send(res)
@@ -563,4 +552,4 @@ class Client(discord.Client):
         if res != False:
             await self.regChannel.send(res)
         else:
-            print("不明なエラー")
+            pass

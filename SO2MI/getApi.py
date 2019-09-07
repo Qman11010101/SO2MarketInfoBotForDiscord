@@ -1,10 +1,11 @@
 import json
 import datetime
 import os
-import requests
 import glob
-import pytz
 import configparser
+
+import pytz
+import requests
 
 def getApi(apiName, url):
     # タイムゾーン指定のためconfig.iniの読み込み

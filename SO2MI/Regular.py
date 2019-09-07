@@ -43,7 +43,6 @@ def chkCost():
             sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
 
             # アイテムID取得部
-            print("アイテムID取得中")
             for col in item:
                 if item[str(col)]["name"] in itemList:
                     itemId = int(col)
@@ -58,7 +57,6 @@ def chkCost():
                     info = [itemName, itemId]
                     infoList.append(info)
             
-            print("アイテム価格取得中")
             priceList = []
             for itemInfo in infoList:
                 priceArray = []
@@ -67,7 +65,6 @@ def chkCost():
                         priceArray.append(unit["price"])
                 priceList.append(priceArray)
             
-            print("情報整理中")
             priceInfo = []
             for listPr in priceList:
                 lpr = []
@@ -99,7 +96,6 @@ def chkCost():
                     lpr = [t5avg, med, aAvg]
                 priceInfo.append(lpr)
 
-            print("文章構築中")
             text = ""
             for i in range(len(itemList)):
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
@@ -154,17 +150,14 @@ def chkEvent():
     if now.hour == startHour and startMin <= now.minute <= endMin:
         try:
             # ページダウンロード
-            print("ページ取得中")
             pseudoUserAgent = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"}
             source = requests.get("https://so2-bbs.mutoys.com/agenda", headers=pseudoUserAgent)
             bsobj = BeautifulSoup(source.text, "html.parser")
 
             # preloadデータのあるdivを拾う
-            print("ページ解析中")
             preloadDiv = bsobj.find_all(id="data-preloaded")
 
             # 各イベント告知ページへのリンクを取得する
-            print("リンク取得中")
             linksTag = bsobj.find_all("meta", itemprop="url")
 
             linkurls = []
@@ -172,20 +165,16 @@ def chkEvent():
                 linkurls.append(tag["content"])
 
             # 文字列操作
-            print("文字列切り取り中")
             convQuot = str(preloadDiv[0]).replace(r"\&quot;", '"').replace("&quot;", '"') # 特殊文字をダブルクォーテーションに置換
             rugueux = convQuot[convQuot.find('"topic_list_agenda":'):] # 誤動作防止のため大まかに切り取る
             topicsJson = "{" + rugueux[rugueux.find('"topics":'):rugueux.find("}}")] + "}" # JSONの形で切り取り、足りない括弧をつける
-            print("json保存中")
             with open("agenda.json", "w", encoding="utf-8_sig") as agw: # 一旦保存してJSONとして扱えるようにする
                 agw.write(topicsJson)
-            print("json読込中")
             with open("agenda.json", "r", encoding="utf-8_sig") as agr: # 保存したJSONを読み込む
                 agenda = json.load(agr)
 
             topiclist = agenda["topics"] # 必要な情報が入ったリストを生成する
 
-            print("情報整理中")
             iCount = 0
             now = datetime.datetime.now(timezone)
             eventHeld = [] # 開催中
@@ -222,7 +211,6 @@ def chkEvent():
                         eventCome.append(eventInfo)
                 
             # イベントごとの文章構築
-            print("イベント紹介文章構築中")
             eventHeldText = []
             eventComeText = []
             if len(eventHeld) != 0:
@@ -239,7 +227,6 @@ def chkEvent():
                     eventComeText.append(evtxt)
 
             # 結合
-            print("文章結合中")
             htx = "\n".join(eventHeldText)
             ctx = "\n".join(eventComeText)
 
@@ -257,7 +244,6 @@ def chkEvent():
                 future = ""
 
             # 文章完成
-            print("文章完成")
             if current == "" and future != "":
                 res = textwrap.dedent(f"""
                 【Event Information】
