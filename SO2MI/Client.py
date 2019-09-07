@@ -104,7 +104,7 @@ class Client(discord.Client):
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
-                        if msgParse[1] != "-s" and msgParse[1] != "-r":
+                        if msgParse[1] not in ("-s", "-r"):
                             msgParse.insert(1, "-n")
                         # 第2引数/第3引数[-t ***]
                         if msgParse[2] != "-t":
@@ -281,7 +281,7 @@ class Client(discord.Client):
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
-                        if msgParse[1] != "-i" and msgParse[1] != "-r":
+                        if msgParse[1] not in ("-i", "-r"):
                             msgParse.insert(1, "-n")
                         # 第2引数/第3引数[-c ***]
                         if msgParse[2] != "-c":
