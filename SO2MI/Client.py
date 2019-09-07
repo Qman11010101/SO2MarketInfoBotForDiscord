@@ -18,7 +18,7 @@ from .Alias import showAlias, addAlias, removeAlias
 from .Search import itemSearch
 from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError, SameItemExistError
 from .Wiki import wikiLinkGen
-from .Regular import chkCost, chkEndOfMonth
+from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Register import addRegister, removeRegister, showRegister
 
 config = configparser.ConfigParser()
@@ -62,6 +62,7 @@ class Client(discord.Client):
             while True:
                 await self.cliChkCost()
                 await self.cliChkEndOfMonth()
+                await self.cliChkEvent()
                 await asyncio.sleep(chkTime * 60 + chkTime) # config.iniで設定した時間ごとにチェック(誤動作防止機能付き)
 
     async def on_message(self, message):
@@ -556,3 +557,10 @@ class Client(discord.Client):
             await self.regChannel.send(res)
         else:
             pass
+
+    async def cliChkEvent(self):
+        res = chkEvent()
+        if res != False:
+            await self.regChannel.send(res)
+        else:
+            print("不明なエラー")

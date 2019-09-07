@@ -7,9 +7,12 @@ import calendar
 import textwrap
 import traceback
 import os
+import json
 
 import discord
 import pytz
+import requests
+from bs4 import BeautifulSoup
 
 from .getApi import getApi
 
@@ -98,9 +101,6 @@ def chkCost():
                 priceInfo.append(lpr)
 
             print("文章構築中")
-            print(itemList)
-            print(priceInfo)
-            print(infoList)
             text = ""
             for i in range(len(itemList)):
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
@@ -114,6 +114,7 @@ def chkCost():
 
             return message
         except:
+            traceback.print_exc()
             return False
     else:
         return False
@@ -147,4 +148,136 @@ def chkEndOfMonth():
         return False
 
 def chkEvent():
-    pass
+    # タイムゾーン指定のためconfig.iniの読み込み
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    # 現在時刻取得
+    timezone = pytz.timezone(config["misc"]["timezone"])
+    now = datetime.datetime.now(timezone)
+
+    # 時刻判定
+    startHour = int(config["misc"]["RegExcHour"])
+    startMin = int(config["misc"]["RegExcMinute"])
+    endMin = startMin + int(config["misc"]["RegExcCheckTime"])
+    if now.hour == startHour and startMin <= now.minute <= endMin:
+        try:
+            # ページダウンロード
+            print("ページ取得中")
+            pseudoUserAgent = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"}
+            source = requests.get("https://so2-bbs.mutoys.com/agenda", headers=pseudoUserAgent)
+            bsobj = BeautifulSoup(source.text, "html.parser")
+
+            # preloadデータのあるdivを拾う
+            print("ページ解析中")
+            preloadDiv = bsobj.find_all(id="data-preloaded")
+
+            # 各イベント告知ページへのリンクを取得する
+            print("リンク取得中")
+            linksTag = bsobj.find_all("meta", itemprop="url")
+
+            linkurls = []
+            for tag in linksTag:
+                linkurls.append(tag["content"])
+
+            # 文字列操作
+            print("文字列切り取り中")
+            convQuot = str(preloadDiv[0]).replace(r"\&quot;", '"').replace("&quot;", '"') # 特殊文字をダブルクォーテーションに置換
+            rugueux = convQuot[convQuot.find('"topic_list_agenda":'):] # 誤動作防止のため大まかに切り取る
+            topicsJson = "{" + rugueux[rugueux.find('"topics":'):rugueux.find("}}")] + "}" # JSONの形で切り取り、足りない括弧をつける
+            print("json保存中")
+            with open("agenda.json", "w", encoding="utf-8_sig") as agw: # 一旦保存してJSONとして扱えるようにする
+                agw.write(topicsJson)
+            print("json読込中")
+            with open("agenda.json", "r", encoding="utf-8_sig") as agr: # 保存したJSONを読み込む
+                agenda = json.load(agr)
+
+            topiclist = agenda["topics"] # 必要な情報が入ったリストを生成する
+
+            print("情報整理中")
+            iCount = 0
+            now = datetime.datetime.now(timezone)
+            eventHeld = [] # 開催中
+            eventCome = [] # 近日
+            for col in topiclist:
+                # タイトル取得
+                title = col["title"]
+
+                # リンク取得
+                link = linkurls[iCount]
+
+                # 開始時刻取得
+                startTimeutc = datetime.datetime.strptime(col["event"]["start"], "%Y-%m-%dT%H:%M:%S%z")
+                startTimejst = startTimeutc.astimezone(timezone)
+                startTime = f"{startTimejst.month}/{startTimejst.day} {startTimejst.hour}:{startTimejst:%M}"
+
+                # 終了時刻取得
+                if "end" in col["event"]: # 終了時刻明記
+                    endTimeutc = datetime.datetime.strptime(col["event"]["end"], "%Y-%m-%dT%H:%M:%S%z")
+                    endTimejst = endTimeutc.astimezone(timezone)
+                    endTime = f"{endTimejst.month}/{endTimejst.day} {endTimejst.hour}:{endTimejst:%M}"
+                else: # 終了時刻がない場合は終日開催と見做す
+                    endTimejst = startTimejst + datetime.timedelta(hours=24)
+                    endTime = f"{endTimejst.month}/{endTimejst.day} {endTimejst.hour}:{endTimejst:%M}"
+                
+                if now <= endTimejst: # 終了済みイベントは表示しない
+                    if now >= startTimejst: # 開催中
+                        event = f"{endTime}終了"
+                        eventInfo = [event, title, link]
+                        eventHeld.append(eventInfo)
+                    elif startTimejst.timestamp() - now.timestamp() < 864000:
+                        event = f"{startTime} ～ {endTime}"
+                        eventInfo = [event, title, link]
+                        eventCome.append(eventInfo)
+                
+            # イベントごとの文章構築
+            print("イベント紹介文章構築中")
+            eventHeldText = []
+            eventComeText = []
+            if len(eventHeld) != 0:
+                for ev in eventHeld:
+                    evtxt = textwrap.dedent(f"""
+                    {ev[0]}: {ev[1]}
+                    Topic: {ev[2]}""")
+                    eventHeldText.append(evtxt)
+            if len(eventCome) != 0:
+                for ev in eventCome:
+                    evtxt = textwrap.dedent(f"""
+                    {ev[0]}: {ev[1]}
+                    Topic: {ev[2]}""")
+                    eventComeText.append(evtxt)
+
+            # 結合
+            print("文章結合中")
+            htx = "\n".join(eventHeldText)
+            ctx = "\n".join(eventComeText)
+
+            han = "現在開催中のイベントは以下の通りです:" if len(eventHeldText) != 0 else ""
+            can = "近日開催されるイベントは以下の通りです:" if len(eventComeText) != 0 else ""
+            
+            if len(eventHeldText) != 0:
+                current = f"{han}\n{htx}\n\n"
+            else:
+                current = ""
+
+            if len(eventComeText) != 0:
+                future = f"{can}\n{ctx}"
+            else:
+                future = ""
+
+            # 文章完成
+            print("文章完成")
+            res = textwrap.dedent(f"""
+            【Event Information】
+{current}
+{future}
+            """)
+            if current == "" and future == "":
+                return False
+            else:
+                return res
+        except:
+            traceback.print_exc()
+            return False
+    else:
+        return False
