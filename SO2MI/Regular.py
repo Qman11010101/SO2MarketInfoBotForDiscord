@@ -101,7 +101,7 @@ def chkCost():
                 text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
 
             message = f"""
-【Daily Information】
+【Daily Market Information】
 取得された市場情報は以下の通りです。
 価格の並びは左から順にTOP5値/中央値/平均値です。
             　

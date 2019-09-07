@@ -66,7 +66,7 @@ class Client(discord.Client):
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
-            # BOT属性アカウント, 自身のアカウント or 指定したチャンネル以外はスルー
+            # BOT属性アカウント、自身のアカウント or 指定したチャンネル以外はスルー
             return
 
         # コマンド受取部
