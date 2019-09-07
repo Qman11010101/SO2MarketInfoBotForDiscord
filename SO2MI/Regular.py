@@ -16,11 +16,10 @@ from bs4 import BeautifulSoup
 
 from .getApi import getApi
 
-def chkCost():
-    # タイムゾーン指定のためconfig.iniの読み込み
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+config = configparser.ConfigParser()
+config.read("config.ini")
 
+def chkCost():
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
@@ -120,10 +119,6 @@ def chkCost():
         return False
 
 def chkEndOfMonth():
-    # タイムゾーン指定のためconfig.iniの読み込み
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
@@ -148,10 +143,6 @@ def chkEndOfMonth():
         return False
 
 def chkEvent():
-    # タイムゾーン指定のためconfig.iniの読み込み
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
