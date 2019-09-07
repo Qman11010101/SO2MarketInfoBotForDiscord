@@ -225,7 +225,7 @@ def chkEvent():
                         event = f"{endTime}終了"
                         eventInfo = [event, title, link]
                         eventHeld.append(eventInfo)
-                    elif startTimejst.timestamp() - now.timestamp() < 864000:
+                    elif startTimejst.timestamp() - now.timestamp() < (int(config["misc"]["RegEventDay"]) * 86400):
                         event = f"{startTime} ～ {endTime}"
                         eventInfo = [event, title, link]
                         eventCome.append(eventInfo)
