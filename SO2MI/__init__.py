@@ -6,6 +6,6 @@ from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistErr
 from .Search import itemSearch
 from .Wiki import wikiLinkGen
 from .Register import showRegister, addRegister, removeRegister
-from .Regular import chkCost, chkEndOfMonth
+from .Regular import chkCost, chkEndOfMonth, chkEvent
 
-__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth"]
+__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent"]
