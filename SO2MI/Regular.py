@@ -258,11 +258,22 @@ def chkEvent():
 
             # 文章完成
             print("文章完成")
-            res = textwrap.dedent(f"""
-            【Event Information】
+            if current == "" and future != "":
+                res = textwrap.dedent(f"""
+                【Event Information】
+{future}
+                """)
+            elif current != "" and future == "":
+                res = textwrap.dedent(f"""
+                【Event Information】
+{current}
+                """) 
+            else:
+                res = textwrap.dedent(f"""
+                【Event Information】
 {current}
 {future}
-            """)
+                """)
             if current == "" and future == "":
                 return False
             else:
