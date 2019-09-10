@@ -141,75 +141,79 @@ class Client(discord.Client):
 
         # エイリアスコマンド
         if message.content.startswith(commandAlias):
-            msgParse = message.content.split()
-            del msgParse[0]
-            if len(msgParse) == 0:
-                await self.showHelpAlias()
-                return
-            else:
-                if msgParse[0] == "add":
-                    if len(msgParse) != 3:
-                        helpMsg = textwrap.dedent(f"""
-                        エイリアスを追加します。
-                        使用方法: {commandAlias} add [エイリアス名] [正式名称]
-                        """)
-                        await message.channel.send(helpMsg)
-                        return
-                    
-                    try:
-                        addAlias(msgParse[1], msgParse[2])
-                    except OSError:
-                        await message.channel.send("エラー: alias.jsonにアクセスできません。")
-                    except SameItemExistError:
-                        await message.channel.send("エラー: 既に登録されています。")
-                    except NoItemError:
-                        await message.channel.send(f"エラー: 「{msgParse[2]}」は存在しません。")
-                    except NameDuplicationError:
-                        await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムが既に存在しています。")
-                    except:
-                        await self.errorWrite()
-                    else:
-                        await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
-                    finally:
-                        return
-
-                elif msgParse[0] == "remove":
-                    if len(msgParse) != 2:
-                        helpMsg = textwrap.dedent(f"""
-                        エイリアスを削除します。
-                        使用方法: {commandAlias} remove [エイリアス名]
-                        """)
-                        await message.channel.send(helpMsg)
-                        return
-
-                    try:
-                        if removeAlias(msgParse[1]):
-                            await message.channel.send("エイリアスを削除しました。")
-                        else:
-                            await message.channel.send(f"エラー: 「{msgParse[1]}」というエイリアス名は存在しません。")
-                    except OSError:
-                        await message.channel.send("エラー: alias.jsonにアクセスできません。")
-                    except:
-                        await self.errorWrite()
-                    finally:
-                        return
-
-                elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+            if config["misc"].getboolean("EnableAlias"):
+                msgParse = message.content.split()
+                del msgParse[0]
+                if len(msgParse) == 0:
                     await self.showHelpAlias()
                     return
-
-                elif msgParse[0] == "show":
-                    res = showAlias()
-                    if res == False:
-                        await message.channel.send("エイリアスは登録されていません。")
-                        return
-                    else:
-                        await message.channel.send(res)
-                        return
-
                 else:
-                    await message.channel.send("エラー: コマンドが無効です。")
-                    return
+                    if msgParse[0] == "add":
+                        if len(msgParse) != 3:
+                            helpMsg = textwrap.dedent(f"""
+                            エイリアスを追加します。
+                            使用方法: {commandAlias} add [エイリアス名] [正式名称]
+                            """)
+                            await message.channel.send(helpMsg)
+                            return
+                        
+                        try:
+                            addAlias(msgParse[1], msgParse[2])
+                        except OSError:
+                            await message.channel.send("エラー: alias.jsonにアクセスできません。")
+                        except SameItemExistError:
+                            await message.channel.send("エラー: 既に登録されています。")
+                        except NoItemError:
+                            await message.channel.send(f"エラー: 「{msgParse[2]}」は存在しません。")
+                        except NameDuplicationError:
+                            await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムが既に存在しています。")
+                        except:
+                            await self.errorWrite()
+                        else:
+                            await message.channel.send(f"エイリアスを追加しました。\n{msgParse[1]} → {msgParse[2]}")
+                        finally:
+                            return
+
+                    elif msgParse[0] == "remove":
+                        if len(msgParse) != 2:
+                            helpMsg = textwrap.dedent(f"""
+                            エイリアスを削除します。
+                            使用方法: {commandAlias} remove [エイリアス名]
+                            """)
+                            await message.channel.send(helpMsg)
+                            return
+
+                        try:
+                            if removeAlias(msgParse[1]):
+                                await message.channel.send("エイリアスを削除しました。")
+                            else:
+                                await message.channel.send(f"エラー: 「{msgParse[1]}」というエイリアス名は存在しません。")
+                        except OSError:
+                            await message.channel.send("エラー: alias.jsonにアクセスできません。")
+                        except:
+                            await self.errorWrite()
+                        finally:
+                            return
+
+                    elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                        await self.showHelpAlias()
+                        return
+
+                    elif msgParse[0] == "show":
+                        res = showAlias()
+                        if res == False:
+                            await message.channel.send("エイリアスは登録されていません。")
+                            return
+                        else:
+                            await message.channel.send(res)
+                            return
+
+                    else:
+                        await message.channel.send("エラー: コマンドが無効です。")
+                        return
+            else:
+                await message.channel.send("このコマンドは管理者によって無効化されています。")
+                return
 
         # シャットダウンコマンド
         if message.content.startswith(commandShutdown):
@@ -312,6 +316,7 @@ class Client(discord.Client):
             このbotでは以下のコマンドが使用可能です。
             各コマンドのより詳細な情報は各コマンドに「ヘルプ」「help」などを引数として渡すと閲覧可能です。
             ただし、一部のコマンドについてはヘルプが存在しません。
+            また、一部のコマンドは管理者によって無効化されている可能性があります。
 
             {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
             {commandAlias} [add|delete] [エイリアス名] [正式名称]
@@ -351,74 +356,78 @@ class Client(discord.Client):
         
         # 登録コマンド
         if message.content.startswith(commandRegister):
-            msgParse = message.content.split()
-            del msgParse[0]
-            if len(msgParse) == 0:
-                await self.showHelpRegister()
-                return
-            else:
-                if msgParse[0] == "add":
-                    if len(msgParse) != 2:
-                        helpMsg = textwrap.dedent(f"""
-                        アイテムを登録します。
-                        使用方法: {commandRegister} add [アイテム名]
-                        """)
-                        await message.channel.send(helpMsg)
-                        return
-
-                    try:
-                        res = addRegister(msgParse[1])
-                    except OSError:
-                        await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
-                    except SameItemExistError:
-                        await message.channel.send("エラー: 既に登録されています。")
-                    except NoItemError:
-                        await message.channel.send(f"エラー: 「{msgParse[1]}」は存在しません。")
-                    except:
-                        await self.errorWrite()
-                    else:
-                        await message.channel.send(f"「{res}」を登録しました。")
-                    finally:
-                        return
-
-                elif msgParse[0] == "remove":
-                    if len(msgParse) != 2:
-                        helpMsg = textwrap.dedent(f"""
-                        アイテムを削除します。
-                        使用方法: {commandRegister} remove [アイテム名]
-                        """)
-                        await message.channel.send(helpMsg)
-                        return
-
-                    try:
-                        res = removeRegister(msgParse[1])
-                        if res:
-                            await message.channel.send(f"「{res}」を削除しました。")
-                        else:
-                            await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムは登録されていません。")
-                    except OSError:
-                        await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
-                    except:
-                        await self.errorWrite()
-                    finally:
-                        return
-                
-                elif msgParse[0] == "show":
-                    res = showRegister()
-                    if res == False:
-                        await message.channel.send("アイテムは登録されていません。")
-                        return
-                    else:
-                        await message.channel.send(res)
-                        return
-                
-                elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+            if config["misc"].getboolean("EnableRegularExecution"):
+                msgParse = message.content.split()
+                del msgParse[0]
+                if len(msgParse) == 0:
                     await self.showHelpRegister()
                     return
-
                 else:
-                    await message.channel.send("エラー: コマンドが無効です。")
-                    return
+                    if msgParse[0] == "add":
+                        if len(msgParse) != 2:
+                            helpMsg = textwrap.dedent(f"""
+                            アイテムを登録します。
+                            使用方法: {commandRegister} add [アイテム名]
+                            """)
+                            await message.channel.send(helpMsg)
+                            return
+
+                        try:
+                            res = addRegister(msgParse[1])
+                        except OSError:
+                            await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
+                        except SameItemExistError:
+                            await message.channel.send("エラー: 既に登録されています。")
+                        except NoItemError:
+                            await message.channel.send(f"エラー: 「{msgParse[1]}」は存在しません。")
+                        except:
+                            await self.errorWrite()
+                        else:
+                            await message.channel.send(f"「{res}」を登録しました。")
+                        finally:
+                            return
+
+                    elif msgParse[0] == "remove":
+                        if len(msgParse) != 2:
+                            helpMsg = textwrap.dedent(f"""
+                            アイテムを削除します。
+                            使用方法: {commandRegister} remove [アイテム名]
+                            """)
+                            await message.channel.send(helpMsg)
+                            return
+
+                        try:
+                            res = removeRegister(msgParse[1])
+                            if res:
+                                await message.channel.send(f"「{res}」を削除しました。")
+                            else:
+                                await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムは登録されていません。")
+                        except OSError:
+                            await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
+                        except:
+                            await self.errorWrite()
+                        finally:
+                            return
+                    
+                    elif msgParse[0] == "show":
+                        res = showRegister()
+                        if res == False:
+                            await message.channel.send("アイテムは登録されていません。")
+                            return
+                        else:
+                            await message.channel.send(res)
+                            return
+                    
+                    elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                        await self.showHelpRegister()
+                        return
+
+                    else:
+                        await message.channel.send("エラー: コマンドが無効です。")
+                        return
+            else:
+                await message.channel.send("このコマンドは管理者によって無効化されています。")
+                return
                 
     # ヘルプ等関数定義
     async def showHelpMarket(self):
