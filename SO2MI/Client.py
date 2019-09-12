@@ -59,10 +59,21 @@ class Client(discord.Client):
         if config["misc"].getboolean("EnableRegularExecution"):
             chkTime = int(config["misc"]["RegExcCheckTime"])
             while True:
-                await self.cliChkCost()
-                await self.cliChkEndOfMonth()
-                await self.cliChkEvent()
-                await asyncio.sleep(chkTime * 60 + chkTime) # config.iniで設定した時間ごとにチェック(誤動作防止機能付き)
+                # 現在時刻取得
+                tz = timezone(config["misc"]["timezone"])
+                now = datetime.datetime.now(tz)
+
+                # 時刻判定
+                startHour = int(config["misc"]["RegExcHour"])
+                startMin = int(config["misc"]["RegExcMinute"])
+                endMin = startMin + chkTime
+
+                if now.hour == startHour and startMin <= now.minute <= endMin:
+                    await self.cliChkCost()
+                    await self.cliChkEndOfMonth()
+                    await self.cliChkEvent()
+                    await asyncio.sleep(72000) # 1日1回しか起動しないのでとりあえず20時間眠らせる
+                await asyncio.sleep(chkTime * 60) # config.iniで設定した時間ごとにチェック
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
