@@ -162,7 +162,7 @@ class Client(discord.Client):
                         if len(msgParse) != 3:
                             helpMsg = textwrap.dedent(f"""
                             エイリアスを追加します。
-                            使用方法: {commandAlias} add [エイリアス名] [正式名称]
+                            使用方法: `{commandAlias} add [エイリアス名] [正式名称]`
                             """)
                             await message.channel.send(helpMsg)
                             return
@@ -188,7 +188,7 @@ class Client(discord.Client):
                         if len(msgParse) != 2:
                             helpMsg = textwrap.dedent(f"""
                             エイリアスを削除します。
-                            使用方法: {commandAlias} remove [エイリアス名]
+                            使用方法: `{commandAlias} remove [エイリアス名]`
                             """)
                             await message.channel.send(helpMsg)
                             return
@@ -328,15 +328,15 @@ class Client(discord.Client):
             ただし、一部のコマンドについてはヘルプが存在しません。
             また、一部のコマンドは管理者によって無効化されている可能性があります。
 
-            {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
-            {commandAlias} [add|delete] [エイリアス名] [正式名称]
-            {commandAlias} [show]
-            {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
-            {commandVersion}
-            {commandShutdown}
-            {commandWiki} [アイテム名]
-            {commandRegister} [add|delete] [アイテム名]
-            {commandRegister} [show]
+            `{commandMarket} [商品名] [-s|-r] [-t 街名] [-b]`
+            `{commandAlias} [add|delete] [エイリアス名] [正式名称]`
+            `{commandAlias} [show]`
+            `{commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]`
+            `{commandVersion}`
+            `{commandShutdown}`
+            `{commandWiki} [アイテム名]`
+            `{commandRegister} [add|delete] [アイテム名]`
+            `{commandRegister} [show]`
             """)
             await message.channel.send(helpMsg)
             return
@@ -377,7 +377,7 @@ class Client(discord.Client):
                         if len(msgParse) != 2:
                             helpMsg = textwrap.dedent(f"""
                             アイテムを登録します。
-                            使用方法: {commandRegister} add [アイテム名]
+                            使用方法: `{commandRegister} add [アイテム名]`
                             """)
                             await message.channel.send(helpMsg)
                             return
@@ -443,7 +443,7 @@ class Client(discord.Client):
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
-        使用方法: {commandMarket} [商品名] [-s|-r] [-t 街名] [-b]
+        使用方法: `{commandMarket} [商品名] [-s|-r] [-t 街名] [-b]`
         出力情報一覧: 
         ・販売
         　・最安値
@@ -468,19 +468,19 @@ class Client(discord.Client):
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
         -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ使用可能です。
         
-        {commandMarket} help(ヘルプ等でも可) でこのヘルプを表示することができます。
+        `{commandMarket} help`(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
         await self.targetChannel.send(helpMsg)
 
     async def showHelpAlias(self):
         helpMsg = textwrap.dedent(f"""
-        {commandMarket}で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
+        `{commandMarket}`で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
         ・add
         　エイリアスを追加します。
-        　使用方法: {commandAlias} add [エイリアス名] [正式名称]
+        　使用方法: `{commandAlias} add [エイリアス名] [正式名称]`
         ・remove
         　エイリアスを削除します。
-        　使用方法: {commandAlias} remove [エイリアス名]
+        　使用方法: `{commandAlias} remove [エイリアス名]`
         ・show
         　エイリアス一覧を表示します。
         ・help
@@ -492,7 +492,7 @@ class Client(discord.Client):
         helpMsg = textwrap.dedent(f"""
         指定した単語や文字を含むアイテムを検索します。
         正規表現を使用することができます。
-        使用方法: {commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]
+        使用方法: `{commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]`
 
         引数:
         -i: レシピ品を除くアイテムのみから検索することができます。
@@ -507,7 +507,7 @@ class Client(discord.Client):
         指定したアイテムのWikiページへのリンクを生成します。
         登録されたエイリアスが使用可能です。
         レシピ品のWikiページへのリンクは存在しないため生成できません。
-        使用方法: {commandWiki} [アイテム名]
+        使用方法: `{commandWiki} [アイテム名]`
         """)
         await self.targetChannel.send(helpMsg)
 
@@ -517,10 +517,10 @@ class Client(discord.Client):
         登録されたエイリアスが使用可能です。
         ・add
         　アイテムを登録します。
-        　使用方法: {commandRegister} add [アイテム名]
+        　使用方法: `{commandRegister} add [アイテム名]`
         ・remove
         　アイテムを削除します。
-        　使用方法: {commandRegister} remove [アイテム名]
+        　使用方法: `{commandRegister} remove [アイテム名]`
         ・show
         　登録されたアイテムの一覧を表示します。
         ・help
