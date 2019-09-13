@@ -36,7 +36,7 @@ commandRegister = prefix + config["command"]["register"]
 
 adminID = config["misc"]["administrator"]
 
-DEFINE_VERSION = "3.3"
+DEFINE_VERSION = "3.1"
 
 class Client(discord.Client):
     async def on_ready(self):
