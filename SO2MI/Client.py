@@ -60,8 +60,7 @@ class Client(discord.Client):
             chkTime = int(config["misc"]["RegExcCheckTime"])
             while True:
                 # 現在時刻取得
-                tz = timezone(config["misc"]["timezone"])
-                now = datetime.datetime.now(tz)
+                now = timezone(datetime.datetime.now(config["misc"]["timezone"]))
 
                 # 時刻判定
                 startHour = int(config["misc"]["RegExcHour"])
