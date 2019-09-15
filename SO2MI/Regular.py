@@ -184,6 +184,8 @@ def chkEvent():
                     eventInfo = [event, title, link]
                     eventCome.append(eventInfo)
 
+            iCount += 1
+
         # イベントごとの文章構築
         eventHeldText = []
         eventComeText = []
