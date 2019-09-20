@@ -71,7 +71,7 @@ class Client(discord.Client):
                     await self.cliChkCost()
                     await self.cliChkEndOfMonth()
                     await self.cliChkEvent()
-                    await asyncio.sleep(72000) # 1日1回しか起動しないのでとりあえず20時間眠らせる
+                    await asyncio.sleep(12000) # 1日1回しか起動しない
                 await asyncio.sleep(chkTime * 60) # config.iniで設定した時間ごとにチェック
 
     async def on_message(self, message):
