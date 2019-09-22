@@ -145,3 +145,4 @@ error-log/
 alias.json
 itemreg.json
 agenda.json
+.idea/*
