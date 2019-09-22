@@ -89,7 +89,7 @@ def itemParser(itemName, argument, townName, beta):
         saleAverage = "{:,}".format(saleSum // saleLen) # 平均値
 
         if saleLen == 1:
-            saleMedian = saleLen
+            saleMedian = priceSaleArray[0]
         else:
             if saleLen % 2 == 1: # 中央値
                 saleMedian = "{:,}".format(priceSaleArray[saleLen // 2 + 1])

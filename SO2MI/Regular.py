@@ -74,7 +74,7 @@ def chkCost():
 
                 # 中央値
                 if saleLen == 1:
-                    med = saleLen
+                    med = listPr[0]
                 else:
                     if saleLen % 2 == 1:
                         med = "{:,}".format(listPr[saleLen // 2 + 1])
