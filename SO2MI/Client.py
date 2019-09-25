@@ -71,7 +71,7 @@ class Client(discord.Client):
                     await self.cliChkCost()
                     await self.cliChkEndOfMonth()
                     await self.cliChkEvent()
-                    await asyncio.sleep(12000) # 1日1回しか起動しない
+                    await asyncio.sleep(50000) # 1日1回しか起動しないのでしばらく止めておく
                 await asyncio.sleep(chkTime * 60) # config.iniで設定した時間ごとにチェック
 
     async def on_message(self, message):
@@ -166,7 +166,7 @@ class Client(discord.Client):
                             """)
                             await message.channel.send(helpMsg)
                             return
-                        
+
                         try:
                             addAlias(msgParse[1], msgParse[2])
                         except OSError:
@@ -317,7 +317,7 @@ class Client(discord.Client):
                     await self.errorWrite()
                 finally:
                     return
-        
+
         # ヘルプコマンド
         if message.content.startswith(commandHelp):
             helpMsg = textwrap.dedent(f"""
@@ -363,7 +363,7 @@ class Client(discord.Client):
                         await self.errorWrite()
                     finally:
                         return
-        
+
         # 登録コマンド
         if message.content.startswith(commandRegister):
             if config["misc"].getboolean("EnableRegularExecution"):
@@ -418,7 +418,7 @@ class Client(discord.Client):
                             await self.errorWrite()
                         finally:
                             return
-                    
+
                     elif msgParse[0] == "show":
                         res = showRegister()
                         if res == False:
@@ -427,7 +427,7 @@ class Client(discord.Client):
                         else:
                             await message.channel.send(res)
                             return
-                    
+
                     elif re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                         await self.showHelpRegister()
                         return
@@ -438,13 +438,13 @@ class Client(discord.Client):
             else:
                 await message.channel.send("このコマンドは管理者によって無効化されています。")
                 return
-                
+
     # ヘルプ等関数定義
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
         使用方法: `{commandMarket} [商品名] [-s|-r] [-t 街名] [-b]`
-        出力情報一覧: 
+        出力情報一覧:
         ・販売
         　・最安値
         　・最高値
@@ -467,7 +467,7 @@ class Client(discord.Client):
         -r: 注文品の情報のみを表示することができます。
         -t 街名: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
         -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ使用可能です。
-        
+
         `{commandMarket} help`(ヘルプ等でも可) でこのヘルプを表示することができます。
         """)
         await self.targetChannel.send(helpMsg)
