@@ -1,5 +1,4 @@
 import datetime
-import os
 import glob
 import textwrap
 
@@ -45,7 +44,7 @@ def itemParser(itemName, argument, townName, beta):
             itemId = col
             itemScaleName = item[str(col)]["scale"]
             break
-    
+
     if int(itemId) == 0:
         for col in recipe:
             if recipe[str(col)]["name"] == itemName:
@@ -85,7 +84,7 @@ def itemParser(itemName, argument, townName, beta):
             saleMarketPrice = "{:,}".format(saleSum // saleLen)
         else:
             saleMarketPrice = "{:,}".format((priceSaleArray[0] + priceSaleArray[1] + priceSaleArray[2] + priceSaleArray[3] + priceSaleArray[4]) // 5)
-        
+
         saleAverage = "{:,}".format(saleSum // saleLen) # 平均値
 
         if saleLen == 1:
@@ -140,7 +139,7 @@ def itemParser(itemName, argument, townName, beta):
             reqMarketPrice = "{:,}".format(reqSum // reqLen)
         else:
             reqMarketPrice = "{:,}".format((priceReqArray[0] + priceReqArray[1] + priceReqArray[2] + priceReqArray[3] + priceReqArray[4]) // 5)
-        
+
         reqAverage = "{:,}".format(reqSum // reqLen) # 平均
 
         if reqLen == 1:
@@ -174,13 +173,13 @@ def itemParser(itemName, argument, townName, beta):
     if argument == "-n":
         summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
-        
+
         **販売：**
         {saleStr}
-        
+
         **注文：**
         {reqStr}
-        
+
         時間経過により市場がこの通りでない可能性があります。
         """)
     elif argument == "-s":
@@ -201,5 +200,5 @@ def itemParser(itemName, argument, townName, beta):
 
         時間経過により市場がこの通りでない可能性があります。
         """)
-        
+
     return summary
