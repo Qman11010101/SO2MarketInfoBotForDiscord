@@ -19,6 +19,7 @@ from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistErr
 from .Wiki import wikiLinkGen
 from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Register import addRegister, removeRegister, showRegister
+from .Shelf import getShelves
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -33,10 +34,11 @@ commandSearch = prefix + config["command"]["search"]
 commandHelp = prefix + config["command"]["help"]
 commandWiki = prefix + config["command"]["wiki"]
 commandRegister = prefix + config["command"]["register"]
+commandShelves = prefix + config["command"]["shelves"]
 
 adminID = config["misc"]["administrator"]
 
-DEFINE_VERSION = "3.1.1"
+DEFINE_VERSION = "3.2"
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -439,6 +441,31 @@ class Client(discord.Client):
                 await message.channel.send("このコマンドは管理者によって無効化されています。")
                 return
 
+        # 街販売額・販売棚数コマンド
+        if message.content.startswith(commandShelves):
+            msgParse = message.content.split()
+            del msgParse[0]
+            if len(msgParse) == 0:
+                await self.showHelpShelves()
+                return
+            else:
+                # ヘルプ表示の場合
+                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    await self.showHelpShelves()
+                    return
+                else:
+                    try:
+                        res = getShelves(msgParse[0])
+                    except NoTownError:
+                        await message.channel.send(f"エラー: 「{msgParse[0]}」という街は存在しません。")
+                    except:
+                        await self.errorWrite()
+                    else:
+                        await message.channel.send(res)
+                    finally:
+                        return
+
+
     # ヘルプ等関数定義
     async def showHelpMarket(self):
         helpMsg = textwrap.dedent(f"""
@@ -525,6 +552,13 @@ class Client(discord.Client):
         　登録されたアイテムの一覧を表示します。
         ・help
         　このヘルプを表示します。
+        """)
+        await self.targetChannel.send(helpMsg)
+
+    async def showHelpShelves(self):
+        helpMsg = textwrap.dedent(f"""
+        指定された街の、現時点での販売棚数や販売額の合計を表示します。
+        使用方法: `{commandShelves} [街名]`
         """)
         await self.targetChannel.send(helpMsg)
 
