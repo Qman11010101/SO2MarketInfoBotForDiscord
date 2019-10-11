@@ -24,8 +24,8 @@ def getShelves(townName):
     # 棚数・販売額取得部
     shelf = 0
     sumPrice = 0
-    for col in sale:
-        if int(sale[col]["area_id"]) == townId:
+    for col in range(len(sale)):
+        if sale[col]["area_id"] == townId:
             shelf += 1
             sumPrice += int(sale[col]["price"] * sale[col]["unit"])
 
