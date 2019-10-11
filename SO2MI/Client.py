@@ -339,6 +339,7 @@ class Client(discord.Client):
             `{commandWiki} [アイテム名]`
             `{commandRegister} [add|delete] [アイテム名]`
             `{commandRegister} [show]`
+            `{commandShelves} [街名]`
             """)
             await message.channel.send(helpMsg)
             return
