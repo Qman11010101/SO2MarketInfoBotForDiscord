@@ -1,6 +1,7 @@
 import textwrap
 import datetime
 import glob
+from collections import Counter
 
 from .Alias import alias
 from .getApi import getApi
@@ -10,6 +11,8 @@ def getShelves(townName):
     # API取得部
     town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
     sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+    item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+    recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
     # TODO: いずれbetaに対応する
 
     # 街ID取得部
@@ -21,15 +24,22 @@ def getShelves(townName):
     if int(townId) == 0:
         raise NoTownError("such town does not exists")
 
-    # 棚数・販売額取得部
+    # 変数初期化部
     sumShelf = sumShelfBundle = sumShelfNotBundle = 0
     sumPrice = sumPriceBundle = sumPriceNotBundle = 0
     shelfBundlePercent = shelfNotBundlePersent = 0
     priceBundlePercent = priceNotBundlePercent = 0
+    itemsIDList = []
+    # itemsPriceList = []
+
+    # 棚数・販売額・アイテムID取得部
     for col in range(len(sale)):
         if sale[col]["area_id"] == townId:
             sumShelf += 1
             sumPrice += int(sale[col]["price"] * sale[col]["unit"])
+            itemUnitList = [sale[col]["item_id"]] * sale[col]["unit"]
+            itemsIDList.extend(itemUnitList)
+            # itemsPriceList.append(sale[col]["price"])
             if sale[col]["bundle_sale"]:
                 sumShelfBundle += 1
                 sumPriceBundle += int(sale[col]["price"] * sale[col]["unit"])
@@ -46,6 +56,26 @@ def getShelves(townName):
     shelfNotBundlePersent = 100 - shelfBundlePercent
     priceNotBundlePercent = 100 - priceBundlePercent
 
+    # アイテムID最頻値取得
+    itemIdTop = Counter(itemsIDList).most_common(3)
+
+    # アイテムIDを名称に変換
+    itemAmountInfo = []
+    for ids in itemIdTop:
+        itemNames = []
+        for col in item:
+            if item[str(col)]["item_id"] == int(ids[0]):
+                itemNames = [item[col]["name"], ids[1]]
+                break
+
+        if itemNames == []:
+            for col in recipe:
+                if recipe[str(col)]["item_id"] == int(ids[0]):
+                    itemNames = [recipe[str(col)]["name"], ids[1]]
+                    break
+
+        itemAmountInfo.append(itemNames)
+
     # 時刻をsale-*.jsonから推測
     target = glob.glob("api-log/sale-*.json")
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
@@ -60,6 +90,11 @@ def getShelves(townName):
     販売棚数: {str("{:,}".format(sumShelf))}個
     　まとめ売り: {str("{:,}".format(sumShelfBundle))}個 ({shelfBundlePercent}%)
     　ばら売り: {str("{:,}".format(sumShelfNotBundle))}個 ({shelfNotBundlePersent}%)
+
+    販売数トップ3:
+    　1位: {itemAmountInfo[0][0]} ({str("{:,}".format(itemAmountInfo[0][1]))}個)
+    　2位: {itemAmountInfo[1][0]} ({str("{:,}".format(itemAmountInfo[1][1]))}個)
+    　3位: {itemAmountInfo[2][0]} ({str("{:,}".format(itemAmountInfo[2][1]))}個)
     """)
 
     return retStr
