@@ -89,14 +89,9 @@ def chkCost():
 
         text = ""
         for i in range(len(itemList)):
-            text += f"{infoList[i][0]}: {priceInfo[i][0]}G/{priceInfo[i][1]}G/{priceInfo[i][2]}G\n"
+            text += f"**{infoList[i][0]}**:\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n　\n"
 
-        message = f"""
-【Daily Market Information】
-取得された市場情報は以下の通りです。
-価格の並びは左から順にTOP5値/中央値/平均値です。
-        　
-{text}"""
+        message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです。\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
 
         return message
     except:
@@ -113,11 +108,7 @@ def chkEndOfMonth():
     if now.day != dayLast: # 最終日じゃなければ何もしないようにする
         return False
 
-    message = textwrap.dedent("""
-    【End-of-Month Information】
-    本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。
-    優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。
-    """)
+    message = "**【End-of-Month Information】**\n本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。\n優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。\n͏​‌"
     return message
 
 def chkEvent():
@@ -221,21 +212,11 @@ def chkEvent():
 
         # 文章完成
         if current == "" and future != "":
-            res = textwrap.dedent(f"""
-            【Event Information】
-{future}
-            """)
+            res = f"**【Event Information】**\n{future}\n͏​‌"
         elif current != "" and future == "":
-            res = textwrap.dedent(f"""
-            【Event Information】
-{current}
-            """) 
+            res = f"**【Event Information】**\n{current}\n͏​‌"
         else:
-            res = textwrap.dedent(f"""
-            【Event Information】
-{current}
-{future}
-            """)
+            res = f"**【Event Information】**\n{current}\n{future}\n͏​‌"
         if current == "" and future == "":
             return False
         else:
