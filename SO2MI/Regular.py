@@ -8,6 +8,7 @@ import textwrap
 import traceback
 import os
 import json
+import re
 
 import discord
 import pytz
@@ -131,7 +132,9 @@ def chkEvent():
         # 文字列操作
         convQuot = str(preloadDiv[0]).replace(r"\&quot;", '"').replace("&quot;", '"') # 特殊文字をダブルクォーテーションに置換
         rugueux = convQuot[convQuot.find('"topic_list_agenda":'):] # 誤動作防止のため大まかに切り取る
-        topicsJson = "{" + rugueux[rugueux.find('"topics":'):rugueux.find("}}")] + "}" # JSONの形で切り取り、足りない括弧をつける
+        topicsRug = "{" + rugueux[rugueux.find('"topics":'):rugueux.find("}}")] + "}" # JSONの形で切り取り、足りない括弧をつける
+        topicsRug2 = re.sub(r'"fancy_title":.*?",', "", topicsRug)
+        topicsJson = re.sub(r'"excerpt":.*?",', "", topicsRug2)
         with open("agenda.json", "w", encoding="utf-8_sig") as agw: # 一旦保存してJSONとして扱えるようにする
             agw.write(topicsJson)
         with open("agenda.json", "r", encoding="utf-8_sig") as agr: # 保存したJSONを読み込む
