@@ -38,7 +38,7 @@ commandShelves = prefix + config["command"]["shelves"]
 
 adminID = config["misc"]["administrator"]
 
-DEFINE_VERSION = "3.2.2"
+DEFINE_VERSION = "3.2.2.1"
 
 class Client(discord.Client):
     async def on_ready(self):

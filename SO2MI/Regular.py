@@ -61,7 +61,7 @@ def chkCost():
         for listPr in priceList:
             lpr = []
             if len(listPr) == 0:
-                lpr = ["0", "0", "0"]
+                lpr = ["ERROR!", "ERROR!", "ERROR!"]
             else:
                 listPr.sort()
                 saleLen = len(listPr)
