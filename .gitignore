@@ -139,10 +139,10 @@ dmypy.json
 testfield/
 config.ini
 api-log/
-.vscode/*
+.vscode/
 test.py
 error-log/
 alias.json
 itemreg.json
 agenda.json
-.idea/*
+.idea/
