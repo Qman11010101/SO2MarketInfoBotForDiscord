@@ -44,23 +44,29 @@ def chkCost():
             if item[str(col)]["name"] in itemList:
                 itemId = int(col)
                 itemName = item[str(col)]["name"]
-                info = [itemName, itemId]
+                itemScale = item[str(col)]["scale"]
+                info = [itemName, itemId, itemScale]
                 infoList.append(info)
 
         for col in recipe:
             if recipe[str(col)]["name"] in itemList:
                 itemId = int(col)
                 itemName = recipe[str(col)]["name"]
-                info = [itemName, itemId]
+                itemScale = recipe[str(col)]["scale"]
+                info = [itemName, itemId, itemScale]
                 infoList.append(info)
 
         priceList = []
+        unitList = []
         for itemInfo in infoList:
             priceArray = []
+            unitArray = []
             for unit in sale:
                 if int(unit["item_id"]) == int(itemInfo[1]):
                     priceArray.append(unit["price"])
+                    unitArray.append(unit["unit"])
             priceList.append(priceArray)
+            unitList.append(unitArray)
 
         priceInfo = []
         count = 0
@@ -119,7 +125,7 @@ def chkCost():
             if priceInfo[i][0] == "ERROR!":
                 text += f"**{infoList[i][0]}**:\n　現在販売されていません。\n"
             else:
-                text += f"**{infoList[i][0]}**:\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n"
+                text += f"**{infoList[i][0]}**:\n　販売数: {sum(unitList[i])}{infoList[i][2]}\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n"
             if priceInfo[i][3] != "0":
                 text += f"　昨日の平均取引価格: {priceInfo[i][3]}G\n　\n"
             else:
