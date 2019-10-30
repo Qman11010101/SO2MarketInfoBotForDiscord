@@ -9,6 +9,7 @@ import traceback
 import os
 import json
 import re
+import datetime
 
 import discord
 import pytz
@@ -29,10 +30,14 @@ def chkCost():
         itemList = set(itemreg["items"])
         infoList = []
 
+        # 日付文字列生成
+        datestr =
+
         # アイテム情報取得
         item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
         recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
         sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+        report = getApi("report", "")
 
         # アイテムID取得部
         for col in item:
@@ -68,7 +73,7 @@ def chkCost():
                 saleSum = sum(listPr)
 
                 # TOP5平均
-                if saleLen < 5: 
+                if saleLen < 5:
                     t5avg = "{:,}".format(saleSum // saleLen)
                 else:
                     t5avg = "{:,}".format((listPr[0] + listPr[1] + listPr[2] + listPr[3] + listPr[4]) // 5)
@@ -202,7 +207,7 @@ def chkEvent():
 
         han = "現在開催中のイベントは以下の通りです:" if len(eventHeldText) != 0 else ""
         can = "近日開催されるイベントは以下の通りです:" if len(eventComeText) != 0 else ""
-        
+
         if len(eventHeldText) != 0:
             current = f"{han}\n{htx}\n\n"
         else:
