@@ -31,38 +31,45 @@ def chkCost():
         infoList = []
 
         # 日付文字列生成
-        datestr =
+        dateYesterday = datetime.date.today() - datetime.timedelta(days=1)
 
         # アイテム情報取得
         item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
         recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
         sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-        report = getApi("report", "")
+        report = getApi("report", f"https://so2-api.mutoys.com/json/report/buy{dateYesterday.strftime('%Y%m%d')}.json")
 
         # アイテムID取得部
         for col in item:
             if item[str(col)]["name"] in itemList:
                 itemId = int(col)
                 itemName = item[str(col)]["name"]
-                info = [itemName, itemId]
+                itemScale = item[str(col)]["scale"]
+                info = [itemName, itemId, itemScale]
                 infoList.append(info)
 
         for col in recipe:
             if recipe[str(col)]["name"] in itemList:
                 itemId = int(col)
                 itemName = recipe[str(col)]["name"]
-                info = [itemName, itemId]
+                itemScale = recipe[str(col)]["scale"]
+                info = [itemName, itemId, itemScale]
                 infoList.append(info)
 
         priceList = []
+        unitList = []
         for itemInfo in infoList:
             priceArray = []
+            unitArray = []
             for unit in sale:
                 if int(unit["item_id"]) == int(itemInfo[1]):
                     priceArray.append(unit["price"])
+                    unitArray.append(unit["unit"])
             priceList.append(priceArray)
+            unitList.append(unitArray)
 
         priceInfo = []
+        count = 0
         for listPr in priceList:
             lpr = []
             if len(listPr) == 0:
@@ -91,13 +98,40 @@ def chkCost():
                 aAvg = "{:,}".format(saleSum // saleLen)
 
                 lpr = [t5avg, med, aAvg]
+
+            # レポートから平均取引価格を取得
+            try: # 住民取引
+                yesAvgSystem = report["system"]["item"][f"{infoList[count][1]}"]["price"]
+            except KeyError:
+                yesAvgSystem = 0
+            
+            try: # 業者取引
+                yesAvgUser = report["user"]["item"][f"{infoList[count][1]}"]["price"]
+            except KeyError:
+                yesAvgUser = 0
+
+            try:
+                yesAvg = (yesAvgSystem + yesAvgUser) // 2
+            except ZeroDivisionError:
+                yesAvg = 0
+
+            lpr.append("{:,}".format(yesAvg))
             priceInfo.append(lpr)
+            
+            count += 1
 
         text = ""
         for i in range(len(itemList)):
-            text += f"**{infoList[i][0]}**:\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n　\n"
+            if priceInfo[i][0] == "ERROR!":
+                text += f"**{infoList[i][0]}**:\n　現在販売されていません。\n"
+            else:
+                text += f"**{infoList[i][0]}**:\n　販売数: {sum(unitList[i])}{infoList[i][2]}\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n"
+            if priceInfo[i][3] != "0":
+                text += f"　昨日の平均取引価格: {priceInfo[i][3]}G\n　\n"
+            else:
+                text += "　昨日の平均取引価格: 取引なし\n　\n"
 
-        message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです。\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
+        message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです:\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
 
         return message
     except:
