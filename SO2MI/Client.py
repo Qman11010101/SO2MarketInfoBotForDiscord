@@ -447,24 +447,21 @@ class Client(discord.Client):
             msgParse = message.content.split()
             del msgParse[0]
             if len(msgParse) == 0:
+                msgParse.append("--all")
+            if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                 await self.showHelpShelves()
                 return
             else:
-                # ヘルプ表示の場合
-                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
-                    await self.showHelpShelves()
-                    return
+                try:
+                    res = getShelves(msgParse[0])
+                except NoTownError:
+                    await message.channel.send(f"エラー: 「{msgParse[0]}」という街は存在しません。")
+                except:
+                    await self.errorWrite()
                 else:
-                    try:
-                        res = getShelves(msgParse[0])
-                    except NoTownError:
-                        await message.channel.send(f"エラー: 「{msgParse[0]}」という街は存在しません。")
-                    except:
-                        await self.errorWrite()
-                    else:
-                        await message.channel.send(res)
-                    finally:
-                        return
+                    await message.channel.send(res)
+                finally:
+                    return
 
 
     # ヘルプ等関数定義
@@ -559,6 +556,7 @@ class Client(discord.Client):
     async def showHelpShelves(self):
         helpMsg = textwrap.dedent(f"""
         指定された街の、現時点での販売棚数や販売額の合計を表示します。
+        街名が指定されなかった場合は市場全体の情報が表示されます。
         使用方法: `{commandShelves} [街名]`
         """)
         await self.targetChannel.send(helpMsg)

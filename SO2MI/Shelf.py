@@ -13,16 +13,16 @@ def getShelves(townName):
     sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
     recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-    # TODO: いずれbetaに対応する
 
     # 街ID取得部
-    townId = 0
-    for col in town:
-        if town[col]["name"] == townName:
-            townId = int(town[col]["area_id"])
-            break
-    if int(townId) == 0:
-        raise NoTownError("such town does not exists")
+    if townName != "--all":
+        townId = 0
+        for col in town:
+            if town[col]["name"] == townName:
+                townId = int(town[col]["area_id"])
+                break
+        if int(townId) == 0:
+            raise NoTownError("such town does not exists")
 
     # 変数初期化部
     sumShelf = sumShelfBundle = sumShelfNotBundle = 0
@@ -33,8 +33,19 @@ def getShelves(townName):
     # itemsPriceList = []
 
     # 棚数・販売額・アイテムID取得部
-    for col in range(len(sale)):
-        if sale[col]["area_id"] == townId:
+    if townName != "--all":
+        for col in range(len(sale)):
+            if sale[col]["area_id"] == townId:
+                sumShelf += 1
+                sumPrice += int(sale[col]["price"] * sale[col]["unit"])
+                itemUnitList = [sale[col]["item_id"]] * sale[col]["unit"]
+                itemsIDList.extend(itemUnitList)
+                # itemsPriceList.append(sale[col]["price"])
+                if sale[col]["bundle_sale"]:
+                    sumShelfBundle += 1
+                    sumPriceBundle += int(sale[col]["price"] * sale[col]["unit"])
+    else:
+        for col in range(len(sale)):
             sumShelf += 1
             sumPrice += int(sale[col]["price"] * sale[col]["unit"])
             itemUnitList = [sale[col]["item_id"]] * sale[col]["unit"]
@@ -65,16 +76,36 @@ def getShelves(townName):
         itemNames = []
         for col in item:
             if item[str(col)]["item_id"] == int(ids[0]):
-                itemNames = [item[col]["name"], ids[1]]
+                itemNames = [item[col]["name"], ids[1], item[col]["scale"]]
                 break
 
         if itemNames == []:
             for col in recipe:
                 if recipe[str(col)]["item_id"] == int(ids[0]):
-                    itemNames = [recipe[str(col)]["name"], ids[1]]
+                    itemNames = [recipe[str(col)]["name"], ids[1], recipe[col]["scale"]]
                     break
 
         itemAmountInfo.append(itemNames)
+
+    if townName == "--all":
+        townName = "全体"
+        laststr = f"コマンドについてのヘルプを閲覧するには、コマンドに続けて`help`と入力してください。"
+    else:
+        laststr = ""
+
+    # 同率n位を出せるようにする
+    topthree = [1]
+    first = topthree[0]
+    if itemAmountInfo[0][1] == itemAmountInfo[1][1]:
+        topthree.append(first)
+    else:
+        topthree.append(first + 1)
+    second = topthree[1]
+    if itemAmountInfo[1][1] == itemAmountInfo[2][1]:
+        topthree.append(second)
+    else:
+        topthree.append(second + 1)
+
 
     # 時刻をsale-*.jsonから推測
     target = glob.glob("api-log/sale-*.json")
@@ -92,9 +123,11 @@ def getShelves(townName):
     　ばら売り: {str("{:,}".format(sumShelfNotBundle))}個 ({shelfNotBundlePersent}%)
 
     販売数トップ3:
-    　1位: {itemAmountInfo[0][0]} ({str("{:,}".format(itemAmountInfo[0][1]))}個)
-    　2位: {itemAmountInfo[1][0]} ({str("{:,}".format(itemAmountInfo[1][1]))}個)
-    　3位: {itemAmountInfo[2][0]} ({str("{:,}".format(itemAmountInfo[2][1]))}個)
+    　{topthree[0]}位: {itemAmountInfo[0][0]} ({str("{:,}".format(itemAmountInfo[0][1]))}{itemAmountInfo[0][2]})
+    　{topthree[1]}位: {itemAmountInfo[1][0]} ({str("{:,}".format(itemAmountInfo[1][1]))}{itemAmountInfo[1][2]})
+    　{topthree[2]}位: {itemAmountInfo[2][0]} ({str("{:,}".format(itemAmountInfo[2][1]))}{itemAmountInfo[2][2]})
+
+    {laststr}
     """)
 
     return retStr
