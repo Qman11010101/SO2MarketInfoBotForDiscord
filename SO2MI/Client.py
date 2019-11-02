@@ -227,30 +227,6 @@ class Client(discord.Client):
                 await message.channel.send("このコマンドは管理者によって無効化されています。")
                 return
 
-        # シャットダウンコマンド
-        if message.content.startswith(commandShutdown):
-            try:
-                if re.match(r"[0-9]+", str(adminID)):
-                    if message.author.id == int(adminID):
-                        await message.channel.send("botがシャットダウンされます。")
-                        sys.exit()
-                    else:
-                        await message.channel.send("エラー: コマンドを実行する権限がありません。")
-            except ValueError:
-                await message.channel.send("エラー: 設定ファイルで指定された管理者のユーザーIDの形式が正しくありません。")
-            except:
-                now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
-                nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
-                nowFileFormat = now.strftime("%Y%m%d")
-                os.makedirs("error-log", exist_ok=True)
-                with open(f"error-log/{nowFileFormat}.txt", "a") as f:
-                    f.write(f"--- Datetime: {nowFormat} ---\n")
-                    traceback.print_exc(file=f)
-                    f.write("\n")
-                traceback.print_exc()
-            finally:
-                return
-
         # バージョンコマンド
         if message.content.startswith(commandVersion):
             verMsg = textwrap.dedent(f"""
