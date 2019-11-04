@@ -20,6 +20,7 @@ from .Wiki import wikiLinkGen
 from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Register import addRegister, removeRegister, showRegister
 from .Shelf import getShelves
+from .Population import getPopulation
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -35,6 +36,7 @@ commandHelp = prefix + config["command"]["help"]
 commandWiki = prefix + config["command"]["wiki"]
 commandRegister = prefix + config["command"]["register"]
 commandShelves = prefix + config["command"]["shelves"]
+commandPopulation = prefix + config["command"]["population"]
 
 adminID = config["misc"]["administrator"]
 
@@ -438,7 +440,29 @@ class Client(discord.Client):
                     await message.channel.send(res)
                 finally:
                     return
-
+        
+        # 人口コマンド
+        if message.content.startswith(commandPopulation):
+            msgParse = message.content.split()
+            del msgParse[0]
+            if len(msgParse) == 0:
+                await self.showHelpPopulation()
+                return
+            else:
+                if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
+                    await self.showHelpiPopulation()
+                    return
+                else:
+                    try:
+                        res = getPopulation(msgParse[0])
+                    except NoTownError:
+                        await message.channel.send(f"エラー: 「{msgParse[0]}」という街は存在しません。")
+                    except:
+                        await self.errorWrite()
+                    else:
+                        await message.channel.send(res)
+                    finally:
+                        return
 
     # ヘルプ等関数定義
     async def showHelpMarket(self):
@@ -536,6 +560,12 @@ class Client(discord.Client):
         使用方法: `{commandShelves} [街名]`
         """)
         await self.targetChannel.send(helpMsg)
+
+    async def showHelpPopulation(self):
+        helpMsg = textwrap.dedent(f"""
+        指定された街の、現時点での販売棚数や販売学の合計を表示します。
+        使用方法: `{commandPopulation} [街名]`
+        """)
 
     # エラーログ用関数
     async def errorWrite(self):
