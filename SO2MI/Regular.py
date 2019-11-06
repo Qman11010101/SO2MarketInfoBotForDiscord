@@ -73,7 +73,7 @@ def chkCost():
         for listPr in priceList:
             lpr = []
             if len(listPr) == 0:
-                lpr = ["ERROR!", "ERROR!", "ERROR!"]
+                lpr = [0, 0, 0]
             else:
                 listPr.sort()
                 saleLen = len(listPr)
@@ -122,7 +122,7 @@ def chkCost():
 
         text = ""
         for i in range(len(itemList)):
-            if priceInfo[i][0] == "ERROR!":
+            if priceInfo[i][0] == 0:
                 text += f"**{infoList[i][0]}**:\n　現在販売されていません。\n"
             else:
                 text += f"**{infoList[i][0]}**:\n　販売数: {sum(unitList[i])}{infoList[i][2]}\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n"
@@ -132,6 +132,21 @@ def chkCost():
                 text += "　昨日の平均取引価格: 取引なし\n　\n"
 
         message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです:\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
+
+        # 情報をJSONとして保存
+        rej = {}
+        for i in range(len(itemList)):
+            name = infoList[i][0]
+            rej[name] = {}
+            rej[name]["saleunit"] = sum(unitList[i])
+            rej[name]["scale"] = infoList[i][2]
+            rej[name]["top5avg"] = int(str(priceInfo[i][0]).replace(",", ""))
+            rej[name]["median"] = int(str(priceInfo[i][1]).replace(",", ""))
+            rej[name]["average"] = int(str(priceInfo[i][2]).replace(",", ""))
+            rej[name]["yesterday"] = int(str(priceInfo[i][3]).replace(",", ""))
+
+        with open("api-log/reportdump.json", "w", encoding="utf-8_sig") as rp:
+            json.dump(rej, rp, indent=4, ensure_ascii=False)
 
         return message
     except:
