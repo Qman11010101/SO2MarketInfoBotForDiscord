@@ -450,7 +450,7 @@ class Client(discord.Client):
                 return
             else:
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
-                    await self.showHelpiPopulation()
+                    await self.showHelpPopulation()
                     return
                 else:
                     try:
@@ -566,6 +566,7 @@ class Client(discord.Client):
         指定された街の、現時点での販売棚数や販売学の合計を表示します。
         使用方法: `{commandPopulation} [街名]`
         """)
+        await self.targetChannel.send(helpMsg)
 
     # エラーログ用関数
     async def errorWrite(self):
