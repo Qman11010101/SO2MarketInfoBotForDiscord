@@ -39,6 +39,11 @@ def chkCost():
         sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
         report = getApi("report", f"https://so2-api.mutoys.com/json/report/buy{dateYesterday.strftime('%Y%m%d')}.json")
 
+        # 昨日の情報を取得
+        if os.path.isfile("api-log/reportdump.json"):
+            with open("api-log/reportdump.json", "r", encoding="utf-8_sig") as f:
+                yday = json.load(f)
+
         # アイテムID取得部
         for col in item:
             if item[str(col)]["name"] in itemList:
@@ -66,14 +71,15 @@ def chkCost():
                     priceArray.append(unit["price"])
                     unitArray.append(unit["unit"])
             priceList.append(priceArray)
-            unitList.append(unitArray)
+            unitList.append(sum(unitArray))
 
         priceInfo = []
+        yesterdayInfo = []
         count = 0
         for listPr in priceList:
             lpr = []
             if len(listPr) == 0:
-                lpr = ["ERROR!", "ERROR!", "ERROR!"]
+                lpr = [0, 0, 0]
             else:
                 listPr.sort()
                 saleLen = len(listPr)
@@ -81,21 +87,21 @@ def chkCost():
 
                 # TOP5平均
                 if saleLen < 5:
-                    t5avg = "{:,}".format(saleSum // saleLen)
+                    t5avg = saleSum // saleLen
                 else:
-                    t5avg = "{:,}".format((listPr[0] + listPr[1] + listPr[2] + listPr[3] + listPr[4]) // 5)
+                    t5avg = (listPr[0] + listPr[1] + listPr[2] + listPr[3] + listPr[4]) // 5
 
                 # 中央値
                 if saleLen == 1:
                     med = listPr[0]
                 else:
                     if saleLen % 2 == 1:
-                        med = "{:,}".format(listPr[saleLen // 2 + 1])
+                        med = listPr[saleLen // 2 + 1]
                     else:
-                        med = "{:,}".format(int((listPr[int(saleLen / 2) - 1] + listPr[int(saleLen / 2 )]) / 2))
+                        med = int((listPr[int(saleLen / 2) - 1] + listPr[int(saleLen / 2 )]) / 2)
 
                 # 平均値
-                aAvg = "{:,}".format(saleSum // saleLen)
+                aAvg = saleSum // saleLen
 
                 lpr = [t5avg, med, aAvg]
 
@@ -115,23 +121,64 @@ def chkCost():
             except ZeroDivisionError:
                 yesAvg = 0
 
-            lpr.append("{:,}".format(yesAvg))
+            lpr.append(yesAvg)
             priceInfo.append(lpr)
-            
+
+            if os.path.isfile("api-log/reportdump.json"):
+                try:
+                    yinfo = [unitList[count] - yday[f"{infoList[count][0]}"]["saleunit"], t5avg - yday[f"{infoList[count][0]}"]["top5avg"], med - yday[f"{infoList[count][0]}"]["median"], aAvg - yday[f"{infoList[count][0]}"]["average"], yesAvg - yday[f"{infoList[count][0]}"]["yesterday"]]
+                except KeyError:
+                    yinfo = [None, None, None, None, None]
+                yesterdayInfo.append(yinfo)
+
             count += 1
+        
+        if os.path.isfile("api-log/reportdump.json"):
+            yesterdayText = []
+            for n in range(len(yesterdayInfo)):
+                yl = []
+                for y in yesterdayInfo[n]:
+                    if y == None:
+                        yl.append("")
+                    elif y > 0:
+                        yl.append(f" (前日比: +{'{:,}'.format(y)})")
+                    elif y < 0:
+                        yl.append(f" (前日比: {'{:,}'.format(y)})")
+                    else:
+                        yl.append(" (前日比: 変化なし)")
+                yesterdayText.append(yl)
+        else:
+            yesterdayText = []
+            for n in range(len(priceList)):
+                yl = ["", "", "", "", ""]
+                yesterdayText.append(yl)
 
         text = ""
         for i in range(len(itemList)):
-            if priceInfo[i][0] == "ERROR!":
+            if priceInfo[i][0] == 0:
                 text += f"**{infoList[i][0]}**:\n　現在販売されていません。\n"
             else:
-                text += f"**{infoList[i][0]}**:\n　販売数: {sum(unitList[i])}{infoList[i][2]}\n　Top5平均値: {priceInfo[i][0]}G\n　中央値: {priceInfo[i][1]}G\n　全体平均値: {priceInfo[i][2]}G\n"
+                text += f"**{infoList[i][0]}**:\n　販売数: {'{:,}'.format(unitList[i])}{infoList[i][2]}{yesterdayText[i][0]}\n　Top5平均値: {'{:,}'.format(priceInfo[i][0])}G{yesterdayText[i][1]}\n　中央値: {'{:,}'.format(priceInfo[i][1])}G{yesterdayText[i][2]}\n　全体平均値: {'{:,}'.format(priceInfo[i][2])}G{yesterdayText[i][3]}\n"
             if priceInfo[i][3] != "0":
-                text += f"　昨日の平均取引価格: {priceInfo[i][3]}G\n　\n"
+                text += f"　昨日の平均取引価格: {'{:,}'.format(priceInfo[i][3])}G{yesterdayText[i][4]}\n　\n"
             else:
                 text += "　昨日の平均取引価格: 取引なし\n　\n"
 
         message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです:\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
+
+        # 情報をJSONとして保存
+        rej = {}
+        for i in range(len(itemList)):
+            name = infoList[i][0]
+            rej[name] = {}
+            rej[name]["saleunit"] = unitList[i]
+            rej[name]["top5avg"] = priceInfo[i][0]
+            rej[name]["median"] = priceInfo[i][1]
+            rej[name]["average"] = priceInfo[i][2]
+            rej[name]["yesterday"] = priceInfo[i][3]
+
+        with open("api-log/reportdump.json", "w", encoding="utf-8_sig") as rp:
+            json.dump(rej, rp, indent=4, ensure_ascii=False)
 
         return message
     except:
