@@ -6,6 +6,19 @@ from .getApi import getApi
 from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError
 
 def alias(itemName):
+    """引数をアイテムの略称として解釈し、alias.jsonを参照して正式名称を返します。見つからなかった場合は引数をそのまま返します。alias.jsonが存在しなかったり、構文にエラーがあったりする場合も、引数をそのまま返します。
+    
+    引数:\n
+        itemName (str): アイテムの略称。
+
+    返り値:\n
+        str: アイテムの正式名称、もしくは引数itemNameの中身。
+
+    例外:\n
+        この関数は例外を発生させません。
+        str: 引数itemNameの中身。
+    
+    """
     print("alias.jsonを探しています")
     if os.path.isfile("alias.json"):
         print("alias.jsonが見つかりました")
@@ -49,6 +62,22 @@ def showAlias():
         return False
 
 def addAlias(aliasName, formalName):
+    """アイテム名のエイリアスを追加します。
+    
+    引数:\n
+        aliasName(str): アイテム名のエイリアスです。
+        formalName(str): アイテムの正式名称です。
+    
+    返り値:\n
+        bool: 成功した場合Trueが返されます。
+
+    例外:\n
+        SameAliasNameExistError: 引数aliasNameがすでに何らかのアイテムのエイリアス名として存在していた場合返されます。
+        NoItemError: 引数formalNameのアイテムが存在しなかった場合返されます。
+        NameDuplicationError: 引数aliasNameが何らかのアイテムの正式名称だった場合返されます。
+        OSError: alias.jsonに書き込みできなかった場合返されます。
+    
+    """
     if os.access("alias.json", os.W_OK):
         if os.path.isfile("alias.json"):
             with open("alias.json", "r", encoding="utf-8_sig") as alf:
@@ -120,6 +149,17 @@ def addAlias(aliasName, formalName):
         raise OSError("couldn't access to alias.json")
 
 def removeAlias(aliasName):
+    """登録されているエイリアスを削除します。
+
+    引数:\n
+        aliasName(str): 登録されているエイリアスです。
+
+    返り値:\n
+        bool: 削除に成功するとTrueを返します。alias.jsonが存在しない場合や入力されたエイリアスがalias.json内にない場合Falseを返します。
+
+    例外:\n
+        OSError: alias.jsonに書き込みできなかった場合返されます。
+    """
     if os.access("alias.json", os.W_OK):
         if os.path.isfile("alias.json"):
             with open("alias.json", "r", encoding="utf-8_sig") as alf:
