@@ -21,6 +21,7 @@ from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Register import addRegister, removeRegister, showRegister
 from .Shelf import getShelves
 from .Population import getPopulation
+from .Chkver import chkver
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -37,6 +38,10 @@ commandWiki = prefix + config["command"]["wiki"]
 commandRegister = prefix + config["command"]["register"]
 commandShelves = prefix + config["command"]["shelves"]
 commandPopulation = prefix + config["command"]["population"]
+commandChkver = prefix + config["command"]["chkver"]
+
+user = config["misc"]["GitHubUserID"]
+repo = config["misc"]["GitHubRepoName"]
 
 adminID = config["misc"]["administrator"]
 
@@ -237,7 +242,7 @@ class Client(discord.Client):
             Version {DEFINE_VERSION}
             製作者: キューマン・エノビクト、ゆずりょー
             ライセンス: MIT License
-            リポジトリ: https://github.com/Qman11010101/SO2MarketInfoBotForDiscord
+            リポジトリ: https://github.com/{user}/{repo}
             """)
             await message.channel.send(verMsg)
             return
@@ -463,6 +468,17 @@ class Client(discord.Client):
                         await message.channel.send(res)
                     finally:
                         return
+        
+        # バージョンチェックコマンド
+        if message.content.startswith(commandChkver):
+            try:
+                res = chkver(DEFINE_VERSION)
+            except:
+                await self.errorWrite()
+            else:
+                await message.channel.send(res)
+            finally:
+                return
 
     # ヘルプ等関数定義
     async def showHelpMarket(self):
