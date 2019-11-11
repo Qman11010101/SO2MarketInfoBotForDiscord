@@ -21,6 +21,7 @@ from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Register import addRegister, removeRegister, showRegister
 from .Shelf import getShelves
 from .Population import getPopulation
+from .Chkver import chkver
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -471,7 +472,7 @@ class Client(discord.Client):
         # バージョンチェックコマンド
         if message.content.startswith(commandChkver):
             try:
-                res = chkver()
+                res = chkver(DEFINE_VERSION)
             except:
                 await self.errorWrite()
             else:
