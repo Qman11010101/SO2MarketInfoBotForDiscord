@@ -1,13 +1,35 @@
 from configparser import ConfigParser
 import datetime
-import inspect
 import sys
+import logging
 
 config = ConfigParser()
 config.read("config.ini")
 
-streamLevel = config["logs"]["streamLogLevel"]
-fileLevel = config["logs"]["fileLogLevel"]
+LOGGER = logging.getLogger("SO2MIBOT")
+LOGFORMAT = logging.Formatter("[%(asctime)s][%(levelname)-7s]: %(message)s")
+
+if config["logs"]["logLevel"] == "debug":
+    logLevel = logging.DEBUG
+elif config["logs"]["logLevel"] == "info":
+    logLevel = logging.INFO
+elif config["logs"]["logLevel"] == "error":
+    logLevel = logging.ERROR
+elif config["logs"]["logLevel"] == "critical":
+    logLevel = logging.CRITICAL
+else:
+    logLevel = logging.WARNING
+
+LOG_SH = logging.StreamHandler()
+LOG_FH = logging.FileHandler("info.log")
+
+LOGGER.setLevel(logLevel)
+
+LOG_SH.setFormatter(LOGFORMAT)
+LOGGER.addHandler(LOG_SH)
+
+LOG_FH.setFormatter(LOGFORMAT)
+LOGGER.addHandler(LOG_FH)
 
 def logger(message, level="info"):
     """ログを出力します。
@@ -20,48 +42,13 @@ def logger(message, level="info"):
         str: メッセージの内容です。
     """
     if config["logs"].getboolean("enableLog"):
-        # 時刻フォーマット
-        nowtemp = datetime.datetime.now()
-        now = nowtemp.strftime('%Y-%m-%d %H:%M:%S.%f')[:-7]
-
-        # メッセージフォーマット
-        mes = f"[{now}] [{level}]: {message}"
-
-        # 標準出力への書き込み
-        if streamLevel == "debug":
-            if level in ("debug", "info", "warning", "error", "critical"):
-                print(mes)
-        elif streamLevel == "info":
-            if level in ("info", "warning", "error", "critical"):
-                print(mes)
-        elif streamLevel == "warning":
-            if level in ("warning", "error", "critical"):
-                print(mes)
-        elif streamLevel == "error":
-            if level in ("error", "critical"):
-                print(mes)
-        elif streamLevel == "critical":
-            if level == "critical":
-                print(mes)
-
-        # ファイルへの書き込み
-        if fileLevel == "debug":
-            if level in ("debug", "info", "warning", "error", "critical"):
-                with open("info.log", "a", encoding="utf-8_sig") as l:
-                    l.write(mes + "\n")
-        elif fileLevel == "info":
-            if level in ("info", "warning", "error", "critical"):
-                with open("info.log", "a", encoding="utf-8_sig") as l:
-                    l.write(mes + "\n")
-        elif fileLevel == "warning":
-            if level in ("warning", "error", "critical"):
-                with open("info.log", "a", encoding="utf-8_sig") as l:
-                    l.write(mes + "\n")
-        elif fileLevel == "error":
-            if level in ("error", "critical"):
-                with open("info.log", "a", encoding="utf-8_sig") as l:
-                    l.write(mes + "\n")
-        elif fileLevel == "critical":
-            if level == "critical":
-                with open("info.log", "a", encoding="utf-8_sig") as l:
-                    l.write(mes + "\n")
+        if level == "debug":
+            LOGGER.debug(message)
+        elif level == "info":
+            LOGGER.info(message)
+        elif level == "warning":
+            LOGGER.warning(message)
+        elif level == "error":
+            LOGGER.error(message)
+        elif level == "critical":
+            LOGGER.critical(message)
