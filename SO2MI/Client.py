@@ -31,7 +31,6 @@ prefix = config["command"]["prefix"]
 
 commandMarket = prefix + config["command"]["market"]
 commandAlias = prefix + config["command"]["alias"]
-commandShutdown = prefix + config["command"]["shutdown"]
 commandVersion = prefix + config["command"]["version"]
 commandSearch = prefix + config["command"]["search"]
 commandHelp = prefix + config["command"]["help"]
@@ -330,7 +329,6 @@ class Client(discord.Client):
             `{commandAlias} [show]`
             `{commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]`
             `{commandVersion}`
-            `{commandShutdown}`
             `{commandWiki} [アイテム名]`
             `{commandRegister} [add|delete] [アイテム名]`
             `{commandRegister} [show]`
