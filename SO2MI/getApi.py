@@ -11,7 +11,7 @@ def getApi(apiName, url):
     """保存されているデータが古い、またはデータが存在しない場合、指定されたURL(エンドポイント)にアクセスし、api-logフォルダにJSON形式で保存し、読み込みます。
     データが存在する場合はすでにあるデータを読み込みます。
     いずれの場合もJSONの内容がdict化されて返されます。
-    引数`apiName`に`sale`、`sale_beta`、`request`、`request_beta`を指摘した場合のファイルの寿命は10分、それ以外は60分(1時間)に指定されています。
+    引数`apiName`に`sale`、`sale_beta`、`request`、`request_beta`を指定した場合のファイルの寿命は10分、それ以外は60分(1時間)に指定されています。
     ファイル名は`apiName-yymmddHHMM.json`となります。
 
     引数:\n
