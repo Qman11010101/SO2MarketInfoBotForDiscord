@@ -4,6 +4,7 @@ from json.decoder import JSONDecodeError
 
 from .Alias import alias
 from .getApi import getApi
+from .Log import logger
 from .Exceptions import SameItemExistError, NoItemError
 
 def addRegister(itemName):
@@ -103,7 +104,7 @@ def showRegister():
             outputStr = f"以下のアイテムが登録されています:\n\n{parsed}"
             return outputStr
         except JSONDecodeError as exc:
-            print("itemreg.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+            logger("itemreg.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg), "error")
             return False
     else:
         return False

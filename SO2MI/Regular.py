@@ -17,13 +17,16 @@ import requests
 from bs4 import BeautifulSoup
 
 from .getApi import getApi
+from .Log import logger
 
 config = configparser.ConfigParser()
 config.read("config.ini")
 
 def chkCost():
+    # 読み込みに失敗したらFalseを返す
     try:
-        # 読み込みに失敗したらFalseを返す
+        logger("市場情報を取得します")
+
         with open("itemreg.json", "r", encoding="utf-8_sig") as itf:
             itemreg = json.load(itf)
 
@@ -167,6 +170,7 @@ def chkCost():
         message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです:\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
 
         # 情報をJSONとして保存
+        logger("取得した情報を保存します")
         rej = {}
         for i in range(len(itemList)):
             name = infoList[i][0]
@@ -186,6 +190,8 @@ def chkCost():
         return False
 
 def chkEndOfMonth():
+    logger("月末判定をします")
+
     # 現在時刻取得
     timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
@@ -193,6 +199,7 @@ def chkEndOfMonth():
     # 月末判定
     dayLast = int(calendar.monthrange(now.year, now.month)[1]) # 月の最終日取得
     if now.day != dayLast: # 最終日じゃなければ何もしないようにする
+        logger("月末ではありませんでした")
         return False
 
     message = "**【End-of-Month Information】**\n本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。\n優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。\n͏​‌"
@@ -200,6 +207,8 @@ def chkEndOfMonth():
 
 def chkEvent():
     try:
+        logger("イベント情報を取得します")
+
         # ページダウンロード
         pseudoUserAgent = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"}
         source = requests.get("https://so2-bbs.mutoys.com/agenda", headers=pseudoUserAgent)

@@ -22,6 +22,7 @@ from .Register import addRegister, removeRegister, showRegister
 from .Shelf import getShelves
 from .Population import getPopulation
 from .Chkver import chkver
+from .Log import logger
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -52,20 +53,23 @@ class Client(discord.Client):
         # 設定されているチャンネルIDに接続
         self.targetChannel = self.get_channel(int(config["discord"]["channel"]))
         if self.targetChannel == None:
-            # 指定チャンネルが見つからない場合はExceptionをraise
+            logger("botが実行されるチャンネルが見つかりませんでした", "critical")
             raise Exception("specified channel not found")
         else:
             pass
         self.regChannel = self.get_channel(int(config["discord"]["regChannel"]))
         if self.regChannel == None:
-            # 指定チャンネルが見つからない場合はExceptionをraise
+            logger("定期実行サービスが実行されるチャンネルが見つかりませんでした", "critical")
             raise Exception("specified channel not found")
         else:
             pass
-        print("次のユーザーとしてログインしました:", self.user)
+        logger(f"次のユーザーとしてログインしました: {self.user}")
+        logger(f'bot実行チャンネルID: {config["discord"]["channel"]}', "debug")
+        logger(f'定期実行チャンネルID: {config["discord"]["regChannel"]}', "debug")
 
         # 定期実行
         if config["misc"].getboolean("EnableRegularExecution"):
+            logger("定期実行サービスはオンになっています")
             chkTime = int(config["misc"]["RegExcCheckTime"])
             while True:
                 # 現在時刻取得
@@ -77,6 +81,7 @@ class Client(discord.Client):
                 endMin = startMin + chkTime
 
                 if now.hour == startHour and startMin <= now.minute <= endMin:
+                    logger("定期実行サービスを実行します")
                     await self.cliChkCost()
                     await self.cliChkEndOfMonth()
                     await self.cliChkEvent()
@@ -87,6 +92,8 @@ class Client(discord.Client):
         if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
             # BOT属性アカウント、自身のアカウント or 指定したチャンネル以外はスルー
             return
+        else:
+            logger(f"{message.author} が入力しました: {message.content}")
 
         # コマンド受取部
         # 市場情報コマンド
@@ -119,7 +126,7 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-s", "-r", "-t", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print(f"エラー: 引数{arg}は予約されていません")
+                                    logger(f"引数{arg}は予約されていません", "info")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
@@ -145,7 +152,7 @@ class Client(discord.Client):
 
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
-                    print(f"{message.author} が {msgParse[0]} をリクエストしました")
+                    logger(f"{message.author} が {msgParse[0]} をリクエストしました")
                     parseRes = itemParser(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     if parseRes != False:
                         await message.channel.send(parseRes)
@@ -179,6 +186,7 @@ class Client(discord.Client):
                         try:
                             addAlias(msgParse[1], msgParse[2])
                         except OSError:
+                            logger("alias.jsonにアクセスできませんでした", "error")
                             await message.channel.send("エラー: alias.jsonにアクセスできません。")
                         except SameItemExistError:
                             await message.channel.send("エラー: 既に登録されています。")
@@ -208,6 +216,7 @@ class Client(discord.Client):
                             else:
                                 await message.channel.send(f"エラー: 「{msgParse[1]}」というエイリアス名は存在しません。")
                         except OSError:
+                            logger("alias.jsonにアクセスできませんでした", "error")
                             await message.channel.send("エラー: alias.jsonにアクセスできません。")
                         except:
                             await self.errorWrite()
@@ -221,9 +230,11 @@ class Client(discord.Client):
                     elif msgParse[0] == "show":
                         res = showAlias()
                         if res == False:
+                            logger("エイリアスは登録されていません")
                             await message.channel.send("エイリアスは登録されていません。")
                             return
                         else:
+                            logger("エイリアス一覧を表示します")
                             await message.channel.send(res)
                             return
 
@@ -231,6 +242,7 @@ class Client(discord.Client):
                         await message.channel.send("エラー: コマンドが無効です。")
                         return
             else:
+                logger("コマンドが無効化されています")
                 await message.channel.send("このコマンドは管理者によって無効化されています。")
                 return
 
@@ -276,7 +288,7 @@ class Client(discord.Client):
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
                                 if arg not in ("-i", "-r", "-b", "-c", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
-                                    print(f"エラー: 引数{arg}は予約されていません")
+                                    logger(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
                         # 第1引数[-s|-r|-n]
@@ -371,6 +383,7 @@ class Client(discord.Client):
                         try:
                             res = addRegister(msgParse[1])
                         except OSError:
+                            logger("itemreg.jsonにアクセスできませんでした", "error")
                             await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
                         except SameItemExistError:
                             await message.channel.send("エラー: 既に登録されています。")
@@ -399,6 +412,7 @@ class Client(discord.Client):
                             else:
                                 await message.channel.send(f"エラー: 「{msgParse[1]}」というアイテムは登録されていません。")
                         except OSError:
+                            logger("itemreg.jsonにアクセスできませんでした", "error")
                             await message.channel.send("エラー: itemreg.jsonにアクセスできません。")
                         except:
                             await self.errorWrite()
@@ -482,6 +496,7 @@ class Client(discord.Client):
 
     # ヘルプ等関数定義
     async def showHelpMarket(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
         使用方法: `{commandMarket} [商品名] [-s|-r] [-t 街名] [-b]`
@@ -514,6 +529,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpAlias(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         `{commandMarket}`で商品を指定したときに、登録されたエイリアスを正式名称に変換します。
         ・add
@@ -530,6 +546,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpSearch(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         指定した単語や文字を含むアイテムを検索します。
         正規表現を使用することができます。
@@ -544,6 +561,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpWiki(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         指定したアイテムのWikiページへのリンクを生成します。
         登録されたエイリアスが使用可能です。
@@ -553,6 +571,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpRegister(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         定期実行が有効な際、価格を投稿するアイテムを登録したり削除したりできます。
         登録されたエイリアスが使用可能です。
@@ -570,6 +589,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpShelves(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         指定された街の、現時点での販売棚数や販売額の合計を表示します。
         街名が指定されなかった場合は市場全体の情報が表示されます。
@@ -578,6 +598,7 @@ class Client(discord.Client):
         await self.targetChannel.send(helpMsg)
 
     async def showHelpPopulation(self):
+        logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
         指定された街の、現時点での販売棚数や販売学の合計を表示します。
         使用方法: `{commandPopulation} [街名]`

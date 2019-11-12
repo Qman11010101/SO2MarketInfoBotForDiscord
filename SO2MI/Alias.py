@@ -3,6 +3,7 @@ import json
 from json.decoder import JSONDecodeError
 
 from .getApi import getApi
+from .Log import logger
 from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError
 
 def alias(itemName):
@@ -19,17 +20,16 @@ def alias(itemName):
         str: 引数itemNameの中身。
     
     """
-    print("alias.jsonを探しています")
     if os.path.isfile("alias.json"):
-        print("alias.jsonが見つかりました")
+        logger("alias.jsonが見つかりました")
         try:
             with open("alias.json", "r", encoding="utf-8_sig") as alf:
                 alias = json.load(alf)
         except JSONDecodeError as exc:
-            print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+            logger("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg), "error")
             return itemName
     else:
-        print("alias.jsonが見つかりませんでした")
+        logger("alias.jsonが見つかりませんでした")
         return itemName
     
     # for文で解析
@@ -56,7 +56,7 @@ def showAlias():
             outputStr = f"以下のエイリアスが登録されています:\n\n{parsed}"
             return outputStr
         except JSONDecodeError as exc:
-            print("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg))
+            logger("alias.jsonの構文にエラーがあります\n行: {0} 位置: {1}\n{2}".format(exc.lineno, exc.pos, exc.msg), "error")
             return False
     else:
         return False
