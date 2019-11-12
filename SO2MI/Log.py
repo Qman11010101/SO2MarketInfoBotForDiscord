@@ -7,7 +7,7 @@ config = ConfigParser()
 config.read("config.ini")
 
 LOGGER = logging.getLogger("SO2MIBOT")
-LOGFORMAT = logging.Formatter("[%(asctime)s][%(levelname)-7s]: %(message)s")
+LOGFORMAT = logging.Formatter("[%(asctime)s] %(levelname)-8s [%(module)s#%(funcName)s %(lineno)d]: %(message)s")
 
 if config["logs"]["logLevel"] == "debug":
     logLevel = logging.DEBUG
