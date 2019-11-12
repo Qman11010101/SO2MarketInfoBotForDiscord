@@ -10,5 +10,6 @@ from .Regular import chkCost, chkEndOfMonth, chkEvent
 from .Shelf import getShelves
 from .Population import getPopulation
 from .Chkver import chkver
+from .Log import logger
 
-__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent", "getShelves", "getPopulation", "chkver"]
+__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent", "getShelves", "getPopulation", "chkver", "logger"]
