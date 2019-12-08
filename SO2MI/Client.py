@@ -600,7 +600,7 @@ class Client(discord.Client):
     async def showHelpPopulation(self):
         logger("helpを返します", "debug")
         helpMsg = textwrap.dedent(f"""
-        指定された街の、現時点での販売棚数や販売学の合計を表示します。
+        指定された街の、現時点での人口を表示します。
         使用方法: `{commandPopulation} [街名]`
         """)
         await self.targetChannel.send(helpMsg)
