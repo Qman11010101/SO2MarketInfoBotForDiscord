@@ -45,7 +45,7 @@ repo = config["misc"]["GitHubRepoName"]
 
 adminID = config["misc"]["administrator"]
 
-DEFINE_VERSION = "4.0"
+DEFINE_VERSION = "4.0.1"
 
 class Client(discord.Client):
     async def on_ready(self):
