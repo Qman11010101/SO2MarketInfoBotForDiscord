@@ -25,3 +25,7 @@ class NoCategoryError(Exception):
 # SameItemExistError
 class SameItemExistError(Exception):
     pass
+
+# ArgumentLackError
+class ArgumentLackError(Exception):
+    pass

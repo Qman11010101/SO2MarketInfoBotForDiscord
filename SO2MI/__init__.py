@@ -2,7 +2,7 @@ from .Client import Client
 from .Alias import alias, showAlias, addAlias, removeAlias
 from .Parser import itemParser
 from .getApi import getApi
-from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError, NoTownError, InvalidURLError, NoCategoryError
+from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError, NoTownError, InvalidURLError, NoCategoryError, ArgumentLackError
 from .Search import itemSearch
 from .Wiki import wikiLinkGen
 from .Register import showRegister, addRegister, removeRegister
@@ -12,4 +12,4 @@ from .Population import getPopulation
 from .Chkver import chkver
 from .Log import logger
 
-__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent", "getShelves", "getPopulation", "chkver", "logger"]
+__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent", "getShelves", "getPopulation", "chkver", "logger", "ArgumentLackError"]
