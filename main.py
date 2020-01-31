@@ -12,16 +12,22 @@ import os
 import sys
 
 from SO2MI import Client
+from SO2MI.Log import logger
 
-# Discordのトークンの書かれたconfigの読み込み
+# Discordのトークンの読み込み
 if os.path.isfile("config.ini"):
     config = configparser.ConfigParser()
     config.read("config.ini")
+
+    token = config["discord"]["token"]
 else:
-    print("設定ファイルがありません。")
-    sys.exit(1) # 異常終了
+    logger("config.iniが存在しないため、環境変数から値を読み取ります")
+    token = os.environ.get("token")
+    if token == None:
+        logger("トークンが存在しません", "critical")
+        sys.exit(1)
 
 if __name__ == "__main__":
     # 実行
     dcCli = Client()
-    dcCli.run(config["discord"]["token"])
+    dcCli.run(token)
