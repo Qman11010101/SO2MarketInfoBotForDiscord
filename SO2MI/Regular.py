@@ -19,8 +19,14 @@ from bs4 import BeautifulSoup
 from .getApi import getApi
 from .Log import logger
 
-config = configparser.ConfigParser()
-config.read("config.ini")
+if os.path.isfile("config.ini"):
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    tz = config["misc"]["timezone"]
+    RegEventDay = config["misc"]["RegEventDay"]
+else:
+    tz = os.environ.get("timezone")
 
 def chkCost():
     # 読み込みに失敗したらFalseを返す
@@ -193,7 +199,7 @@ def chkEndOfMonth():
     logger("月末判定をします")
 
     # 現在時刻取得
-    timezone = pytz.timezone(config["misc"]["timezone"])
+    timezone = pytz.timezone(tz)
     now = datetime.datetime.now(timezone)
 
     # 月末判定
@@ -238,7 +244,7 @@ def chkEvent():
         topiclist = agenda["topics"] # 必要な情報が入ったリストを生成する
 
         iCount = 0
-        timezone = pytz.timezone(config["misc"]["timezone"])
+        timezone = pytz.timezone(tz)
         now = datetime.datetime.now(timezone)
         eventHeld = [] # 開催中
         eventCome = [] # 近日
@@ -268,7 +274,7 @@ def chkEvent():
                     event = f"{endTime}終了"
                     eventInfo = [event, title, link]
                     eventHeld.append(eventInfo)
-                elif startTimejst.timestamp() - now.timestamp() < (int(config["misc"]["RegEventDay"]) * 86400):
+                elif startTimejst.timestamp() - now.timestamp() < (int(RegEventDay) * 86400):
                     event = f"{startTime} ～ {endTime}"
                     eventInfo = [event, title, link]
                     eventCome.append(eventInfo)
