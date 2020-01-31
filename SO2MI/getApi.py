@@ -28,17 +28,12 @@ def getApi(apiName, url):
     
     """
 
-    # タイムゾーン指定
-    if os.path.isfile("config.ini"):
-        config = configparser.ConfigParser()
-        config.read("config.ini")
-    
-        tz = config["misc"]["timezone"]
-    else:
-        tz = os.environ.get("timezone")
+    # タイムゾーン指定のためconfig.iniの読み込み
+    config = configparser.ConfigParser()
+    config.read("config.ini")
 
     # 現在時刻取得
-    timezone = pytz.timezone(tz)
+    timezone = pytz.timezone(config["misc"]["timezone"])
     now = datetime.datetime.now(timezone)
 
     # API名に基づいてファイルを選択

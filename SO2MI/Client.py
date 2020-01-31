@@ -1,6 +1,5 @@
 import configparser
 import datetime
-import distutils
 import json
 import os
 import re
@@ -25,104 +24,59 @@ from .Population import getPopulation
 from .Chkver import chkver
 from .Log import logger
 
-if os.path.isfile("config.ini"):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+config = configparser.ConfigParser()
+config.read("config.ini")
 
-    prefix = config["command"]["prefix"]
+prefix = config["command"]["prefix"]
 
-    commandMarket = prefix + config["command"]["market"]
-    commandAlias = prefix + config["command"]["alias"]
-    commandVersion = prefix + config["command"]["version"]
-    commandSearch = prefix + config["command"]["search"]
-    commandHelp = prefix + config["command"]["help"]
-    commandWiki = prefix + config["command"]["wiki"]
-    commandRegister = prefix + config["command"]["register"]
-    commandShelves = prefix + config["command"]["shelves"]
-    commandPopulation = prefix + config["command"]["population"]
-    commandChkver = prefix + config["command"]["chkver"]
+commandMarket = prefix + config["command"]["market"]
+commandAlias = prefix + config["command"]["alias"]
+commandVersion = prefix + config["command"]["version"]
+commandSearch = prefix + config["command"]["search"]
+commandHelp = prefix + config["command"]["help"]
+commandWiki = prefix + config["command"]["wiki"]
+commandRegister = prefix + config["command"]["register"]
+commandShelves = prefix + config["command"]["shelves"]
+commandPopulation = prefix + config["command"]["population"]
+commandChkver = prefix + config["command"]["chkver"]
 
-    user = config["misc"]["GitHubUserID"]
-    repo = config["misc"]["GitHubRepoName"]
+user = config["misc"]["GitHubUserID"]
+repo = config["misc"]["GitHubRepoName"]
 
-    adminID = config["misc"]["administrator"]
-
-    channel = config["discord"]["channel"]
-    regChannel = config["discord"]["regChannel"]
-
-    EnableRegularExecution = distutils.util.strtobool(config["misc"]["EnableRegularExecution"])
-    EnableAlias = distutils.util.strtobool(config["misc"]["EnableAlias"])
-
-    RegExcCheckTime = config["misc"]["RegExcCheckTime"]
-    RegExcHour = config["misc"]["RegExcHour"]
-    RegExcMinute = config["misc"]["RegExcMinute"]
-    RegEventDay = config["misc"]["RegEventDay"]
-
-    tz = config["misc"]["timezone"]
-else:
-    prefix = os.environ.get("prefix")
-
-    commandMarket = prefix + os.environ.get("market")
-    commandAlias = prefix + os.environ.get("alias")
-    commandVersion = prefix + os.environ.get("version")
-    commandSearch = prefix + os.environ.get("search")
-    commandHelp = prefix + os.environ.get("help")
-    commandWiki = prefix + os.environ.get("wiki")
-    commandRegister = prefix + os.environ.get("register")
-    commandShelves = prefix + os.environ.get("shelves")
-    commandPopulation = prefix + os.environ.get("population")
-    commandChkver = prefix + os.environ.get("chkver")
-
-    user = os.environ.get("GitHubUserID")
-    repo = os.environ.get("GitHubRepoName")
-
-    adminID = os.environ.get("administrator")
-
-    channel = os.environ.get("channel")
-    regChannel = os.environ.get("regChannel")
-
-    EnableRegularExecution = distutils.util.strtobool(os.environ.get("EnableRegularExecution"))
-    EnableAlias = distutils.util.strtobool(os.environ.get("EnableAlias"))
-
-    RegExcCheckTime = os.environ.get("RegExcCheckTime")
-    RegExcHour = os.environ.get("RegExcHour")
-    RegExcMinute = os.environ.get("RegExcMinute")
-    RegEventDay = os.environ.get("RegEventDay")
-
-    tz = os.environ.get("timezone")
+adminID = config["misc"]["administrator"]
 
 DEFINE_VERSION = "4.0.1"
 
 class Client(discord.Client):
     async def on_ready(self):
         # 設定されているチャンネルIDに接続
-        self.targetChannel = self.get_channel(int(channel))
+        self.targetChannel = self.get_channel(int(config["discord"]["channel"]))
         if self.targetChannel == None:
             logger("botが実行されるチャンネルが見つかりませんでした", "critical")
             raise Exception("specified channel not found")
         else:
             pass
-        self.regChannel = self.get_channel(int(regChannel))
+        self.regChannel = self.get_channel(int(config["discord"]["regChannel"]))
         if self.regChannel == None:
             logger("定期実行サービスが実行されるチャンネルが見つかりませんでした", "critical")
             raise Exception("specified channel not found")
         else:
             pass
         logger(f"次のユーザーとしてログインしました: {self.user}")
-        logger(f'bot実行チャンネルID: {channel}', "debug")
-        logger(f'定期実行チャンネルID: {regChannel}', "debug")
+        logger(f'bot実行チャンネルID: {config["discord"]["channel"]}', "debug")
+        logger(f'定期実行チャンネルID: {config["discord"]["regChannel"]}', "debug")
 
         # 定期実行
-        if EnableRegularExecution:
+        if config["misc"].getboolean("EnableRegularExecution"):
             logger("定期実行サービスはオンになっています")
-            chkTime = int(RegExcCheckTime)
+            chkTime = int(config["misc"]["RegExcCheckTime"])
             while True:
                 # 現在時刻取得
-                now = datetime.datetime.now(timezone(tz))
+                now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
 
                 # 時刻判定
-                startHour = int(RegExcHour)
-                startMin = int(RegExcMinute)
+                startHour = int(config["misc"]["RegExcHour"])
+                startMin = int(config["misc"]["RegExcMinute"])
                 endMin = startMin + chkTime
 
                 if now.hour == startHour and startMin <= now.minute <= endMin:
@@ -134,7 +88,7 @@ class Client(discord.Client):
                 await asyncio.sleep(chkTime * 60) # config.iniで設定した時間ごとにチェック
 
     async def on_message(self, message):
-        if message.author.bot or message.author == self.user or int(channel) != message.channel.id:
+        if message.author.bot or message.author == self.user or int(config["discord"]["channel"]) != message.channel.id:
             # BOT属性アカウント、自身のアカウント or 指定したチャンネル以外はスルー
             return
         else:
@@ -212,7 +166,7 @@ class Client(discord.Client):
 
         # エイリアスコマンド
         if message.content.startswith(commandAlias):
-            if EnableAlias:
+            if config["misc"].getboolean("EnableAlias"):
                 msgParse = message.content.split()
                 del msgParse[0]
                 if len(msgParse) == 0:
@@ -410,7 +364,7 @@ class Client(discord.Client):
 
         # 登録コマンド
         if message.content.startswith(commandRegister):
-            if EnableRegularExecution:
+            if config["misc"].getboolean("EnableRegularExecution"):
                 msgParse = message.content.split()
                 del msgParse[0]
                 if len(msgParse) == 0:
@@ -653,7 +607,7 @@ class Client(discord.Client):
 
     # エラーログ用関数
     async def errorWrite(self):
-        now = datetime.datetime.now(timezone(tz))
+        now = datetime.datetime.now(timezone(config["misc"]["timezone"]))
         nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")
         nowFileFormat = now.strftime("%Y%m%d")
         os.makedirs("error-log", exist_ok=True)
@@ -662,7 +616,7 @@ class Client(discord.Client):
             traceback.print_exc(file=f)
             f.write("\n")
         traceback.print_exc()
-        if EnableDisplayError:
+        if config["misc"].getboolean("EnableDisplayError"):
             typeExc, valueExc, tracebackExc = sys.exc_info()
             tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
             await self.targetChannel.send("以下のエラーが発生しました。")
