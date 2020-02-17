@@ -52,6 +52,7 @@ if os.path.isfile("config.ini"):
 
     EnableRegularExecution = distutils.util.strtobool(config["misc"]["EnableRegularExecution"])
     EnableAlias = distutils.util.strtobool(config["misc"]["EnableAlias"])
+    EnableDisplayError = distutils.util.strtobool(config["misc"]["EnableDisplayError"])
 
     RegExcCheckTime = config["misc"]["RegExcCheckTime"]
     RegExcHour = config["misc"]["RegExcHour"]
@@ -83,6 +84,7 @@ else:
 
     EnableRegularExecution = distutils.util.strtobool(os.environ.get("EnableRegularExecution"))
     EnableAlias = distutils.util.strtobool(os.environ.get("EnableAlias"))
+    EnableDisplayError = distutils.util.strtobool(os.environ.get("EnableDisplayError"))
 
     RegExcCheckTime = os.environ.get("RegExcCheckTime")
     RegExcHour = os.environ.get("RegExcHour")
