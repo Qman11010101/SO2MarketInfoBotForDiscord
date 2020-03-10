@@ -1,6 +1,6 @@
 import configparser
 import datetime
-import distutils
+from distutils.util import strtobool
 import json
 import os
 import re
@@ -50,9 +50,9 @@ if os.path.isfile("config.ini"):
     channel = config["discord"]["channel"]
     regChannel = config["discord"]["regChannel"]
 
-    EnableRegularExecution = distutils.util.strtobool(config["misc"]["EnableRegularExecution"])
-    EnableAlias = distutils.util.strtobool(config["misc"]["EnableAlias"])
-    EnableDisplayError = distutils.util.strtobool(config["misc"]["EnableDisplayError"])
+    EnableRegularExecution = strtobool(config["misc"]["EnableRegularExecution"])
+    EnableAlias = strtobool(config["misc"]["EnableAlias"])
+    EnableDisplayError = strtobool(config["misc"]["EnableDisplayError"])
 
     RegExcCheckTime = config["misc"]["RegExcCheckTime"]
     RegExcHour = config["misc"]["RegExcHour"]
@@ -82,9 +82,9 @@ else:
     channel = os.environ.get("channel")
     regChannel = os.environ.get("regChannel")
 
-    EnableRegularExecution = distutils.util.strtobool(os.environ.get("EnableRegularExecution"))
-    EnableAlias = distutils.util.strtobool(os.environ.get("EnableAlias"))
-    EnableDisplayError = distutils.util.strtobool(os.environ.get("EnableDisplayError"))
+    EnableRegularExecution = strtobool(os.environ.get("EnableRegularExecution"))
+    EnableAlias = strtobool(os.environ.get("EnableAlias"))
+    EnableDisplayError = strtobool(os.environ.get("EnableDisplayError"))
 
     RegExcCheckTime = os.environ.get("RegExcCheckTime")
     RegExcHour = os.environ.get("RegExcHour")
