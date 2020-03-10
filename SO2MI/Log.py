@@ -1,21 +1,29 @@
 from configparser import ConfigParser
 import datetime
+from distutils.util import strtobool
+import os
 import sys
 import logging
 
-config = ConfigParser()
-config.read("config.ini")
+if os.path.isfile("config.ini"):
+    config = ConfigParser()
+    config.read("config.ini")
+    settingLogLevel = config["logs"]["loglevel"]
+    enableLog = strtobool(config["logs"]["enableLog"])
+else:
+    settingLogLevel = os.environ.get("loglevel")
+    enableLog = strtobool(os.environ.get("enableLog"))
 
 LOGGER = logging.getLogger("SO2MIBOT")
 LOGFORMAT = logging.Formatter("[%(asctime)s] %(levelname)-8s [%(module)s#%(funcName)s %(lineno)d]: %(message)s")
 
-if config["logs"]["logLevel"] == "debug":
+if settingLogLevel == "debug":
     logLevel = logging.DEBUG
-elif config["logs"]["logLevel"] == "info":
+elif settingLogLevel == "info":
     logLevel = logging.INFO
-elif config["logs"]["logLevel"] == "error":
+elif settingLogLevel == "error":
     logLevel = logging.ERROR
-elif config["logs"]["logLevel"] == "critical":
+elif settingLogLevel == "critical":
     logLevel = logging.CRITICAL
 else:
     logLevel = logging.WARNING
@@ -41,7 +49,7 @@ def logger(message, level="info"):
     返り値:\n
         str: メッセージの内容です。
     """
-    if config["logs"].getboolean("enableLog"):
+    if enableLog:
         if level == "debug":
             LOGGER.debug(message)
         elif level == "info":
