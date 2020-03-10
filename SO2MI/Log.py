@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 import datetime
-import distutils
+from distutils.util import strtobool
 import os
 import sys
 import logging
@@ -9,10 +9,10 @@ if os.path.isfile("config.ini"):
     config = ConfigParser()
     config.read("config.ini")
     settingLogLevel = config["logs"]["loglevel"]
-    enableLog = distutils.util.strtobool(config["logs"]["enableLog"])
+    enableLog = strtobool(config["logs"]["enableLog"])
 else:
     settingLogLevel = os.environ.get("loglevel")
-    enableLog = distutils.util.strtobool(os.environ.get("enableLog"))
+    enableLog = strtobool(os.environ.get("enableLog"))
 
 LOGGER = logging.getLogger("SO2MIBOT")
 LOGFORMAT = logging.Formatter("[%(asctime)s] %(levelname)-8s [%(module)s#%(funcName)s %(lineno)d]: %(message)s")
