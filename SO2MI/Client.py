@@ -97,7 +97,6 @@ DEFINE_VERSION = "4.0.1"
 
 class Client(discord.Client):
     async def on_ready(self):
-        # 設定されているチャンネルIDに接続
         self.targetChannel = self.get_channel(int(channel))
         if self.targetChannel == None:
             logger("botが実行されるチャンネルが見つかりませんでした", "critical")
@@ -119,10 +118,8 @@ class Client(discord.Client):
             logger("定期実行サービスはオンになっています")
             chkTime = int(RegExcCheckTime)
             while True:
-                # 現在時刻取得
                 now = datetime.datetime.now(timezone(tz))
 
-                # 時刻判定
                 startHour = int(RegExcHour)
                 startMin = int(RegExcMinute)
                 endMin = startMin + chkTime
@@ -132,12 +129,11 @@ class Client(discord.Client):
                     await self.cliChkCost()
                     await self.cliChkEndOfMonth()
                     await self.cliChkEvent()
-                    await asyncio.sleep(50000) # 1日1回しか起動しないのでしばらく止めておく
-                await asyncio.sleep(chkTime * 60) # config.iniで設定した時間ごとにチェック
+                    await asyncio.sleep(50000)
+                await asyncio.sleep(chkTime * 60)
 
     async def on_message(self, message):
         if message.author.bot or message.author == self.user or int(channel) != message.channel.id:
-            # BOT属性アカウント、自身のアカウント or 指定したチャンネル以外はスルー
             return
         else:
             logger(f"{message.author} が入力しました: {message.content}")
@@ -146,14 +142,12 @@ class Client(discord.Client):
         # 市場情報コマンド
         if message.content.startswith(commandMarket):
             msgParse = message.content.split()
-            # コマンドを削除
             del msgParse[0]
-            # コマンド単体だった場合
+
             if len(msgParse) == 0:
                 await self.showHelpMarket()
                 return
             else:
-                # ヘルプ表示の場合
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpMarket()
                     return
@@ -164,7 +158,7 @@ class Client(discord.Client):
                     if msgParse[-1] != "--end":
                         msgParse.append("--end") # 終端引数を追加する
                     # 商品名が1つになっていない場合引数かどうかを確認する
-                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
+                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]):
                         await message.channel.send("エラー: 同時に複数の商品を指定することはできません。")
                         return
                     else: # 引数の形だった場合
@@ -309,14 +303,12 @@ class Client(discord.Client):
         # アイテム検索コマンド
         if message.content.startswith(commandSearch):
             msgParse = message.content.split()
-            # コマンドを削除
             del msgParse[0]
-            # コマンド単体だった場合
+
             if len(msgParse) == 0:
                 await self.showHelpSearch()
                 return
             else:
-                # ヘルプ表示の場合
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpSearch()
                     return
@@ -326,7 +318,7 @@ class Client(discord.Client):
                     if msgParse[-1] != "--end":
                         msgParse.append("--end") # 終端引数を追加する
                     # 文字列が1つになっていない場合引数かどうかを確認する
-                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]): # 引数の形になっていない場合
+                    if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]):
                         await message.channel.send("文字列は1つにまとめるようにしてください。複数の文字列の検索は正規表現を利用してください。")
                         return
                     else: # 引数の形だった場合
@@ -390,14 +382,12 @@ class Client(discord.Client):
         # Wikiコマンド
         if message.content.startswith(commandWiki):
             msgParse = message.content.split()
-            # コマンドを削除
             del msgParse[0]
-            # コマンド単体だった場合
+
             if len(msgParse) == 0:
                 await self.showHelpWiki()
                 return
             else:
-                # ヘルプ表示の場合
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpWiki()
                     return
@@ -653,7 +643,7 @@ class Client(discord.Client):
         """)
         await self.targetChannel.send(helpMsg)
 
-    # エラーログ用関数
+    # エラーログ出力関数
     async def errorWrite(self):
         now = datetime.datetime.now(timezone(tz))
         nowFormat = now.strftime("%Y/%m/%d %H:%M:%S%z")

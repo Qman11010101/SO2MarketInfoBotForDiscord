@@ -6,7 +6,6 @@ from .getApi import getApi
 from .Exceptions import NoCategoryError
 
 def itemSearch(string, argument, category, beta):
-    # API取得部
     if beta == "--release":
         item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
         recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
@@ -24,7 +23,6 @@ def itemSearch(string, argument, category, beta):
             raise NoCategoryError("such category doesn't exist")
         catStr = f"{category}カテゴリの中で"
 
-    # 正規表現のコンパイル
     reg = re.compile(string)
 
     # 合致するアイテムの取得
@@ -47,7 +45,6 @@ def itemSearch(string, argument, category, beta):
                     if recipe[str(col)]["category"] == category:
                         listRecipe.append(recipe[str(col)]["name"])
 
-    # 表示文字列生成部
     if len(listItem) + len(listRecipe) == 0:
         msgReturn = [f"{catStr}正規表現「{string}」に合致するアイテムは見つかりませんでした。"]
     else:

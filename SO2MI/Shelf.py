@@ -8,7 +8,6 @@ from .getApi import getApi
 from .Exceptions import NoTownError
 
 def getShelves(townName):
-    # API取得部
     town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
     sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
@@ -30,7 +29,6 @@ def getShelves(townName):
     shelfBundlePercent = shelfNotBundlePersent = 0
     priceBundlePercent = priceNotBundlePercent = 0
     itemsIDList = []
-    # itemsPriceList = []
 
     # 棚数・販売額・アイテムID取得部
     if townName != "--all":

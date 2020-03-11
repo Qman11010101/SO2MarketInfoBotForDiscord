@@ -28,7 +28,6 @@ def getApi(apiName, url):
     
     """
 
-    # タイムゾーン指定
     if os.path.isfile("config.ini"):
         config = configparser.ConfigParser()
         config.read("config.ini")
@@ -37,21 +36,19 @@ def getApi(apiName, url):
     else:
         tz = os.environ.get("timezone")
 
-    # 現在時刻取得
     timezone = pytz.timezone(tz)
     now = datetime.datetime.now(timezone)
 
-    # API名に基づいてファイルを選択
     target = glob.glob(f"api-log/{apiName}-*.json")
 
-    # ファイルが存在した場合の分岐
+    # ファイルが存在した場合
     if len(target) != 0:
         target = target[0].replace("\\", "/") # Windowsではパス文字がバックスラッシュ×2なため変換しておく
 
         # JSONの名前からデータの取得時間を推測する
         jsonDataTime = datetime.datetime.strptime(target, f"api-log/{apiName}-%y%m%d%H%M.json")
 
-        # 販売品と注文品は10分ごとに、それ以外は60分ごとに注文する
+        # APIの都合上、販売品と注文品は10分ごとに、それ以外は60分ごとに注文する
         if apiName in ("sale", "request", "sale_beta", "request_beta"):
             reqTime = 10
         else:
@@ -72,12 +69,11 @@ def getApi(apiName, url):
         readData = False
         logger("データが存在していません")
 
-    if readData: # APIを叩かず既存ファイルを読み込む
+    if readData:
         logger("既存のデータを読み込みます: {0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")))
         with open("api-log/{0}-{1}.json".format(apiName, jsonDataTime.strftime("%y%m%d%H%M")), "r", encoding="utf-8_sig") as ijs:
             return json.load(ijs)
     else: # 古いデータを削除しAPIを叩いて新たにデータを取得する
-        # api-logフォルダを作成する(存在する場合は無視)
         os.makedirs("api-log/", exist_ok=True)
 
         # 古いデータを削除する
@@ -88,11 +84,9 @@ def getApi(apiName, url):
             except FileNotFoundError: # もしファイルがなくても無視する
                 pass
 
-        # APIを叩く
         logger("次のエンドポイントにアクセスしています: " + url)
         newData = requests.get(url)
 
-        # データを保存する
         with open("api-log/{0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")), "w", encoding="utf-8_sig") as ijs:
             logger("次の名称でデータを保存しました: {0}-{1}.json".format(apiName, now.strftime("%y%m%d%H%M")))
             json.dump(newData.json(), ijs, ensure_ascii=False)

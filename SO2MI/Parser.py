@@ -7,7 +7,6 @@ from .getApi import getApi
 from .Exceptions import NoTownError, InvalidURLError
 
 def itemParser(itemName, argument, townName, beta):
-    # API取得部
     if beta != "-b":
         item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
         recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
@@ -21,7 +20,6 @@ def itemParser(itemName, argument, townName, beta):
         req = getApi("request_beta", "https://so2-beta.mutoys.com/json/request/all.json")
         town = getApi("town_beta", "https://so2-beta.mutoys.com/master/area.json")
 
-    # 略称などの変換
     itemName = alias(itemName)
 
     # 街名称取得部
@@ -164,7 +162,6 @@ def itemParser(itemName, argument, townName, beta):
     else:
         reqStr = "\n        現在注文はありません。\n"
 
-    # まとめ
     # 時刻をsale-*.jsonから推測
     target = glob.glob("api-log/sale-*.json")
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")

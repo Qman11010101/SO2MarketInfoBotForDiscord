@@ -5,7 +5,6 @@ from .getApi import getApi
 from .Exceptions import NoTownError
 
 def getPopulation(townName):
-    # API取得部
     population = getApi("population", "https://so2-api.mutoys.com/json/people/all.json")
     town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
 

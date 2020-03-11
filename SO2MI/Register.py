@@ -13,7 +13,6 @@ def addRegister(itemName):
             with open("itemreg.json", "r", encoding="utf-8_sig") as itf:
                 itemreg = json.load(itf)
             
-            # 登録済みアイテム読み込み・アイテム名エイリアス変換
             itemList = itemreg["items"]
             itemName = alias(itemName)
             
@@ -42,7 +41,6 @@ def addRegister(itemName):
             # アイテム名を追加
             itemreg["items"].append(itemName)
             
-            # jsonを保存
             with open("itemreg.json", "w", encoding="utf-8_sig") as itf:
                 json.dump(itemreg, itf, indent=4, ensure_ascii=False)
             
@@ -72,7 +70,6 @@ def removeRegister(itemName):
             with open("itemreg.json", "r", encoding="utf-8_sig") as itf:
                 itemreg = json.load(itf)
             
-            # 登録済みアイテム読み込み・アイテム名エイリアス変換
             itemList = itemreg["items"]
             itemName = alias(itemName)
 

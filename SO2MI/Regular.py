@@ -39,10 +39,9 @@ def chkCost():
         itemList = set(itemreg["items"])
         infoList = []
 
-        # 日付文字列生成
+        # 昨日の日付を文字列にする
         dateYesterday = datetime.date.today() - datetime.timedelta(days=1)
 
-        # アイテム情報取得
         item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
         recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
         sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
@@ -175,7 +174,6 @@ def chkCost():
 
         message = f"**【Daily Market Information】**\n取得された市場情報は以下の通りです:\n　\n{text}時間経過により市場がこの通りでない可能性があります。\n͏​‌" # ゼロ幅スペースで改行維持
 
-        # 情報をJSONとして保存
         logger("取得した情報を保存します")
         rej = {}
         for i in range(len(itemList)):
@@ -198,13 +196,11 @@ def chkCost():
 def chkEndOfMonth():
     logger("月末判定をします")
 
-    # 現在時刻取得
     timezone = pytz.timezone(tz)
     now = datetime.datetime.now(timezone)
 
-    # 月末判定
     dayLast = int(calendar.monthrange(now.year, now.month)[1]) # 月の最終日取得
-    if now.day != dayLast: # 最終日じゃなければ何もしないようにする
+    if now.day != dayLast:
         logger("月末ではありませんでした")
         return False
 
@@ -314,7 +310,6 @@ def chkEvent():
         else:
             future = ""
 
-        # 文章完成
         if current == "" and future != "":
             res = f"**【Event Information】**\n{future}\n͏​‌"
         elif current != "" and future == "":
