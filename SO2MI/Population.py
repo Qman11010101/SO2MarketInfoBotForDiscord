@@ -29,7 +29,7 @@ def getPopulation(townName):
     # 文字列生成
     al = poplist[0]
 
-    msg = f"""
+    msg = textwrap.dedent(f"""
     現時点での{townName}の人口情報は以下の通りです:
     
     全人口: {"{:,}".format(poplist[0])}人
@@ -45,6 +45,6 @@ def getPopulation(townName):
     　おばあさん: {"{:,}".format(poplist[10])}人 ({"{:.2f}".format((poplist[10] / al) * 100)}%)
     　買い付け人: {"{:,}".format(poplist[11])}人 ({"{:.2f}".format((poplist[11] / al) * 100)}%)
     　旅人: {"{:,}".format(poplist[12])}人 ({"{:.2f}".format((poplist[12] / al) * 100)}%)
-    """
+    """)
 
     return msg
