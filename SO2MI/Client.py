@@ -93,7 +93,7 @@ else:
 
     tz = os.environ.get("timezone")
 
-DEFINE_VERSION = "4.0.1"
+DEFINE_VERSION = "4.1"
 
 class Client(discord.Client):
     async def on_ready(self):
