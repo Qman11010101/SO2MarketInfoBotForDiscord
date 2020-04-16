@@ -1,15 +1,17 @@
-from .Client import Client
-from .Alias import alias, showAlias, addAlias, removeAlias
-from .Parser import itemParser
-from .getApi import getApi
-from .Exceptions import NoItemError, NameDuplicationError, SameAliasNameExistError, NoTownError, InvalidURLError, NoCategoryError, ArgumentLackError
-from .Search import itemSearch
-from .Wiki import wikiLinkGen
-from .Register import showRegister, addRegister, removeRegister
-from .Regular import chkCost, chkEndOfMonth, chkEvent
-from .Shelf import getShelves
-from .Population import getPopulation
-from .Chkver import chkver
-from .Log import logger
+import os, glob
 
-__all__ = ["Client", "alias", "itemParser", "getApi", "showAlias", "addAlias", "removeAlias", "itemSearch", "NoItemError", "NameDuplicationError", "SameAliasNameExistError", "NoTownError", "InvalidURLError", "wikiLinkGen", "NoCategoryError", "showRegister", "addRegister", "removeRegister", "chkCost", "chkEndOfMonth", "chkEvent", "getShelves", "getPopulation", "chkver", "logger", "ArgumentLackError"]
+from .Client import *
+from .Alias import *
+from .Parser import *
+from .getApi import *
+from .Exceptions import *
+from .Search import *
+from .Wiki import *
+from .Register import *
+from .Regular import *
+from .Shelf import *
+from .Population import *
+from .Chkver import *
+from .Log import *
+
+__all__ = [os.path.split(os.path.splitext(file)[0])[1] for file in glob.glob(os.path.join(os.path.dirname(__file__), '[a-zA-Z0-9]*.py'))]
