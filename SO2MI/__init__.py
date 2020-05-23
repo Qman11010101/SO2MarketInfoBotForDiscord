@@ -1,6 +1,8 @@
 import os, glob
 
-from .Client import *
+from .MarketCog import *
+from .AliasCog import *
+from .MiscCog import *
 from .Alias import *
 from .Parser import *
 from .getApi import *
@@ -15,3 +17,4 @@ from .Chkver import *
 from .Log import *
 
 __all__ = [os.path.split(os.path.splitext(file)[0])[1] for file in glob.glob(os.path.join(os.path.dirname(__file__), '[a-zA-Z0-9]*.py'))]
+__version__ = "5.0"

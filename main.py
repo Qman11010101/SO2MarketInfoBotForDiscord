@@ -11,23 +11,31 @@ import configparser
 import os
 import sys
 
-from SO2MI import Client
+from discord.ext import commands
+
+from SO2MI.config import CONFIG
 from SO2MI.Log import logger
+from SO2MI.MarketCog import Market
+from SO2MI.AliasCog import Alias
+from SO2MI.MiscCog import Misc
 
-# Discordのトークンの読み込み
-if os.path.isfile("config.ini"):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+# bot初期化
+bot = commands.Bot(command_prefix=CONFIG["command"]["prefix"])
 
-    token = config["discord"]["token"]
-else:
-    logger("config.iniが存在しないため、環境変数から値を読み取ります")
-    token = os.environ.get("token")
-    if token == None:
-        logger("トークンが存在しません", "critical")
-        sys.exit(1)
+@bot.event
+async def on_ready():
+    regChannel = bot.get_channel(int(CONFIG["discord"]["regChannel"]))
+    if regChannel == None:
+        logger("定期実行サービスが実行されるチャンネルが見つかりませんでした", "warning")
+        raise Exception("specified channel not found")
+    logger(f"次のユーザーとしてログインしました: {bot.user}")
+    logger(f'定期実行チャンネルID: {regChannel.id}', "debug")
 
 if __name__ == "__main__":
-    # 実行
-    dcCli = Client()
-    dcCli.run(token)
+    if CONFIG["discord"]["token"] == None:
+        raise Exception("トークンがありません。")
+    # cogモジュール
+    bot.add_cog(Market(bot, int(CONFIG["discord"]["channel"])))
+    bot.add_cog(Alias(bot, int(CONFIG["discord"]["channel"])))
+    bot.add_cog(Misc(bot, int(CONFIG["discord"]["channel"])))
+    bot.run(CONFIG["discord"]["token"])

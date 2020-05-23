@@ -6,26 +6,32 @@ from .Alias import alias
 from .getApi import getApi
 from .Exceptions import NoTownError, InvalidURLError
 
-def itemParser(itemName, argument, townName, beta):
-    if beta != "-b":
-        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
-        recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
-        sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
-        req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
-        town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
-    else:
+def itemParser(itemName, beta=False, *args):
+    if beta:
         item = getApi("item_beta", "https://so2-beta.mutoys.com/master/item.json")
         recipe = getApi("recipe_beta", "https://so2-beta.mutoys.com/json/master/recipe_item.json")
         sale = getApi("sale_beta", "https://so2-beta.mutoys.com/json/sale/all.json")
         req = getApi("request_beta", "https://so2-beta.mutoys.com/json/request/all.json")
         town = getApi("town_beta", "https://so2-beta.mutoys.com/master/area.json")
+    else:
+        item = getApi("item", "https://so2-api.mutoys.com/master/item.json")
+        recipe = getApi("recipe", "https://so2-api.mutoys.com/json/master/recipe_item.json")
+        sale = getApi("sale", "https://so2-api.mutoys.com/json/sale/all.json")
+        req = getApi("request", "https://so2-api.mutoys.com/json/request/all.json")
+        town = getApi("town", "https://so2-api.mutoys.com/master/area.json")
 
     itemName = alias(itemName)
 
+    # 引数から街の名前を取得
+    townName = None
+    for arg in args:
+        if arg.startswith("-t="):
+            townName = arg.split("=", 1)[1]
+    
     # 街名称取得部
     townId = 0
     townstr = ""
-    if townName != "none":
+    if townName != None:
         for col in town:
             if town[col]["name"] == townName:
                 townId = town[col]["area_id"]
@@ -167,30 +173,30 @@ def itemParser(itemName, argument, townName, beta):
     jsonTime = datetime.datetime.strptime(target[0].replace("\\", "/"), "api-log/sale-%y%m%d%H%M.json")
 
     # 引数による販売品・注文品の分岐
-    if argument == "-n":
+    if "-s" in args:
         summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **販売：**
         {saleStr}
+
+        時間経過により市場がこの通りでない可能性があります。
+        """)
+    elif "-r" in args:
+        summary = textwrap.dedent(f"""
+        {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **注文：**
         {reqStr}
 
         時間経過により市場がこの通りでない可能性があります。
         """)
-    elif argument == "-s":
+    else:
         summary = textwrap.dedent(f"""
         {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **販売：**
         {saleStr}
-
-        時間経過により市場がこの通りでない可能性があります。
-        """)
-    elif argument == "-r":
-        summary = textwrap.dedent(f"""
-        {jsonTime.strftime("%Y{0}%m{1}%d{2} %H{3}%M{4}").format("年", "月", "日", "時", "分")}現在の{itemName}の{townstr}状況は以下の通りです。
 
         **注文：**
         {reqStr}
