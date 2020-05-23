@@ -43,6 +43,7 @@ class Alias(commands.Cog):
 
         if action == None:
             await ctx.send("不明なアクションです。")
+            return
 
         if action.lower() == "add":
             async with ctx.typing():
