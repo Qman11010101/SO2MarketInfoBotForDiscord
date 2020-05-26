@@ -11,6 +11,7 @@ beautifulsoup4 = "*"
 pytz = "*"
 requests = "*"
 "discord.py" = "*"
+schedule = "*"
 
 [requires]
 python_version = "3"
