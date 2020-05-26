@@ -5,6 +5,7 @@ from discord.ext import commands
 import SO2MI
 from SO2MI.Log import logger
 from SO2MI.Chkver import chkver
+from SO2MI.CogLib import chk_channel
 
 class Misc(commands.Cog):
     def __init__(self, bot, channel):
@@ -19,6 +20,7 @@ class Misc(commands.Cog):
             raise Exception("specified channel not found")
     
     @commands.command()
+    @commands.check(chk_channel)
     async def version(self, ctx):
         # バージョンチェックコマンド
         async with ctx.typing():

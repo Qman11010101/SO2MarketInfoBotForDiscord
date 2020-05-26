@@ -5,6 +5,7 @@ from SO2MI.getApi import getApi
 from SO2MI.Alias import alias
 from SO2MI.Parser import itemParser
 from SO2MI.Exceptions import NoTownError
+from SO2MI.CogLib import chk_channel
 
 class Market(commands.Cog):
     def __init__(self, bot, channel):
@@ -21,11 +22,37 @@ class Market(commands.Cog):
             logger(f"チャンネルID: {self.channel_id}", "debug")
 
     @commands.command()
+    @commands.check(chk_channel)
     async def market(self, ctx, name=None, *options):
-        if ctx.message.channel.id != self.channel_id:
-            logger("channel does not match", "debug")
-            return
-        
+        """
+        市場に出ている商品・レシピ品の販売価格や注文価格などを調べることができます。
+        出力情報一覧:
+        ・販売
+        　・最安値
+        　・最高値
+        　・最安TOP5平均
+        　・全体平均
+        　・中央値
+        　・市場全体の個数
+        　・販売店舗数
+        ・注文
+        　・最高値
+        　・最安値
+        　・最高TOP5平均
+        　・全体平均
+        　・中央値
+        　・市場全体の注文数
+        　・注文店舗数
+
+        [name]:
+        商品名を入力します。登録されているエイリアス名が使用できます。
+
+        [options...]:
+        -s: 販売品の情報のみを表示することができます。
+        -r: 注文品の情報のみを表示することができます。
+        -t=[街名]: 指定した街の情報のみを表示することができます。-s、-rとは併用可能です。
+        -b: Beta版の市場情報を表示します。Beta版が開放されている時のみ使用可能です。
+        """
         if name == None:
             await ctx.send(f"{ctx.message.author.mention} 商品名が指定されていません。")
             return

@@ -4,6 +4,7 @@ from SO2MI.config import CONFIG
 from SO2MI.Log import logger
 from SO2MI.Alias import addAlias, removeAlias, showAlias
 from SO2MI.Exceptions import SameItemExistError, NoItemError, NameDuplicationError
+from SO2MI.CogLib import chk_channel
 
 class Alias(commands.Cog):
     def __init__(self, bot, channel):
@@ -18,6 +19,7 @@ class Alias(commands.Cog):
             raise Exception("specified channel not found")
 
     @commands.command()
+    @commands.check(chk_channel)
     async def alias(self, ctx, action=None, aliasName=None, *, realName=None):
         """
         エイリアスを追加・表示・削除ができます。
@@ -32,10 +34,6 @@ class Alias(commands.Cog):
             list | show:
                 エイリアス一覧を表示します。
         """
-        if ctx.message.channel.id != self.channel_id:
-            logger("channel does not match", "debug")
-            return
-        
         if not CONFIG["misc"]["EnableAlias"]:
             logger("aliasコマンドは無効化されています")
             await ctx.send("このコマンドは管理者によって無効化されています。")

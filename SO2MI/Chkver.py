@@ -5,17 +5,11 @@ import textwrap
 
 import requests
 
-from .Log import logger
+from SO2MI.config import CONFIG as config
+from SO2MI.Log import logger
 
-if os.path.isfile("config.ini"):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-
-    user = config["misc"]["GitHubUserID"]
-    repo = config["misc"]["GitHubRepoName"]
-else:
-    user = os.environ.get("GitHubUserID")
-    repo = os.environ.get("GitHubRepoName")
+user = config["misc"]["GitHubUserID"]
+repo = config["misc"]["GitHubRepoName"]
 
 def chkver(verstr):
     endpoint = f"https://api.github.com/repos/{user}/{repo}/releases/latest"
@@ -24,15 +18,22 @@ def chkver(verstr):
     res = json.loads(r.text)
     versionName = res["name"]
     verstr = f"Version {verstr}"
+    resstr = textwrap.dedent(f"""
+        **SOLD OUT 2 市場情報bot for Discord**
+
+        製作者: キューマン・エノビクト、ゆずりょー
+        ライセンス: MIT License
+        リポジトリ: https://github.com/{user}/{repo}
+        """)
     if versionName != verstr:
-        resstr = textwrap.dedent(f"""
+        resstr += textwrap.dedent(f"""
         現在のバージョン: {verstr}
         最新バージョン: {versionName}
         
         新しいバージョンが存在します。
         """)
     else:
-        resstr = textwrap.dedent(f"""
+        resstr += textwrap.dedent(f"""
         現在のバージョン: {verstr}
         最新バージョン: {versionName}
 
