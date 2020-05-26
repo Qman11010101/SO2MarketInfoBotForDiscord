@@ -1,5 +1,6 @@
 import os
 import configparser
+from distutils.util import strtobool
 
 from SO2MI.Log import logger
 
@@ -16,3 +17,6 @@ else:
     CONFIG["misc"]["GitHubUserID"] = os.environ.get("GitHubUserID")
     CONFIG["misc"]["GitHubRepoName"] = os.environ.get("GitHubRepoName")
     CONFIG["misc"]["EnableAlias"] = os.environ.get("EnableAlias", True)
+    CONFIG["misc"]["EnableRegularExecution"] = os.environ("EnableRegularExecution", False)
+    CONFIG["logs"]["loglevel"] = os.environ.get("loglevel")
+    CONFIG["logs"]["enableLog"] = strtobool(os.environ.get("enableLog"))
