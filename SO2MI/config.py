@@ -2,13 +2,10 @@ import os
 import configparser
 from distutils.util import strtobool
 
-from SO2MI.Log import logger
-
 if os.path.isfile("config.ini"):
     CONFIG = configparser.ConfigParser()
     CONFIG.read("config.ini")
 else:
-    logger("Envから取得します")
     CONFIG = {}
     CONFIG["discord"]["token"] = os.environ.get("token")
     CONFIG["discord"]["channel"] = os.environ.get("channel")
