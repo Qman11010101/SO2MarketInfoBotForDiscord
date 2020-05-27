@@ -29,7 +29,7 @@ else:
     tz = os.environ.get("timezone")
 
 def chkCost():
-    # 読み込みに失敗したらFalseを返す
+    # 読み込みに失敗したらNoneを返す
     try:
         logger("市場情報を取得します")
 
@@ -191,7 +191,7 @@ def chkCost():
         return message
     except:
         traceback.print_exc()
-        return False
+        return None
 
 def chkEndOfMonth():
     logger("月末判定をします")
@@ -202,7 +202,7 @@ def chkEndOfMonth():
     dayLast = int(calendar.monthrange(now.year, now.month)[1]) # 月の最終日取得
     if now.day != dayLast:
         logger("月末ではありませんでした")
-        return False
+        return None
 
     message = "**【End-of-Month Information】**\n本日は月末です。優待券・優待回数券・優待お試し券をお持ちの方は使用しておくと翌日にスピードポーション30本を取得できます。\n優待券と優待回数券は作業枠が埋まっていても使用可能ですが、優待お試し券は作業枠が空いている必要がありますのでご注意ください。\n͏​‌"
     return message
@@ -317,9 +317,9 @@ def chkEvent():
         else:
             res = f"**【Event Information】**\n{current}\n{future}\n͏​‌"
         if current == "" and future == "":
-            return False
+            return None
         else:
             return res
     except:
         traceback.print_exc()
-        return False
+        return None

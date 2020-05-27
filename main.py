@@ -18,6 +18,7 @@ from SO2MI.Log import logger
 from SO2MI.MarketCog import Market
 from SO2MI.AliasCog import Alias
 from SO2MI.MiscCog import Misc
+from SO2MI.scheduleCog import Schedule
 
 # bot初期化
 bot = commands.Bot(command_prefix=CONFIG["command"]["prefix"])
@@ -29,7 +30,6 @@ async def on_ready():
         logger("定期実行サービスが実行されるチャンネルが見つかりませんでした", "warning")
         raise Exception("specified channel not found")
     logger(f"次のユーザーとしてログインしました: {bot.user}")
-    logger(f'定期実行チャンネルID: {regChannel.id}', "debug")
 
 if __name__ == "__main__":
     if CONFIG["discord"]["token"] == None:
@@ -38,4 +38,6 @@ if __name__ == "__main__":
     bot.add_cog(Market(bot, int(CONFIG["discord"]["channel"])))
     bot.add_cog(Alias(bot, int(CONFIG["discord"]["channel"])))
     bot.add_cog(Misc(bot, int(CONFIG["discord"]["channel"])))
+    if CONFIG["misc"]["EnableRegularExecution"]:
+        bot.add_cog(Schedule(bot, int(CONFIG["discord"]["regChannel"])))
     bot.run(CONFIG["discord"]["token"])
