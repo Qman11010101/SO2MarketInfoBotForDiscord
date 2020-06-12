@@ -32,9 +32,10 @@ if __name__ == "__main__":
     if CONFIG["discord"]["token"] == None:
         raise Exception("トークンがありません。")
     # cogモジュール
-    bot.add_cog(Market(bot, int(CONFIG["discord"]["channel"])))
-    bot.add_cog(Alias(bot, int(CONFIG["discord"]["channel"])))
-    bot.add_cog(Misc(bot, int(CONFIG["discord"]["channel"])))
+    mainChannel = int(CONFIG["discord"]["channel"])
+    bot.add_cog(Market(bot, mainChannel))
+    bot.add_cog(Alias(bot, mainChannel))
+    bot.add_cog(Misc(bot, mainChannel))
     if CONFIG["misc"]["EnableRegularExecution"]:
         bot.add_cog(Schedule(bot, int(CONFIG["discord"]["regChannel"])))
     bot.run(CONFIG["discord"]["token"])
