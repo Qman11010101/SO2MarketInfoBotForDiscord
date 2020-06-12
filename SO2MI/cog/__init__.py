@@ -1,11 +1,7 @@
-from .alias import Alias
-from .market import Market
-from .misc import Misc
+from .main import Main
 from .schedule import Schedule
 
 __all__ = [
-    "Alias",
-    "Market",
-    "Misc",
+    "Main",
     "Schedule"
 ]
