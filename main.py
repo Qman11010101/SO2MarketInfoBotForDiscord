@@ -15,10 +15,7 @@ from discord.ext import commands
 
 from SO2MI.config import CONFIG
 from SO2MI.Log import logger
-from SO2MI.MarketCog import Market
-from SO2MI.AliasCog import Alias
-from SO2MI.MiscCog import Misc
-from SO2MI.scheduleCog import Schedule
+from SO2MI.cog import Market, Alias, Misc, Schedule
 
 # bot初期化
 bot = commands.Bot(command_prefix=CONFIG["command"]["prefix"])

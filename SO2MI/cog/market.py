@@ -5,7 +5,8 @@ from SO2MI.getApi import getApi
 from SO2MI.Alias import alias
 from SO2MI.Parser import itemParser
 from SO2MI.Exceptions import NoTownError
-from SO2MI.CogLib import chk_channel
+from SO2MI.cog.lib import chk_channel
+from SO2MI.Population import getPopulation
 
 class Market(commands.Cog):
     def __init__(self, bot, channel):
@@ -76,3 +77,14 @@ class Market(commands.Cog):
                     await ctx.send(f"「{name}」は見つかりませんでした。")
                 else:
                     await ctx.send(msg)
+
+    @commands.command()
+    @commands.check(chk_channel)
+    async def population(self, ctx, town_name):
+        try:
+            async with ctx.typing():
+                res = getPopulation(town_name)
+        except NoTownError:
+            await self.channel.send(f"エラー: 「{town_name}」という街は存在しません。")
+        else:
+            await self.channel.send(res)

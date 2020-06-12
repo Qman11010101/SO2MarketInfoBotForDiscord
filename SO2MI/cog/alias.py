@@ -4,7 +4,7 @@ from SO2MI.config import CONFIG
 from SO2MI.Log import logger
 from SO2MI.Alias import addAlias, removeAlias, showAlias
 from SO2MI.Exceptions import SameItemExistError, NoItemError, NameDuplicationError
-from SO2MI.CogLib import chk_channel
+from SO2MI.cog.lib import chk_channel
 
 class Alias(commands.Cog):
     def __init__(self, bot, channel):

@@ -5,7 +5,7 @@ from discord.ext import commands
 import SO2MI
 from SO2MI.Log import logger
 from SO2MI.Chkver import chkver
-from SO2MI.CogLib import chk_channel
+from SO2MI.cog.lib import chk_channel
 
 class Misc(commands.Cog):
     def __init__(self, bot, channel):

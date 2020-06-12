@@ -1,8 +1,5 @@
 import os, glob
 
-from .MarketCog import *
-from .AliasCog import *
-from .MiscCog import *
 from .Alias import *
 from .Parser import *
 from .getApi import *

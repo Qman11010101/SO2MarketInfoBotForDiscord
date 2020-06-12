@@ -23,9 +23,9 @@ class Schedule(commands.Cog):
 
         self.loop.start() # pylint: disable=no-member
 
+    # 1分に1回実行するけどまだ動作保証なし。
     @tasks.loop(seconds=60)
     async def loop(self):
-        logger("loop", "debug")
         now = datetime.now().strftime('%H:%M')
         if now == '07:00':
             await self._cliChkCost()
