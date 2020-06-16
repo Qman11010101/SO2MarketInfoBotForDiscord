@@ -4,16 +4,14 @@ import SO2MI
 from SO2MI.Alias import addAlias, alias, removeAlias, showAlias
 from SO2MI.cog.lib import chk_channel
 from SO2MI.config import CONFIG
-from SO2MI.Exceptions import (NameDuplicationError, NoItemError, NoTownError,
-                              SameItemExistError)
+from SO2MI.Exceptions import NameDuplicationError, NoItemError, NoTownError, SameItemExistError
 from SO2MI.getApi import getApi
 from SO2MI.Log import logger
 from SO2MI.Parser import itemParser
 from SO2MI.Population import getPopulation
 from SO2MI.Chkver import chkver
 
-
-class Main(commands.Cog):
+class Mainframe(commands.Cog):
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel_id = channel
