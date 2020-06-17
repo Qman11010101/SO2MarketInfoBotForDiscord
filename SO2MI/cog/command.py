@@ -165,7 +165,7 @@ class Mainframe(commands.Cog):
         else:
             await self.channel.send(res)
 
-    @commands.command()
+    @commands.command(aliases=["chkver"])
     @commands.check(chk_channel)
     async def version(self, ctx):
         # バージョンチェックコマンド
