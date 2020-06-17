@@ -15,10 +15,14 @@ from discord.ext import commands
 
 from SO2MI.config import CONFIG
 from SO2MI.Log import logger
-from SO2MI.cog import command, schedule
+from SO2MI.cog import command, schedule, Help
 
 # bot初期化
-bot = commands.Bot(command_prefix=CONFIG["command"]["prefix"])
+bot = commands.Bot(
+    command_prefix=CONFIG["command"]["prefix"],
+    help_command=Help(),
+    description="SO2MarketInfoBotForDiscord"
+)
 
 # チャンネル変数初期化
 if CONFIG["discord"]["channel"] == None:
