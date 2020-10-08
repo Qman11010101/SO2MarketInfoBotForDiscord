@@ -370,7 +370,7 @@ class Client(discord.Client):
             `{commandSearch} [文字列もしくは正規表現] [-i|-r] [-c カテゴリ名] [-b]`
             `{commandVersion}`
             `{commandWiki} [アイテム名]`
-            `{commandRegister} [add|delete] [アイテム名]`
+            `{commandRegister} [add|remove] [アイテム名]`
             `{commandRegister} [show]`
             `{commandShelves} [街名]`
             `{commandPopulation} [街名]`
@@ -438,7 +438,7 @@ class Client(discord.Client):
                         if len(msgParse) != 2:
                             helpMsg = textwrap.dedent(f"""
                             アイテムを削除します。
-                            使用方法: {commandRegister} remove [アイテム名]
+                            使用方法: `{commandRegister} remove [アイテム名]`
                             """)
                             await message.channel.send(helpMsg)
                             return
