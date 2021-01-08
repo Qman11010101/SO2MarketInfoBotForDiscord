@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding:utf-8
 """
 
     SOLD OUT 2 Market Information Bot for Discord
