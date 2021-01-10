@@ -12,7 +12,10 @@ if os.path.isfile("config.ini"):
     enableLog = strtobool(config["logs"]["enableLog"])
 else:
     settingLogLevel = os.environ.get("loglevel")
-    enableLog = strtobool(os.environ.get("enableLog"))
+    if (existEnableLog: = os.environ.get("enableLog")) != None:
+        enableLog = existEnableLog
+    else:
+        enableLog = True
 
 LOGGER = logging.getLogger("SO2MIBOT")
 LOGFORMAT = logging.Formatter("[%(asctime)s] %(levelname)-8s [%(module)s#%(funcName)s %(lineno)d]: %(message)s")
