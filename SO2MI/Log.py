@@ -12,7 +12,7 @@ if os.path.isfile("config.ini"):
     enableLog = strtobool(config["logs"]["enableLog"])
 else:
     settingLogLevel = os.environ.get("loglevel")
-    if (existEnableLog: = os.environ.get("enableLog")) != None:
+    if (existEnableLog := os.environ.get("enableLog")) != None:
         enableLog = existEnableLog
     else:
         enableLog = True
