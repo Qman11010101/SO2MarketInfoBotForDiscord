@@ -17,6 +17,7 @@ else:
     user = os.environ.get("GitHubUserID")
     repo = os.environ.get("GitHubRepoName")
 
+
 def chkver(verstr):
     endpoint = f"https://api.github.com/repos/{user}/{repo}/releases/latest"
     logger(f"次のエンドポイントにアクセスしています: {endpoint}")

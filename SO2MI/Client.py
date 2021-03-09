@@ -1,29 +1,31 @@
+import asyncio
 import configparser
 import datetime
-from distutils.util import strtobool
 import json
 import os
 import re
-import traceback
-from json.decoder import JSONDecodeError
-import textwrap
 import sys
-import asyncio
+import textwrap
+import traceback
+from distutils.util import strtobool
+from json.decoder import JSONDecodeError
 
 import discord
 from pytz import timezone
 
-from .Parser import itemParser
-from .Alias import showAlias, addAlias, removeAlias
-from .Search import itemSearch
-from .Exceptions import NameDuplicationError, NoItemError, SameAliasNameExistError, NoTownError, NoCategoryError, SameItemExistError
-from .Wiki import wikiLinkGen
-from .Regular import chkCost, chkEndOfMonth, chkEvent
-from .Register import addRegister, removeRegister, showRegister
-from .Shelf import getShelves
-from .Population import getPopulation
+from .Alias import addAlias, removeAlias, showAlias
 from .Chkver import chkver
+from .Exceptions import (NameDuplicationError, NoCategoryError, NoItemError,
+                         NoTownError, SameAliasNameExistError,
+                         SameItemExistError)
 from .Log import logger
+from .Parser import itemParser
+from .Population import getPopulation
+from .Register import addRegister, removeRegister, showRegister
+from .Regular import chkCost, chkEndOfMonth, chkEvent
+from .Search import itemSearch
+from .Shelf import getShelves
+from .Wiki import wikiLinkGen
 
 if os.path.isfile("config.ini"):
     config = configparser.ConfigParser()
@@ -50,7 +52,8 @@ if os.path.isfile("config.ini"):
     channel = config["discord"]["channel"]
     regChannel = config["discord"]["regChannel"]
 
-    EnableRegularExecution = strtobool(config["misc"]["EnableRegularExecution"])
+    EnableRegularExecution = strtobool(
+        config["misc"]["EnableRegularExecution"])
     EnableAlias = strtobool(config["misc"]["EnableAlias"])
     EnableDisplayError = strtobool(config["misc"]["EnableDisplayError"])
 
@@ -82,7 +85,8 @@ else:
     channel = os.environ.get("channel")
     regChannel = os.environ.get("regChannel")
 
-    EnableRegularExecution = strtobool(os.environ.get("EnableRegularExecution"))
+    EnableRegularExecution = strtobool(
+        os.environ.get("EnableRegularExecution"))
     EnableAlias = strtobool(os.environ.get("EnableAlias"))
     EnableDisplayError = strtobool(os.environ.get("EnableDisplayError"))
 
@@ -94,6 +98,7 @@ else:
     tz = os.environ.get("timezone")
 
 DEFINE_VERSION = "4.1"
+
 
 class Client(discord.Client):
     async def on_ready(self):
@@ -153,20 +158,22 @@ class Client(discord.Client):
                     return
                 # 商品名が1つの場合
                 elif len(msgParse) == 1:
-                    msgParse.extend(["-n", "-t", "none", "--release", "--end"]) # 「[商品名] -n -t none --release --end」というコマンド文字列を生成する
+                    # 「[商品名] -n -t none --release --end」というコマンド文字列を生成する
+                    msgParse.extend(["-n", "-t", "none", "--release", "--end"])
                 else:
                     if msgParse[-1] != "--end":
-                        msgParse.append("--end") # 終端引数を追加する
+                        msgParse.append("--end")  # 終端引数を追加する
                     # 商品名が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]):
                         await message.channel.send("エラー: 同時に複数の商品を指定することはできません。")
                         return
-                    else: # 引数の形だった場合
+                    else:  # 引数の形だった場合
                         # 引数が正しいか判定する(変な引数は全部ここで弾かれる)
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-s", "-r", "-t", "-b", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-s", "-r", "-t", "-b", "--end"):
                                     logger(f"引数{arg}は予約されていません", "info")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
@@ -177,7 +184,7 @@ class Client(discord.Client):
                         if msgParse[2] != "-t":
                             msgParse.insert(2, "-t")
                             msgParse.insert(3, "none")
-                        else: # [-t]のときの処理
+                        else:  # [-t]のときの処理
                             # 街の名前を参照したとき引数の形が出てきたら街が指定されていない
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[3]):
                                 await message.channel.send("エラー: 引数-tに対して街の名前が指定されていません。")
@@ -194,7 +201,8 @@ class Client(discord.Client):
                 # Falseで返ってない場合はそのままチャットへ流す。Falseだった場合は見つからないと表示
                 try:
                     logger(f"{message.author} が {msgParse[0]} をリクエストしました")
-                    parseRes = itemParser(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
+                    parseRes = itemParser(
+                        msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     if parseRes != False:
                         await message.channel.send(parseRes)
                     else:
@@ -312,21 +320,22 @@ class Client(discord.Client):
                 if re.match(r"([Hh][Ee][Ll][Pp]|[へヘﾍ][るルﾙ][ぷプﾌﾟ])", msgParse[0]):
                     await self.showHelpSearch()
                     return
-                elif len(msgParse) == 1: # 検索文字列単体
+                elif len(msgParse) == 1:  # 検索文字列単体
                     msgParse.extend(["-n", "-c", "none", "--release", "--end"])
                 else:
                     if msgParse[-1] != "--end":
-                        msgParse.append("--end") # 終端引数を追加する
+                        msgParse.append("--end")  # 終端引数を追加する
                     # 文字列が1つになっていない場合引数かどうかを確認する
                     if len(msgParse) >= 2 and not re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", msgParse[1]):
                         await message.channel.send("文字列は1つにまとめるようにしてください。複数の文字列の検索は正規表現を利用してください。")
                         return
-                    else: # 引数の形だった場合
+                    else:  # 引数の形だった場合
                         # 引数が正しいか判定する(変な引数は全部ここで弾かれる)
                         for arg in msgParse:
                             # 引数の形をしているが予約されていないものがあったらエラー
                             if re.match(r"^(-[a-zA-Z]|--[a-zA-Z]+)$", arg):
-                                if arg not in ("-i", "-r", "-b", "-c", "--end"): # ここに最初の引数になる可能性のあるものを追加していく
+                                # ここに最初の引数になる可能性のあるものを追加していく
+                                if arg not in ("-i", "-r", "-b", "-c", "--end"):
                                     logger(f"エラー: 引数{arg}は予約されていません")
                                     await message.channel.send("エラー: 無効な引数です: " + arg)
                                     return
@@ -342,7 +351,8 @@ class Client(discord.Client):
                             msgParse.insert(4, "--release")
 
                 try:
-                    mes = itemSearch(msgParse[0], msgParse[1], msgParse[3], msgParse[4])
+                    mes = itemSearch(
+                        msgParse[0], msgParse[1], msgParse[3], msgParse[4])
                     for i in range(len(mes)):
                         await message.channel.send(mes[i])
                 except discord.errors.HTTPException:
@@ -497,7 +507,7 @@ class Client(discord.Client):
                     await message.channel.send(res)
                 finally:
                     return
-        
+
         # 人口コマンド
         if message.content.startswith(commandPopulation):
             msgParse = message.content.split()
@@ -520,7 +530,7 @@ class Client(discord.Client):
                         await message.channel.send(res)
                     finally:
                         return
-        
+
         # バージョンチェックコマンド
         if message.content.startswith(commandChkver):
             try:
@@ -656,7 +666,8 @@ class Client(discord.Client):
         traceback.print_exc()
         if EnableDisplayError:
             typeExc, valueExc, tracebackExc = sys.exc_info()
-            tracebackList = traceback.format_exception(typeExc, valueExc, tracebackExc)
+            tracebackList = traceback.format_exception(
+                typeExc, valueExc, tracebackExc)
             await self.targetChannel.send("以下のエラーが発生しました。")
             tracebackStr = "".join(tracebackList)
             if len(tracebackStr) <= 1900:
