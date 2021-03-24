@@ -229,10 +229,7 @@ def chkEvent():
         topicsRug = "{" + rugueux[rugueux.find('"topics":'):rugueux.find("}}")] + "}" # JSONの形で切り取り、足りない括弧をつける
         topicsRug2 = re.sub(r'"fancy_title":.*?",', "", topicsRug)
         topicsJson = re.sub(r'"excerpt":.*?",', "", topicsRug2)
-        with open("agenda.json", "w", encoding="utf-8_sig") as agw: # 一旦保存してJSONとして扱えるようにする
-            agw.write(topicsJson)
-        with open("agenda.json", "r", encoding="utf-8_sig") as agr: # 保存したJSONを読み込む
-            agenda = json.load(agr)
+        agenda = json.loads(topicsJson)
 
         topiclist = agenda["topics"] # 必要な情報が入ったリストを生成する
 
