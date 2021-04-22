@@ -1,11 +1,12 @@
-import textwrap
 import datetime
 import glob
+import textwrap
 from collections import Counter
 
 from .Alias import alias
-from .getApi import getApi
 from .Exceptions import NoTownError
+from .getApi import getApi
+
 
 def getShelves(townName):
     town = getApi("town", "https://so2-api.mutoys.com/master/area.json")

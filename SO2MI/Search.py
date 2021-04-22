@@ -1,9 +1,10 @@
+import json
 import re
 import textwrap
-import json
 
-from .getApi import getApi
 from .Exceptions import NoCategoryError
+from .getApi import getApi
+
 
 def itemSearch(string, argument, category, beta):
     if beta == "--release":

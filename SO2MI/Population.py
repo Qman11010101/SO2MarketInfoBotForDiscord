@@ -1,8 +1,9 @@
 import json
 import textwrap
 
-from .getApi import getApi
 from .Exceptions import NoTownError
+from .getApi import getApi
+
 
 def getPopulation(townName):
     population = getApi("population", "https://so2-api.mutoys.com/json/people/all.json")

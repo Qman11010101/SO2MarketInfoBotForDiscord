@@ -1,13 +1,14 @@
-import json
-import datetime
-import os
-import glob
 import configparser
+import datetime
+import glob
+import json
+import os
 
 import pytz
 import requests
 
 from .Log import logger
+
 
 def getApi(apiName, url):
     """保存されているデータが古い、またはデータが存在しない場合、指定されたURL(エンドポイント)にアクセスし、api-logフォルダにJSON形式で保存し、読み込みます。

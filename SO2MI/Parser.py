@@ -3,8 +3,9 @@ import glob
 import textwrap
 
 from .Alias import alias
+from .Exceptions import InvalidURLError, NoTownError
 from .getApi import getApi
-from .Exceptions import NoTownError, InvalidURLError
+
 
 def itemParser(itemName, argument, townName, beta):
     if beta != "-b":

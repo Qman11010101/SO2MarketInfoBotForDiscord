@@ -1,8 +1,9 @@
 import textwrap
 
 from .Alias import alias
-from .getApi import getApi
 from .Exceptions import NoItemError
+from .getApi import getApi
+
 
 def wikiLinkGen(itemName):
     item = getApi("item", "https://so2-api.mutoys.com/master/item.json")

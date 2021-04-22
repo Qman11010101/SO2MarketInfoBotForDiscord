@@ -1,9 +1,9 @@
-from configparser import ConfigParser
 import datetime
-from distutils.util import strtobool
+import logging
 import os
 import sys
-import logging
+from configparser import ConfigParser
+from distutils.util import strtobool
 
 if os.path.isfile("config.ini"):
     config = ConfigParser()
