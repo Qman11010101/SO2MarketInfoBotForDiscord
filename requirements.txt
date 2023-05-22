@@ -1,4 +1,4 @@
-﻿astroid==2.2.5
+astroid==2.2.5
 async-timeout==3.0.1
 attrs==19.1.0
 beautifulsoup4==4.7.1
@@ -14,7 +14,7 @@ mccabe==0.6.1
 multidict==4.5.2
 pylint==2.3.1
 pytz==2019.1
-requests==2.22.0
+requests==2.31.0
 six==1.12.0
 soupsieve==1.9.4
 typed-ast==1.4.0
